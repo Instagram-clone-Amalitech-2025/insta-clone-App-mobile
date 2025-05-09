@@ -1,16 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  Image, 
-  TextInput, 
-  TouchableOpacity, 
-  ScrollView,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  Platform
-} from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView,SafeAreaView,KeyboardAvoidingView,Platform} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 export default function EditProfileScreen({ navigation, route }) {
