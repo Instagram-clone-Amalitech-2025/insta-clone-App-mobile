@@ -9,7 +9,7 @@ export default function InstagramProfileScreen({ navigation, route }) {
     bio: 'Mobile Developer | React Native Enthusiast',
     avatar: 'https://i.pravatar.cc/150?img=12',
     posts: 24,
-    followers: 485,
+    followers: 1000,
     following: 321,
     website: '',
     phone: '',
