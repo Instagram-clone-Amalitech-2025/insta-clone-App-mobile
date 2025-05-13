@@ -12,6 +12,7 @@ import UploadScreen from '../screens/Upload/UploadScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import SearchScreen from '../screens/Search/SearchScreen';
 import EditProfileScreen from '../screens/Profile/EditProfileScreen';
+import PostDetailScreen from '../screens/Profile/PostDetailScreen'; // Import our new PostDetailScreen
 
 const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -138,6 +139,14 @@ export default function AppNavigator() {
                   onPress={onPress}
                 />
               )
+            }}
+          />
+          {/* Add PostDetailScreen to the main navigator stack */}
+          <RootStack.Screen 
+            name="PostDetail" 
+            component={PostDetailScreen}
+            options={{
+              headerShown: false // Using custom header in the component
             }}
           />
         </>
