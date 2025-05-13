@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {  View,  Text,  StyleSheet,  Image,  TouchableOpacity,  ScrollView,  SafeAreaView,  FlatList, Modal, Animated} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
-export default function InstagramProfileScreen({ navigation, route }) {
+export default function ProfileScreen({ navigation, route }) {
   const [user, setUser] = useState({
     username: 'johndoe',
     name: 'John Doe',
@@ -16,6 +16,13 @@ export default function InstagramProfileScreen({ navigation, route }) {
     email: 'johndoe@example.com',
     gender: ''
   });
+  
+  // Add active tab state
+  const [activeTab, setActiveTab] = useState('posts');
+  
+  // Add menu state
+  const [menuVisible, setMenuVisible] = useState(false);
+  const menuAnimation = useRef(new Animated.Value(0)).current;
 
   // Update user data when returning from EditProfileScreen
   useEffect(() => {
@@ -29,11 +36,231 @@ export default function InstagramProfileScreen({ navigation, route }) {
     navigation.navigate('EditProfile', { user });
   };
 
-  // Placeholder image grid
-  const placeholderPosts = Array(9).fill('https://i.pravatar.cc/150?img=');
+  // Toggle menu visibility with animation
+  const toggleMenu = () => {
+    if (menuVisible) {
+      Animated.timing(menuAnimation, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setMenuVisible(false);
+      });
+    } else {
+      setMenuVisible(true);
+      Animated.timing(menuAnimation, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
+  // Navigate to different screens from menu
+  const navigateToSettings = () => {
+    toggleMenu();
+    navigation.navigate('Settings');
+  };
+
+  const navigateToSaved = () => {
+    toggleMenu();
+    navigation.navigate('SavedPosts');
+  };
+
+  const navigateToArchived = () => {
+    toggleMenu();
+    navigation.navigate('ArchivedPosts');
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    toggleMenu();
+    // Add logout logic here
+    alert('Logged out successfully');
+    // Navigate to Login screen or Auth stack
+    // navigation.navigate('Login');
+  };
+
+  // Create data for each tab
+  const postsData = Array(9).fill().map((_, index) => ({
+    id: `post-${index}`,
+    imageUrl: `https://i.pravatar.cc/150?img=${index + 1}`,
+  }));
+  
+  const reelsData = Array(6).fill().map((_, index) => ({
+    id: `reel-${index}`,
+    thumbnailUrl: `https://i.pravatar.cc/150?img=${index + 20}`,
+    views: Math.floor(Math.random() * 10000) + 100,
+  }));
+  
+  const taggedData = Array(5).fill().map((_, index) => ({
+    id: `tagged-${index}`,
+    imageUrl: `https://i.pravatar.cc/150?img=${index + 40}`,
+    taggedBy: `user_${Math.floor(Math.random() * 100)}`,
+  }));
+
+  // Navigate to post detail screen
+  const navigateToPostDetail = (item, type) => {
+    navigation.navigate('PostDetail', { item, type });
+  };
+
+  // Render post grid item
+  const renderPostItem = ({ item }) => (
+    <TouchableOpacity 
+      style={styles.postItemContainer}
+      onPress={() => navigateToPostDetail(item, 'post')}
+      activeOpacity={0.8}
+    >
+      <Image 
+        source={{ uri: item.imageUrl }} 
+        style={styles.gridPhoto} 
+      />
+    </TouchableOpacity>
+  );
+
+  // Render reel grid item
+  const renderReelItem = ({ item }) => (
+    <TouchableOpacity 
+      style={styles.reelContainer}
+      onPress={() => navigateToPostDetail(item, 'reel')}
+      activeOpacity={0.8}
+    >
+      <Image 
+        source={{ uri: item.thumbnailUrl }} 
+        style={styles.gridPhoto} 
+      />
+      <View style={styles.reelOverlay}>
+        <Feather name="play" size={14} color="white" />
+        <Text style={styles.reelViewCount}>{item.views}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  // Render tagged grid item
+  const renderTaggedItem = ({ item }) => (
+    <TouchableOpacity 
+      style={styles.taggedContainer}
+      onPress={() => navigateToPostDetail(item, 'tagged')}
+      activeOpacity={0.8}
+    >
+      <Image 
+        source={{ uri: item.imageUrl }} 
+        style={styles.gridPhoto} 
+      />
+      <View style={styles.taggedIndicator}>
+        <Feather name="user" size={12} color="white" />
+      </View>
+    </TouchableOpacity>
+  );
+
+  // Render content based on active tab
+  const renderTabContent = () => {
+    switch(activeTab) {
+      case 'posts':
+        return (
+          <FlatList
+            data={postsData}
+            renderItem={renderPostItem}
+            keyExtractor={item => item.id}
+            numColumns={3}
+            scrollEnabled={false}
+            contentContainerStyle={styles.gridContainer}
+          />
+        );
+      case 'reels':
+        return (
+          <FlatList
+            data={reelsData}
+            renderItem={renderReelItem}
+            keyExtractor={item => item.id}
+            numColumns={3}
+            scrollEnabled={false}
+            contentContainerStyle={styles.gridContainer}
+          />
+        );
+      case 'tagged':
+        return (
+          <FlatList
+            data={taggedData}
+            renderItem={renderTaggedItem}
+            keyExtractor={item => item.id}
+            numColumns={3}
+            scrollEnabled={false}
+            contentContainerStyle={styles.gridContainer}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  // Menu animation styles
+  const menuContainerStyle = {
+    transform: [
+      {
+        translateY: menuAnimation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [-300, 0],
+        }),
+      },
+    ],
+    opacity: menuAnimation,
+  };
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Menu Modal */}
+      <Modal
+        visible={menuVisible}
+        transparent={true}
+        animationType="none"
+        onRequestClose={toggleMenu}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={toggleMenu}
+        >
+          <Animated.View 
+            style={[styles.menuContainer, menuContainerStyle]}
+          >
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={navigateToSettings}
+            >
+              <Feather name="settings" size={20} color="black" />
+              <Text style={styles.menuText}>Settings</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={navigateToSaved}
+            >
+              <Feather name="bookmark" size={20} color="black" />
+              <Text style={styles.menuText}>Saved</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={navigateToArchived}
+            >
+              <Feather name="archive" size={20} color="black" />
+              <Text style={styles.menuText}>Archived</Text>
+            </TouchableOpacity>
+            
+            <View style={styles.menuDivider} />
+            
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={handleLogout}
+            >
+              <Feather name="log-out" size={20} color="#FF3B30" />
+              <Text style={[styles.menuText, styles.logoutText]}>Log Out</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </TouchableOpacity>
+      </Modal>
+
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header with username and settings */}
         <View style={styles.header}>
@@ -42,7 +269,7 @@ export default function InstagramProfileScreen({ navigation, route }) {
             <TouchableOpacity style={styles.iconButton}>
               <Feather name="plus-square" size={24} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
               <Feather name="menu" size={24} color="black" />
             </TouchableOpacity>
           </View>
@@ -99,26 +326,41 @@ export default function InstagramProfileScreen({ navigation, route }) {
 
         {/* Tab view (Posts, Reels, Tagged) */}
         <View style={styles.tabBar}>
-          <TouchableOpacity style={[styles.tab, styles.activeTab]}>
-            <Feather name="grid" size={24} color="black" />
+          <TouchableOpacity 
+            style={[styles.tab, activeTab === 'posts' && styles.activeTab]}
+            onPress={() => setActiveTab('posts')}
+          >
+            <Feather 
+              name="grid" 
+              size={24} 
+              color={activeTab === 'posts' ? "black" : "gray"} 
+            />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tab}>
-            <Feather name="film" size={24} color="gray" />
+          <TouchableOpacity 
+            style={[styles.tab, activeTab === 'reels' && styles.activeTab]}
+            onPress={() => setActiveTab('reels')}
+          >
+            <Feather 
+              name="film" 
+              size={24} 
+              color={activeTab === 'reels' ? "black" : "gray"} 
+            />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.tab}>
-            <Feather name="user" size={24} color="gray" />
+          <TouchableOpacity 
+            style={[styles.tab, activeTab === 'tagged' && styles.activeTab]}
+            onPress={() => setActiveTab('tagged')}
+          >
+            <Feather 
+              name="user" 
+              size={24} 
+              color={activeTab === 'tagged' ? "black" : "gray"} 
+            />
           </TouchableOpacity>
         </View>
 
-        {/* Photo grid */}
-        <View style={styles.photoGrid}>
-          {placeholderPosts.map((post, index) => (
-            <Image 
-              key={index} 
-              source={{ uri: `${post}${index + 1}` }} 
-              style={styles.gridPhoto} 
-            />
-          ))}
+        {/* Content based on selected tab */}
+        <View style={styles.tabContent}>
+          {renderTabContent()}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -259,15 +501,95 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'black',
   },
-  photoGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+  tabContent: {
+    width: '100%',
+  },
+  postItemContainer: {
+    width: '33.33%',
+    padding: 1,
   },
   gridPhoto: {
-    width: '33.3%',
+    width: '100%',
     aspectRatio: 1,
-    borderWidth: 0.5,
-    borderColor: 'white',
   },
-
+  reelContainer: {
+    width: '33.33%',
+    position: 'relative',
+    padding: 1,
+  },
+  reelOverlay: {
+    position: 'absolute',
+    bottom: 8,
+    left: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reelViewCount: {
+    color: 'white',
+    fontSize: 12,
+    marginLeft: 4,
+    fontWeight: '600',
+    textShadowColor: 'rgba(0, 0, 0, 0.7)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
+  },
+  taggedContainer: {
+    width: '33.33%',
+    position: 'relative',
+    padding: 1,
+  },
+  taggedIndicator: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    borderRadius: 10,
+    width: 20,
+    height: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
+  },
+  // Menu styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  menuContainer: {
+    backgroundColor: 'white',
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+  },
+  menuText: {
+    marginLeft: 15,
+    fontSize: 16,
+  },
+  menuDivider: {
+    height: 1,
+    backgroundColor: '#DBDBDB',
+    marginVertical: 10,
+  },
+  logoutText: {
+    color: '#FF3B30',
+  },
 });
