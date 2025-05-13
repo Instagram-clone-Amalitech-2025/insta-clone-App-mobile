@@ -12,7 +12,14 @@ import UploadScreen from '../screens/Upload/UploadScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import SearchScreen from '../screens/Search/SearchScreen';
 import EditProfileScreen from '../screens/Profile/EditProfileScreen';
-import PostDetailScreen from '../screens/Profile/PostDetailScreen'; // Import our new PostDetailScreen
+import PostDetailScreen from '../screens/Profile/PostDetailScreen';
+import SettingsScreen from '../screens/Settings/SettingsScreen';
+import SavedPostsScreen from '../screens/Profile/SavedPostsScreen';
+import ArchivedPostsScreen from '../screens/Profile/ArchivedPostsScreen';
+import AccountSettingsScreen from '../screens/Settings/AccountSettingsScreen';
+import PrivacySettingsScreen from '../screens/Settings/PrivacySettingsScreen';
+import HelpCenterScreen from '../screens/Settings/HelpCenterScreen';
+import AboutAppScreen from '../screens/Settings/AboutAppScreen';
 
 const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -141,12 +148,135 @@ export default function AppNavigator() {
               )
             }}
           />
-          {/* Add PostDetailScreen to the main navigator stack */}
+          {/* PostDetailScreen */}
           <RootStack.Screen 
             name="PostDetail" 
             component={PostDetailScreen}
             options={{
               headerShown: false // Using custom header in the component
+            }}
+          />
+          
+          {/* Settings Screen */}
+          <RootStack.Screen 
+            name="Settings" 
+            component={SettingsScreen}
+            options={{
+              headerShown: false // Custom header in the component
+            }}
+          />
+          
+          {/* Saved Posts Screen */}
+          <RootStack.Screen 
+            name="SavedPosts" 
+            component={SavedPostsScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Saved Posts',
+              headerLeft: ({ onPress }) => (
+                <Feather 
+                  name="arrow-left" 
+                  size={24} 
+                  color="#000000" 
+                  style={{ marginLeft: 10 }} 
+                  onPress={onPress}
+                />
+              )
+            }}
+          />
+          
+          {/* Archived Posts Screen */}
+          <RootStack.Screen 
+            name="ArchivedPosts" 
+            component={ArchivedPostsScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Archived Posts',
+              headerLeft: ({ onPress }) => (
+                <Feather 
+                  name="arrow-left" 
+                  size={24} 
+                  color="#000000" 
+                  style={{ marginLeft: 10 }} 
+                  onPress={onPress}
+                />
+              )
+            }}
+          />
+          
+          {/* Account Settings Screen */}
+          <RootStack.Screen 
+            name="AccountSettings" 
+            component={AccountSettingsScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Account',
+              headerLeft: ({ onPress }) => (
+                <Feather 
+                  name="arrow-left" 
+                  size={24} 
+                  color="#000000" 
+                  style={{ marginLeft: 10 }} 
+                  onPress={onPress}
+                />
+              )
+            }}
+          />
+          
+          {/* Privacy Settings Screen */}
+          <RootStack.Screen 
+            name="PrivacySettings" 
+            component={PrivacySettingsScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Privacy',
+              headerLeft: ({ onPress }) => (
+                <Feather 
+                  name="arrow-left" 
+                  size={24} 
+                  color="#000000" 
+                  style={{ marginLeft: 10 }} 
+                  onPress={onPress}
+                />
+              )
+            }}
+          />
+          
+          {/* Help Center Screen */}
+          <RootStack.Screen 
+            name="HelpCenter" 
+            component={HelpCenterScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'Help Center',
+              headerLeft: ({ onPress }) => (
+                <Feather 
+                  name="arrow-left" 
+                  size={24} 
+                  color="#000000" 
+                  style={{ marginLeft: 10 }} 
+                  onPress={onPress}
+                />
+              )
+            }}
+          />
+          
+          {/* About App Screen */}
+          <RootStack.Screen 
+            name="AboutApp" 
+            component={AboutAppScreen}
+            options={{
+              headerShown: true,
+              headerTitle: 'About',
+              headerLeft: ({ onPress }) => (
+                <Feather 
+                  name="arrow-left" 
+                  size={24} 
+                  color="#000000" 
+                  style={{ marginLeft: 10 }} 
+                  onPress={onPress}
+                />
+              )
             }}
           />
         </>
@@ -156,5 +286,22 @@ export default function AppNavigator() {
         </>
       )}
     </RootStack.Navigator>
+  );
+}
+
+// // Temporary placeholder screen until real screens are implemented
+// import { View, Text } from 'react-native';
+// import SavedPostsScreen from '../screens/Profile/SavedPostsScreen';
+// import AccountSettingsScreen from '../screens/Settings/AccountSettingsScreen';
+// import PrivacySettingsScreen from '../screens/Settings/PrivacySettingsScreen';
+// import HelpCenterScreen from '../screens/Settings/HelpCenterScreen';
+// import AboutAppScreen from '../screens/Settings/AboutAppScreen';
+
+function PlaceholderScreen() {
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ fontSize: 18 }}>Coming Soon</Text>
+      <Text style={{ fontSize: 14, color: '#777', marginTop: 10 }}>This feature is under development</Text>
+    </View>
   );
 }

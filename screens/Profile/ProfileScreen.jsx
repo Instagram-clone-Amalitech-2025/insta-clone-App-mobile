@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, FlatList } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import {  View,  Text,  StyleSheet,  Image,  TouchableOpacity,  ScrollView,  SafeAreaView,  FlatList, Modal, Animated} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 export default function ProfileScreen({ navigation, route }) {
@@ -19,6 +19,10 @@ export default function ProfileScreen({ navigation, route }) {
   
   // Add active tab state
   const [activeTab, setActiveTab] = useState('posts');
+  
+  // Add menu state
+  const [menuVisible, setMenuVisible] = useState(false);
+  const menuAnimation = useRef(new Animated.Value(0)).current;
 
   // Update user data when returning from EditProfileScreen
   useEffect(() => {
@@ -30,6 +34,51 @@ export default function ProfileScreen({ navigation, route }) {
   // Navigate to Edit Profile screen with current user data
   const handleEditProfile = () => {
     navigation.navigate('EditProfile', { user });
+  };
+
+  // Toggle menu visibility with animation
+  const toggleMenu = () => {
+    if (menuVisible) {
+      Animated.timing(menuAnimation, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start(() => {
+        setMenuVisible(false);
+      });
+    } else {
+      setMenuVisible(true);
+      Animated.timing(menuAnimation, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+  };
+
+  // Navigate to different screens from menu
+  const navigateToSettings = () => {
+    toggleMenu();
+    navigation.navigate('Settings');
+  };
+
+  const navigateToSaved = () => {
+    toggleMenu();
+    navigation.navigate('SavedPosts');
+  };
+
+  const navigateToArchived = () => {
+    toggleMenu();
+    navigation.navigate('ArchivedPosts');
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    toggleMenu();
+    // Add logout logic here
+    alert('Logged out successfully');
+    // Navigate to Login screen or Auth stack
+    // navigation.navigate('Login');
   };
 
   // Create data for each tab
@@ -145,8 +194,73 @@ export default function ProfileScreen({ navigation, route }) {
     }
   };
 
+  // Menu animation styles
+  const menuContainerStyle = {
+    transform: [
+      {
+        translateY: menuAnimation.interpolate({
+          inputRange: [0, 1],
+          outputRange: [-300, 0],
+        }),
+      },
+    ],
+    opacity: menuAnimation,
+  };
+
   return (
     <SafeAreaView style={styles.container}>
+      {/* Menu Modal */}
+      <Modal
+        visible={menuVisible}
+        transparent={true}
+        animationType="none"
+        onRequestClose={toggleMenu}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay} 
+          activeOpacity={1} 
+          onPress={toggleMenu}
+        >
+          <Animated.View 
+            style={[styles.menuContainer, menuContainerStyle]}
+          >
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={navigateToSettings}
+            >
+              <Feather name="settings" size={20} color="black" />
+              <Text style={styles.menuText}>Settings</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={navigateToSaved}
+            >
+              <Feather name="bookmark" size={20} color="black" />
+              <Text style={styles.menuText}>Saved</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={navigateToArchived}
+            >
+              <Feather name="archive" size={20} color="black" />
+              <Text style={styles.menuText}>Archived</Text>
+            </TouchableOpacity>
+            
+            <View style={styles.menuDivider} />
+            
+            <TouchableOpacity 
+              style={styles.menuItem} 
+              onPress={handleLogout}
+            >
+              <Feather name="log-out" size={20} color="#FF3B30" />
+              <Text style={[styles.menuText, styles.logoutText]}>Log Out</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </TouchableOpacity>
+      </Modal>
+
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header with username and settings */}
         <View style={styles.header}>
@@ -155,7 +269,7 @@ export default function ProfileScreen({ navigation, route }) {
             <TouchableOpacity style={styles.iconButton}>
               <Feather name="plus-square" size={24} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
               <Feather name="menu" size={24} color="black" />
             </TouchableOpacity>
           </View>
@@ -439,5 +553,43 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
+  },
+  // Menu styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  menuContainer: {
+    backgroundColor: 'white',
+    borderBottomLeftRadius: 15,
+    borderBottomRightRadius: 15,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 15,
+  },
+  menuText: {
+    marginLeft: 15,
+    fontSize: 16,
+  },
+  menuDivider: {
+    height: 1,
+    backgroundColor: '#DBDBDB',
+    marginVertical: 10,
+  },
+  logoutText: {
+    color: '#FF3B30',
   },
 });
