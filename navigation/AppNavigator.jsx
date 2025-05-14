@@ -132,22 +132,23 @@ export default function AppNavigator() {
         <>
           <RootStack.Screen name="MainTabs" component={TabNavigator} />
           <RootStack.Screen 
-            name="EditProfile" 
-            component={EditProfileScreen}
-            options={{
-              headerShown: true,
-              headerTitle: 'Edit Profile',
-              headerLeft: ({ onPress }) => (
-                <Feather 
-                  name="arrow-left" 
-                  size={24} 
-                  color="#000000" 
-                  style={{ marginLeft: 10 }} 
-                  onPress={onPress}
-                />
-              )
-            }}
+          name="EditProfile" 
+          component={EditProfileScreen}
+          options={({ navigation }) => ({
+          headerShown: true,
+          headerTitle: 'Edit Profile',
+          headerLeft: () => (
+          <Feather 
+          name="arrow-left" 
+          size={24} 
+          color="#000000" 
+          style={{ marginLeft: 10 }} 
+          onPress={() => navigation.goBack()}
           />
+          )
+          })}
+          />
+
           {/* PostDetailScreen */}
           <RootStack.Screen 
             name="PostDetail" 

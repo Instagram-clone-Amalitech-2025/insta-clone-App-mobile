@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, UseContext } from 'react';
 import { StyleSheet, View, Text,TouchableOpacity,Switch, ScrollView, Image, Alert,Platform,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -78,16 +78,16 @@ const AccountSettingsScreen = () => {
             style={styles.profileImage}
           />
           <View style={styles.profileInfo}>
-  <Text style={styles.profileName}>John Doe</Text>
-  <Text style={styles.profileEmail}>john.doe@example.com</Text>
-  <TouchableOpacity 
-    style={styles.editButton}
-    onPress={() => navigation.navigate('EditProfile')}
-  >
-    <Text style={styles.editButtonText}>Edit Profile</Text>
-  </TouchableOpacity>
-</View>
-</View>
+            <Text style={styles.profileName}>John Doe</Text>
+            <Text style={styles.profileEmail}>john.doe@example.com</Text>
+            <TouchableOpacity 
+  style={styles.editButton}
+  onPress={() => navigation.navigate('EditProfile')}
+>
+  <Text style={styles.editButtonText}>Edit Profile</Text>
+</TouchableOpacity>
+          </View>
+        </View>
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Preferences</Text>

@@ -1,50 +1,114 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView,SafeAreaView,KeyboardAvoidingView,Platform} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
+  Alert
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function EditProfileScreen({ navigation, route }) {
-  // Get user data passed from the profile screen or use default values
+  // Get user data passed from ProfileScreen
   const initialUser = route.params?.user || {
     username: 'johndoe',
     name: 'John Doe',
     bio: 'Mobile Developer | React Native Enthusiast',
     avatar: 'https://i.pravatar.cc/150?img=12',
+    posts: 24,
+    followers: 1000,
+    following: 321,
     website: '',
     phone: '',
     email: 'johndoe@example.com',
     gender: ''
   };
 
-  const [user, setUser] = useState(initialUser);
+  // State for edited user data
+  const [userData, setUserData] = useState({...initialUser});
   
-  // Handle text input changes
-  const handleChange = (key, value) => {
-    setUser({
-      ...user,
-      [key]: value
-    });
+  // State for checking if any changes were made
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Update state when form fields change
+  const handleChange = (field, value) => {
+    setUserData(prevData => ({
+      ...prevData,
+      [field]: value
+    }));
+    setHasChanges(true);
   };
 
-  // Save changes and return to profile screen
+  // Handle save changes
   const handleSave = () => {
-    // Pass the updated user data back to the ProfileScreen
-    navigation.navigate('Profile', { updatedUser: user });
+    if (hasChanges) {
+      // Return to ProfileScreen with updated user data
+      navigation.navigate('Profile', { updatedUser: userData });
+    } else {
+      navigation.goBack();
+    }
   };
 
-  // Cancel editing and return to profile
-  const handleCancel = () => {
-    navigation.goBack();
+  // Handle discard changes
+  const handleDiscard = () => {
+    if (hasChanges) {
+      Alert.alert(
+        "Discard Changes",
+        "Are you sure you want to discard your changes?",
+        [
+          {
+            text: "Cancel",
+            style: "cancel"
+          },
+          { 
+            text: "Discard", 
+            onPress: () => navigation.goBack(),
+            style: "destructive"
+          }
+        ]
+      );
+    } else {
+      navigation.goBack();
+    }
+  };
+
+  // Handle avatar change
+  const handleChangeAvatar = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    
+    if (permissionResult.granted === false) {
+      Alert.alert("Permission Required", "You need to grant access to your photos to change profile picture");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      handleChange('avatar', result.assets[0].uri);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
       >
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleCancel}>
+          <TouchableOpacity onPress={handleDiscard}>
             <Feather name="x" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Edit Profile</Text>
@@ -53,105 +117,112 @@ export default function EditProfileScreen({ navigation, route }) {
           </TouchableOpacity>
         </View>
 
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           {/* Profile Picture Section */}
-          <View style={styles.avatarContainer}>
-            <Image source={{ uri: user.avatar }} style={styles.avatar} />
-            <TouchableOpacity>
+          <View style={styles.avatarSection}>
+            <Image source={{ uri: userData.avatar }} style={styles.avatar} />
+            <TouchableOpacity onPress={handleChangeAvatar}>
               <Text style={styles.changePhotoText}>Change Profile Photo</Text>
             </TouchableOpacity>
           </View>
 
           {/* Form Fields */}
-          <View style={styles.form}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Name</Text>
+          <View style={styles.formSection}>
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Name</Text>
               <TextInput
-                style={styles.input}
-                value={user.name}
+                style={styles.textInput}
+                value={userData.name}
                 onChangeText={(text) => handleChange('name', text)}
                 placeholder="Name"
+                placeholderTextColor="#999"
               />
             </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Username</Text>
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Username</Text>
               <TextInput
-                style={styles.input}
-                value={user.username}
+                style={styles.textInput}
+                value={userData.username}
                 onChangeText={(text) => handleChange('username', text)}
                 placeholder="Username"
+                placeholderTextColor="#999"
                 autoCapitalize="none"
               />
             </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Bio</Text>
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Bio</Text>
               <TextInput
-                style={[styles.input, styles.bioInput]}
-                value={user.bio}
+                style={[styles.textInput, styles.bioInput]}
+                value={userData.bio}
                 onChangeText={(text) => handleChange('bio', text)}
                 placeholder="Bio"
+                placeholderTextColor="#999"
                 multiline
                 numberOfLines={3}
+                textAlignVertical="top"
               />
             </View>
 
-            <View style={styles.section}>
-              <Text style={styles.sectionHeader}>Personal Information</Text>
-            </View>
+            <Text style={styles.sectionTitle}>Private Information</Text>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Email</Text>
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Email</Text>
               <TextInput
-                style={styles.input}
-                value={user.email}
+                style={styles.textInput}
+                value={userData.email}
                 onChangeText={(text) => handleChange('email', text)}
                 placeholder="Email"
+                placeholderTextColor="#999"
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
             </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Phone</Text>
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Phone</Text>
               <TextInput
-                style={styles.input}
-                value={user.phone}
+                style={styles.textInput}
+                value={userData.phone}
                 onChangeText={(text) => handleChange('phone', text)}
                 placeholder="Phone"
+                placeholderTextColor="#999"
                 keyboardType="phone-pad"
               />
             </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Website</Text>
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Website</Text>
               <TextInput
-                style={styles.input}
-                value={user.website}
+                style={styles.textInput}
+                value={userData.website}
                 onChangeText={(text) => handleChange('website', text)}
                 placeholder="Website"
-                autoCapitalize="none"
+                placeholderTextColor="#999"
                 keyboardType="url"
+                autoCapitalize="none"
               />
             </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Gender</Text>
-              <TextInput
-                style={styles.input}
-                value={user.gender}
-                onChangeText={(text) => handleChange('gender', text)}
-                placeholder="Gender"
-              />
+            <View style={styles.formField}>
+              <Text style={styles.fieldLabel}>Gender</Text>
+              <TouchableOpacity style={styles.genderSelector}>
+                <Text style={userData.gender ? styles.textInput : styles.placeholderText}>
+                  {userData.gender || "Gender"}
+                </Text>
+                <Feather name="chevron-right" size={20} color="#999" />
+              </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.privateInfoButton}>
-              <Text style={styles.privateInfoText}>Switch to Professional Account</Text>
+            {/* Switch account option */}
+            <TouchableOpacity style={styles.switchAccountButton}>
+              <Text style={styles.switchAccountText}>Switch to Professional Account</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={styles.privateInfoButton}>
-              <Text style={styles.privateInfoText}>Personal Information Settings</Text>
+            {/* Personal information settings */}
+            <TouchableOpacity style={styles.personalInfoButton}>
+              <Text style={styles.personalInfoText}>Personal information settings</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -169,8 +240,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
     borderBottomWidth: 0.5,
     borderBottomColor: '#DBDBDB',
   },
@@ -178,60 +249,76 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  avatarContainer: {
+  avatarSection: {
     alignItems: 'center',
     paddingVertical: 20,
   },
   avatar: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    marginBottom: 10,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 8,
   },
   changePhotoText: {
     color: '#3897F0',
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
-  form: {
-    paddingHorizontal: 16,
+  formSection: {
+    paddingHorizontal: 15,
   },
-  inputGroup: {
-    marginBottom: 15,
+  formField: {
+    paddingVertical: 12,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#DBDBDB',
   },
-  label: {
+  fieldLabel: {
     fontSize: 14,
     color: '#262626',
-    marginBottom: 5,
     fontWeight: '500',
+    marginBottom: 8,
   },
-  input: {
-    fontSize: 14,
-    borderWidth: 1,
-    borderColor: '#DBDBDB',
-    borderRadius: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    backgroundColor: '#FAFAFA',
+  textInput: {
+    fontSize: 16,
+    color: '#262626',
+    padding: 0,
   },
   bioInput: {
     height: 80,
-    textAlignVertical: 'top',
+    paddingTop: 0,
   },
-  section: {
-    paddingVertical: 15,
-  },
-  sectionHeader: {
+  sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#262626',
+    marginTop: 25,
+    marginBottom: 10,
   },
-  privateInfoButton: {
-    marginVertical: 10,
+  genderSelector: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
-  privateInfoText: {
+  placeholderText: {
+    fontSize: 16,
+    color: '#999',
+  },
+  switchAccountButton: {
+    marginTop: 25,
+    paddingVertical: 12,
+  },
+  switchAccountText: {
+    fontSize: 16,
     color: '#3897F0',
-    fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
+  },
+  personalInfoButton: {
+    marginTop: 5,
+    marginBottom: 40,
+    paddingVertical: 12,
+  },
+  personalInfoText: {
+    fontSize: 16,
+    color: '#3897F0',
+    fontWeight: '600',
   },
 });
