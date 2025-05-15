@@ -6,16 +6,16 @@ import * as ImagePicker from 'expo-image-picker';
 export default function EditProfileScreen({ navigation, route }) {
   // Get user data passed from ProfileScreen
   const initialUser = route.params?.user || {
-    username: 'johndoe',
-    name: 'John Doe',
+    username: 'User1',
+    name: 'User 1',
     bio: 'Mobile Developer | React Native Enthusiast',
-    avatar: 'https://i.pravatar.cc/150?img=12',
+    avatar: '/assets/pravatar.jpg',
     posts: 24,
     followers: 1000,
     following: 321,
     website: '',
     phone: '',
-    email: 'johndoe@example.com',
+    email: 'user1@example.com',
     gender: ''
   };
 

@@ -83,7 +83,7 @@ function TabNavigator() {
         options={({ route }) => ({
           tabBarIcon: ({ focused }) => {
             // Use the default Feather user icon if no avatar is available
-            const avatarUri = route.params?.user?.avatar || 'https://i.pravatar.cc/150?img=12';
+            const avatarUri = route.params?.user?.avatar || '/assets/pravatar.jpg';
             
             return focused ? (
               <Image
@@ -135,7 +135,7 @@ export default function AppNavigator() {
           name="EditProfile" 
           component={EditProfileScreen}
           options={({ navigation }) => ({
-          headerShown: true,
+          headerShown: false,
           headerTitle: 'Edit Profile',
           headerLeft: () => (
           <Feather 
@@ -172,7 +172,7 @@ export default function AppNavigator() {
             name="SavedPosts" 
             component={SavedPostsScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Saved Posts',
               headerLeft: ({ onPress }) => (
                 <Feather 
@@ -191,7 +191,7 @@ export default function AppNavigator() {
             name="ArchivedPosts" 
             component={ArchivedPostsScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Archived Posts',
               headerLeft: ({ onPress }) => (
                 <Feather 
@@ -210,7 +210,7 @@ export default function AppNavigator() {
             name="AccountSettings" 
             component={AccountSettingsScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Account',
               headerLeft: ({ onPress }) => (
                 <Feather 
@@ -229,7 +229,7 @@ export default function AppNavigator() {
             name="PrivacySettings" 
             component={PrivacySettingsScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Privacy',
               headerLeft: ({ onPress }) => (
                 <Feather 
@@ -248,7 +248,7 @@ export default function AppNavigator() {
             name="HelpCenter" 
             component={HelpCenterScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Help Center',
               headerLeft: ({ onPress }) => (
                 <Feather 
@@ -267,7 +267,7 @@ export default function AppNavigator() {
             name="AboutApp" 
             component={AboutAppScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'About',
               headerLeft: ({ onPress }) => (
                 <Feather 

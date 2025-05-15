@@ -4,16 +4,16 @@ import { Feather } from '@expo/vector-icons';
 
 export default function ProfileScreen({ navigation, route }) {
   const [user, setUser] = useState({
-    username: 'johndoe',
-    name: 'John Doe',
+    username: 'User1',
+    name: 'User 1',
     bio: 'Mobile Developer | React Native Enthusiast',
-    avatar: 'https://i.pravatar.cc/150?img=12',
+    avatar: '/assets/pravatar.jpg',
     posts: 24,
     followers: 1000,
     following: 321,
     website: '',
     phone: '',
-    email: 'johndoe@example.com',
+    email: 'user1@example.com',
     gender: ''
   });
   

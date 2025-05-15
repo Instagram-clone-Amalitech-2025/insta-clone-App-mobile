@@ -78,7 +78,7 @@ export default function PostDetailScreen({ route, navigation }) {
             style={styles.userAvatar} 
           />
           <View style={styles.userName}>
-            <Text style={styles.userNameText}>johndoe</Text>
+            <Text style={styles.userNameText}>User1</Text>
           </View>
           <TouchableOpacity style={styles.followButton}>
             <Text style={styles.followButtonText}>Follow</Text>
@@ -122,7 +122,7 @@ export default function PostDetailScreen({ route, navigation }) {
 
         {/* Caption */}
         <View style={styles.captionSection}>
-          <Text style={styles.captionUsername}>johndoe</Text>
+          <Text style={styles.captionUsername}>User1</Text>
           <Text style={styles.captionText}>
             Beautiful day! #photography #instagram
           </Text>
