@@ -1,12 +1,12 @@
-import React, { useState, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView,  TextInput, SafeAreaView, Platform, StatusBar} from 'react-native';
+import React, { useState } from 'react';
+import {
+  View, Text, StyleSheet, TouchableOpacity, Image, ScrollView,
+  TextInput, SafeAreaView, Platform, StatusBar
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 export default function UploadScreen({ navigation }) {
-  const [activeTab, setActiveTab] = useState('POST');
   const [caption, setCaption] = useState('');
-  
-  // Placeholder images for the grid view
   const imagePlaceholders = Array(12).fill(null);
   
   const renderTabButton = (tabName) => (

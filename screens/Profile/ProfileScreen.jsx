@@ -82,22 +82,25 @@ export default function ProfileScreen({ navigation, route }) {
   };
 
   // Create data for each tab
+  //Post data
   const postsData = Array(9).fill().map((_, index) => ({
-    id: `post-${index}`,
-    imageUrl: `https://i.pravatar.cc/150?img=${index + 1}`,
-  }));
-  
-  const reelsData = Array(6).fill().map((_, index) => ({
-    id: `reel-${index}`,
-    thumbnailUrl: `https://i.pravatar.cc/150?img=${index + 20}`,
-    views: Math.floor(Math.random() * 10000) + 100,
-  }));
-  
-  const taggedData = Array(5).fill().map((_, index) => ({
-    id: `tagged-${index}`,
-    imageUrl: `https://i.pravatar.cc/150?img=${index + 40}`,
-    taggedBy: `user_${Math.floor(Math.random() * 100)}`,
-  }));
+  id: `post-${index}`,
+  imageFile: `post${index + 1}.jpg`, // Add images as post1.jpg, post2.jpg, etc.
+}));
+
+  //Reels data
+ const reelsData = Array(6).fill().map((_, index) => ({
+  id: `reel-${index}`,
+  thumbnailFile: `reel${index + 1}.jpg`,
+  views: Math.floor(Math.random() * 10000) + 100,
+}));
+
+  //Tagged data
+ const taggedData = Array(5).fill().map((_, index) => ({
+  id: `tagged-${index}`,
+  imageFile: `tagged${index + 1}.jpg`,
+  taggedBy: `user_${Math.floor(Math.random() * 100)}`,
+}));
 
   // Navigate to post detail screen
   const navigateToPostDetail = (item, type) => {
