@@ -290,14 +290,6 @@ export default function AppNavigator() {
   );
 }
 
-// // Temporary placeholder screen until real screens are implemented
-// import { View, Text } from 'react-native';
-// import SavedPostsScreen from '../screens/Profile/SavedPostsScreen';
-// import AccountSettingsScreen from '../screens/Settings/AccountSettingsScreen';
-// import PrivacySettingsScreen from '../screens/Settings/PrivacySettingsScreen';
-// import HelpCenterScreen from '../screens/Settings/HelpCenterScreen';
-// import AboutAppScreen from '../screens/Settings/AboutAppScreen';
-
 function PlaceholderScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
