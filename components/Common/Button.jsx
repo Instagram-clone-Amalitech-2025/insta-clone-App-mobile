@@ -1,25 +1,25 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-export default function Button({ title, onPress }) {
+const Button = ({ title, onPress }) => {
   return (
     <TouchableOpacity style={styles.button} onPress={onPress}>
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#3897f0',
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
+    backgroundColor: '#007bff',
+    padding: 10,
+    borderRadius: 5,
+    marginVertical: 5,
   },
   text: {
     color: '#fff',
-    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
-// This is a simple Button component for a React Native application.
-// It uses TouchableOpacity for the button and Text for the button label.
+
+export default Button;

@@ -1,8 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
+  const navigation = useNavigation(); // Navigation hook
+
   // Mock data for posts
   const posts = [
     {
@@ -42,7 +45,6 @@ export default function HomeScreen() {
 
   const renderPost = (post) => (
     <View key={post.id} style={styles.post}>
-      {/* Post header with user info */}
       <View style={styles.postHeader}>
         <View style={styles.userInfo}>
           <View style={styles.userAvatar}>
@@ -58,10 +60,8 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Post image */}
       <Image source={{ uri: post.image }} style={styles.postImage} resizeMode="cover" />
 
-      {/* Post actions (like, comment, share) */}
       <View style={styles.postActions}>
         <View style={styles.leftActions}>
           <TouchableOpacity style={styles.actionButton}>
@@ -79,7 +79,6 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Post details (likes, caption, comments) */}
       <View style={styles.postDetails}>
         <Text style={styles.likes}>{post.likes} likes</Text>
         <Text style={styles.caption}>
@@ -95,11 +94,10 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Instagram header */}
       <View style={styles.header}>
         <Text style={styles.headerLogo}>Instagram</Text>
         <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.headerButton}>
+          <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Upload')}>
             <Feather name="plus-square" size={24} color="#000000" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerButton}>
@@ -111,43 +109,34 @@ export default function HomeScreen() {
         </View>
       </View>
 
-      {/* Stories */}
       <ScrollView style={styles.feed} showsVerticalScrollIndicator={false}>
-  {/* Stories */}
-  <View style={styles.storiesContainer}>
-    <ScrollView 
-      horizontal 
-      showsHorizontalScrollIndicator={false}
-    >
-      {/* Your story */}
-      <View style={styles.storyItem}>
-        <View style={styles.storyPlus}>
-          <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
-          <View style={styles.addStoryButton}>
-            <Feather name="plus" size={12} color="#FFFFFF" />
-          </View>
+        <View style={styles.storiesContainer}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={styles.storyItem}>
+              <View style={styles.storyPlus}>
+                <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
+                <View style={styles.addStoryButton}>
+                  <Feather name="plus" size={12} color="#FFFFFF" />
+                </View>
+              </View>
+              <Text style={styles.storyUsername}>Your Story</Text>
+            </View>
+
+            {['user1', 'travel_enthusiast', 'foodie', 'photographer', 'fitness_guru'].map((user, index) => (
+              <View key={index} style={styles.storyItem}>
+                <View style={styles.storyRing}>
+                  <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
+                </View>
+                <Text style={styles.storyUsername}>
+                  {user.length > 9 ? user.substring(0, 9) + '...' : user}
+                </Text>
+              </View>
+            ))}
+          </ScrollView>
         </View>
-        <Text style={styles.storyUsername}>Your Story</Text>
-      </View>
 
-      {/* Other stories */}
-      {['user1', 'travel_enthusiast', 'foodie', 'photographer', 'fitness_guru'].map((user, index) => (
-        <View key={index} style={styles.storyItem}>
-          <View style={styles.storyRing}>
-            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
-          </View>
-          <Text style={styles.storyUsername}>
-            {user.length > 9 ? user.substring(0, 9) + '...' : user}
-          </Text>
-        </View>
-      ))}
-    </ScrollView>
-  </View>
-
-  {/* Posts */}
-  {posts.map(post => renderPost(post))}
-</ScrollView>
-
+        {posts.map(post => renderPost(post))}
+      </ScrollView>
     </View>
   );
 }
@@ -162,6 +151,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
+    marginTop: 8,
     height: 70,
     borderBottomWidth: 1,
     borderBottomColor: '#DBDBDB',
@@ -177,13 +167,13 @@ const styles = StyleSheet.create({
   headerButton: {
     marginLeft: 20,
   },
- storiesContainer: {
-  paddingVertical: 8,
-  paddingHorizontal: 10,
-  borderBottomWidth: 0.5,
-  borderBottomColor: '#DBDBDB',
-  marginBottom: 10,
-}, 
+  storiesContainer: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#DBDBDB',
+    marginBottom: 10,
+  },
   storyItem: {
     alignItems: 'center',
     marginRight: 15,
@@ -298,26 +288,4 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 3,
   },
-  bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    height: 50,
-    borderTopWidth: 0.5,
-    borderTopColor: '#DBDBDB',
-    backgroundColor: '#FFFFFF',
-  },
-  navItem: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  navIcon: {
-    fontSize: 24,
-  },
-  profilePic: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#DBDBDB',
-  }
 });

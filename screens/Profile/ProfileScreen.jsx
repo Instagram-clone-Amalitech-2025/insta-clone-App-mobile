@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {  View,  Text,  StyleSheet,  Image,  TouchableOpacity,  ScrollView,  SafeAreaView,  FlatList, Modal, Animated} from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { Platform,StatusBar } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function ProfileScreen({ navigation, route }) {
+  
   const [user, setUser] = useState({
     username: 'User1',
     name: 'User 1',
@@ -269,7 +272,7 @@ export default function ProfileScreen({ navigation, route }) {
         <View style={styles.header}>
           <Text style={styles.username}>{user.username}</Text>
           <View style={styles.headerIcons}>
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Upload')}>
               <Feather name="plus-square" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
@@ -374,6 +377,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {
     flexDirection: 'row',
