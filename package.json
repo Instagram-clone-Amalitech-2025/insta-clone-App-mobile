@@ -1,7 +1,6 @@
 {
   "name": "insta-clone",
   "version": "1.0.0",
-
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -21,10 +20,11 @@
     "react-dom": "19.0.0",
     "react-native": "0.79.2",
     "react-native-gesture-handler": "~2.24.0",
+    "react-native-image-picker": "^8.2.1",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
-    "react-native-screens": "~4.10.0"
-
+    "react-native-screens": "~4.10.0",
+    "expo-image-picker": "~16.1.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

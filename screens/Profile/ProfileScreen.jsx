@@ -81,7 +81,7 @@ export default function ProfileScreen({ navigation, route }) {
     // Add logout logic here
     alert('Logged out successfully');
     // Navigate to Login screen or Auth stack
-    // navigation.navigate('Login');
+     navigation.navigate('Login');
   };
 
   // Create data for each tab
