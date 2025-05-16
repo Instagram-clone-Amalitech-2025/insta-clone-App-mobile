@@ -82,33 +82,15 @@ function TabNavigator() {
       <Tab.Screen 
         name="Profile" 
         component={ProfileScreen} 
-        options={({ route }) => ({
-          tabBarIcon: ({ focused }) => {
-            const avatarUri = route.params?.user?.avatar || '/assets/pravatar.jpg';
-            return focused ? (
-              <Image
-                source={{ uri: avatarUri }}
-                style={{ 
-                  width: 24, 
-                  height: 24, 
-                  borderRadius: 12,
-                  borderWidth: 1,
-                  borderColor: '#000000'
-                }}
-              />
-            ) : (
-              <Image
-                source={{ uri: avatarUri }}
-                style={{ 
-                  width: 24, 
-                  height: 24, 
-                  borderRadius: 12,
-                  opacity: 0.5
-                }}
-              />
-            );
-          }
-        })}
+        options={{
+		tabBarIcon: ({ focused }) => (
+            <Feather 
+              name="user" 
+              size={24} 
+              color={focused ? "#000000" : "#999999"} 
+            />
+          )
+	}}
       />
     </Tab.Navigator>
   );
