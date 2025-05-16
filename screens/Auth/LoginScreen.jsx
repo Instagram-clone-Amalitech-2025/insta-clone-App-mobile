@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, StyleSheet, Switch, Image, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
-import AuthTextInput from '../../components/AuthTextInput';
-import Button from '../../components/Button';
+import AuthTextInput from '../../components/Auth/AuthTextInput';
+import Button from '../../components/Common/Button';
 import { AuthContext } from '../../context/AuthContext';
 import { ThemeContext } from '../../context/ThemeContext';
 

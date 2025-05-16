@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text,  StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, FlatList} from 'react-native';
+import { View, Text,  StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, FlatList, SafeAreaView} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 
@@ -25,7 +25,7 @@ export default function SearchScreen() {
   );
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}> 
       <StatusBar style="dark" />
       
       {/* Search Bar */}
@@ -71,7 +71,7 @@ export default function SearchScreen() {
           />
         </View>
       )}
-    </View>
+   </SafeAreaView>
   );
 }
 
@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     paddingHorizontal: 15,
-    paddingVertical: 10,
+    paddingVertical: 30,
+    marginTop: 15,
     borderBottomWidth: 0.5,
     borderBottomColor: '#dbdbdb',
   },

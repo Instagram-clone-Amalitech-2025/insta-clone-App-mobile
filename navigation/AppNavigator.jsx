@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AuthContext } from '../context/AuthContext';
 import { Feather } from '@expo/vector-icons';
+import { Platform } from 'react-native';
 
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignupScreen';
@@ -34,7 +35,8 @@ function TabNavigator() {
           borderTopWidth: 0.5,
           borderTopColor: '#DBDBDB',
           elevation: 0,
-          height: 50
+          height: Platform.OS === 'android' ? 90 : 70, // slightly increase height
+          paddingBottom: Platform.OS === 'android' ? 10 : 20 // add bottom padding
         }
       }}
     >
@@ -82,9 +84,7 @@ function TabNavigator() {
         component={ProfileScreen} 
         options={({ route }) => ({
           tabBarIcon: ({ focused }) => {
-            // Use the default Feather user icon if no avatar is available
-            const avatarUri = route.params?.user?.avatar || 'https://i.pravatar.cc/150?img=12';
-            
+            const avatarUri = route.params?.user?.avatar || '/assets/pravatar.jpg';
             return focused ? (
               <Image
                 source={{ uri: avatarUri }}
@@ -113,7 +113,6 @@ function TabNavigator() {
     </Tab.Navigator>
   );
 }
-
 function AuthStack() {
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>
@@ -135,7 +134,7 @@ export default function AppNavigator() {
           name="EditProfile" 
           component={EditProfileScreen}
           options={({ navigation }) => ({
-          headerShown: true,
+          headerShown: false,
           headerTitle: 'Edit Profile',
           headerLeft: () => (
           <Feather 
@@ -172,7 +171,7 @@ export default function AppNavigator() {
             name="SavedPosts" 
             component={SavedPostsScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Saved Posts',
               headerLeft: ({ onPress }) => (
                 <Feather 
@@ -191,7 +190,7 @@ export default function AppNavigator() {
             name="ArchivedPosts" 
             component={ArchivedPostsScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Archived Posts',
               headerLeft: ({ onPress }) => (
                 <Feather 
@@ -210,7 +209,7 @@ export default function AppNavigator() {
             name="AccountSettings" 
             component={AccountSettingsScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Account',
               headerLeft: ({ onPress }) => (
                 <Feather 
@@ -229,7 +228,7 @@ export default function AppNavigator() {
             name="PrivacySettings" 
             component={PrivacySettingsScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Privacy',
               headerLeft: ({ onPress }) => (
                 <Feather 
@@ -248,7 +247,7 @@ export default function AppNavigator() {
             name="HelpCenter" 
             component={HelpCenterScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'Help Center',
               headerLeft: ({ onPress }) => (
                 <Feather 
@@ -267,7 +266,7 @@ export default function AppNavigator() {
             name="AboutApp" 
             component={AboutAppScreen}
             options={{
-              headerShown: true,
+              headerShown: false,
               headerTitle: 'About',
               headerLeft: ({ onPress }) => (
                 <Feather 

@@ -1,38 +1,21 @@
 import React, { useState } from 'react';
-import { View,  Text,  StyleSheet, TouchableOpacity,  ScrollView,  SafeAreaView, Switch} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Switch, Platform} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 
 export default function SettingsScreen({ navigation }) {
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [privateAccount, setPrivateAccount] = useState(true);
-  
-  // Toggle switches
-  const toggleNotifications = () => setNotifications(previousState => !previousState);
-  const toggleDarkMode = () => setDarkMode(previousState => !previousState);
-  const togglePrivateAccount = () => setPrivateAccount(previousState => !previousState);
-  
-  // Go back to previous screen
-  const goBack = () => {
-    navigation.goBack();
-  };
-  
-  // Navigate to other settings screens
-  const navigateToAccount = () => {
-    navigation.navigate('AccountSettings');
-  };
-  
-  const navigateToPrivacy = () => {
-    navigation.navigate('PrivacySettings');
-  };
-  
-  const navigateToHelp = () => {
-    navigation.navigate('HelpCenter');
-  };
-  
-  const navigateToAbout = () => {
-    navigation.navigate('AboutApp');
-  };
+
+  const toggleNotifications = () => setNotifications(prev => !prev);
+  const toggleDarkMode = () => setDarkMode(prev => !prev);
+  const togglePrivateAccount = () => setPrivateAccount(prev => !prev);
+
+  const goBack = () => navigation.goBack();
+  const navigateToAccount = () => navigation.navigate('AccountSettings');
+  const navigateToPrivacy = () => navigation.navigate('PrivacySettings');
+  const navigateToHelp = () => navigation.navigate('HelpCenter');
+  const navigateToAbout = () => navigation.navigate('AboutApp');
 
   return (
     <SafeAreaView style={styles.container}>
@@ -45,11 +28,14 @@ export default function SettingsScreen({ navigation }) {
         <View style={styles.headerRight} />
       </View>
 
-      <ScrollView style={styles.content}>
-        {/* Account Settings Section */}
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={{ paddingBottom: Platform.OS === 'android' ? 100 : 40 }}
+      >
+        {/* Account Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Account</Text>
-          
+
           <TouchableOpacity style={styles.menuItem} onPress={navigateToAccount}>
             <View style={styles.menuItemLeft}>
               <Feather name="user" size={20} color="#555" style={styles.menuItemIcon} />
@@ -57,7 +43,7 @@ export default function SettingsScreen({ navigation }) {
             </View>
             <Feather name="chevron-right" size={20} color="#AAAAAA" />
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.menuItem} onPress={navigateToPrivacy}>
             <View style={styles.menuItemLeft}>
               <Feather name="lock" size={20} color="#555" style={styles.menuItemIcon} />
@@ -65,7 +51,7 @@ export default function SettingsScreen({ navigation }) {
             </View>
             <Feather name="chevron-right" size={20} color="#AAAAAA" />
           </TouchableOpacity>
-          
+
           <View style={styles.menuItem}>
             <View style={styles.menuItemLeft}>
               <Feather name="eye" size={20} color="#555" style={styles.menuItemIcon} />
@@ -80,11 +66,11 @@ export default function SettingsScreen({ navigation }) {
             />
           </View>
         </View>
-        
+
         {/* Preferences Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Preferences</Text>
-          
+
           <View style={styles.menuItem}>
             <View style={styles.menuItemLeft}>
               <Feather name="bell" size={20} color="#555" style={styles.menuItemIcon} />
@@ -98,7 +84,7 @@ export default function SettingsScreen({ navigation }) {
               value={notifications}
             />
           </View>
-          
+
           <View style={styles.menuItem}>
             <View style={styles.menuItemLeft}>
               <Feather name="moon" size={20} color="#555" style={styles.menuItemIcon} />
@@ -112,7 +98,7 @@ export default function SettingsScreen({ navigation }) {
               value={darkMode}
             />
           </View>
-          
+
           <TouchableOpacity style={styles.menuItem}>
             <View style={styles.menuItemLeft}>
               <Feather name="globe" size={20} color="#555" style={styles.menuItemIcon} />
@@ -124,11 +110,11 @@ export default function SettingsScreen({ navigation }) {
             </View>
           </TouchableOpacity>
         </View>
-        
+
         {/* Support & About Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Support & About</Text>
-          
+
           <TouchableOpacity style={styles.menuItem} onPress={navigateToHelp}>
             <View style={styles.menuItemLeft}>
               <Feather name="help-circle" size={20} color="#555" style={styles.menuItemIcon} />
@@ -136,7 +122,7 @@ export default function SettingsScreen({ navigation }) {
             </View>
             <Feather name="chevron-right" size={20} color="#AAAAAA" />
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={styles.menuItem} onPress={navigateToAbout}>
             <View style={styles.menuItemLeft}>
               <Feather name="info" size={20} color="#555" style={styles.menuItemIcon} />
@@ -145,13 +131,13 @@ export default function SettingsScreen({ navigation }) {
             <Feather name="chevron-right" size={20} color="#AAAAAA" />
           </TouchableOpacity>
         </View>
-        
-        {/* Account Actions Section */}
+
+        {/* Danger Zone */}
         <View style={styles.section}>
           <TouchableOpacity style={styles.dangerButton}>
             <Text style={styles.dangerButtonText}>Log Out</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={[styles.dangerButton, styles.deleteButton]}>
             <Text style={[styles.dangerButtonText, styles.deleteButtonText]}>Delete Account</Text>
           </TouchableOpacity>
@@ -170,6 +156,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    marginBottom: -20,
   },
   header: {
     flexDirection: 'row',
@@ -177,6 +164,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 15,
     paddingVertical: 15,
+    marginTop: 8,
     borderBottomWidth: 0.5,
     borderBottomColor: '#DBDBDB',
   },
@@ -188,7 +176,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   headerRight: {
-    width: 24, // To balance the header
+    width: 24,
   },
   content: {
     flex: 1,
