@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform, Alert} from 'react-native';
+import { 
+  View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, 
+  SafeAreaView, KeyboardAvoidingView, Platform, Alert, Modal, Pressable 
+} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
@@ -24,6 +27,9 @@ export default function EditProfileScreen({ navigation, route }) {
   
   // State for checking if any changes were made
   const [hasChanges, setHasChanges] = useState(false);
+
+  // State for gender modal visibility
+  const [genderModalVisible, setGenderModalVisible] = useState(false);
 
   // Update state when form fields change
   const handleChange = (field, value) => {
@@ -195,7 +201,10 @@ export default function EditProfileScreen({ navigation, route }) {
 
             <View style={styles.formField}>
               <Text style={styles.fieldLabel}>Gender</Text>
-              <TouchableOpacity style={styles.genderSelector}>
+              <TouchableOpacity 
+                style={styles.genderSelector} 
+                onPress={() => setGenderModalVisible(true)}
+              >
                 <Text style={userData.gender ? styles.textInput : styles.placeholderText}>
                   {userData.gender || "Gender"}
                 </Text>
@@ -214,6 +223,48 @@ export default function EditProfileScreen({ navigation, route }) {
             </TouchableOpacity>
           </View>
         </ScrollView>
+
+        {/* Gender Selection Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={genderModalVisible}
+          onRequestClose={() => setGenderModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>Select Gender</Text>
+              
+              <Pressable
+                style={styles.modalOption}
+                onPress={() => {
+                  handleChange('gender', 'Male');
+                  setGenderModalVisible(false);
+                }}
+              >
+                <Text style={styles.modalOptionText}>Male</Text>
+              </Pressable>
+
+              <Pressable
+                style={styles.modalOption}
+                onPress={() => {
+                  handleChange('gender', 'Female');
+                  setGenderModalVisible(false);
+                }}
+              >
+                <Text style={styles.modalOptionText}>Female</Text>
+              </Pressable>
+
+              <Pressable
+                style={[styles.modalOption, styles.modalCancel]}
+                onPress={() => setGenderModalVisible(false)}
+              >
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -306,6 +357,44 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   personalInfoText: {
+    fontSize: 16,
+    color: '#3897F0',
+    fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 15,
+  },
+  modalOption: {
+    paddingVertical: 12,
+    width: '100%',
+    alignItems: 'center',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#ccc',
+  },
+  modalOptionText: {
+    fontSize: 16,
+  },
+  modalCancel: {
+    borderBottomWidth: 0,
+    marginTop: 10,
+  },
+  modalCancelText: {
     fontSize: 16,
     color: '#3897F0',
     fontWeight: '600',
