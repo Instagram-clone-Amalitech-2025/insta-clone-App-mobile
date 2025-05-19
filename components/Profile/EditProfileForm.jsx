@@ -9,7 +9,7 @@ const EditProfileForm = ({ profileData, onUpdate }) => {
 
   const handleChooseImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaType.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
