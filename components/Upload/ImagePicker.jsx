@@ -18,7 +18,7 @@ const ImagePickerComponent = ({ onImageSelected }) => {
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaType.All,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
