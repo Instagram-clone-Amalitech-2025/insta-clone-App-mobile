@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import { Image } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AuthContext } from '../context/AuthContext';
@@ -10,6 +9,7 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignupScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
 import UploadScreen from '../screens/Upload/UploadScreen';
+import UploadStoryScreen from '../screens/Upload/UploadStoryScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import SearchScreen from '../screens/Search/SearchScreen';
 import EditProfileScreen from '../screens/Profile/EditProfileScreen';
@@ -115,17 +115,17 @@ export default function AppNavigator() {
           <RootStack.Screen 
           name="EditProfile" 
           component={EditProfileScreen}
-          options={({ navigation }) => ({
-          headerShown: false,
-          headerTitle: 'Edit Profile',
-          headerLeft: () => (
-          <Feather 
-          name="arrow-left" 
-          size={24} 
-          color="#000000" 
-          style={{ marginLeft: 10 }} 
-          onPress={() => navigation.goBack()}
-          />
+          options={({ navigation, route }) => ({
+            headerShown: false,
+            headerTitle: 'Edit Profile',
+            headerLeft: () => (
+              <Feather 
+                name="arrow-left" 
+                size={24} 
+                color="#000000" 
+                style={{ marginLeft: 10 }} 
+                onPress={() => navigation.goBack()}
+              />
           )
           })}
           />
@@ -242,6 +242,14 @@ export default function AppNavigator() {
               )
             }}
           />
+
+          {/* Upload Story Screen */}
+          <RootStack.Screen 
+          name="UploadStory" 
+          component={UploadStoryScreen} 
+          options={{ headerShown: false }}
+          />
+
           
           {/* About App Screen */}
           <RootStack.Screen 

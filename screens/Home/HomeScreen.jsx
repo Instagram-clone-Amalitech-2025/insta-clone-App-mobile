@@ -109,16 +109,19 @@ export default function HomeScreen() {
         </View>
       </View>
 
+      {/* Stories Section */}
       <ScrollView style={styles.feed} showsVerticalScrollIndicator={false}>
         <View style={styles.storiesContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.storyItem}>
-              <View style={styles.storyPlus}>
-                <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
-                <View style={styles.addStoryButton}>
-                  <Feather name="plus" size={12} color="#FFFFFF" />
+              <TouchableOpacity onPress={() => navigation.navigate('UploadStory')}>
+                <View style={styles.storyPlus}>
+                  <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
+                  <View style={styles.addStoryButton}>
+                    <Feather name="plus" size={12} color="#FFFFFF" />
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
               <Text style={styles.storyUsername}>Your Story</Text>
             </View>
 

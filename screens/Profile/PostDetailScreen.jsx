@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, ScrollView, Platform } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 
 export default function PostDetailScreen({ route, navigation }) {
   // Get item data from navigation params
