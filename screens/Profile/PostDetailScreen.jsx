@@ -145,18 +145,19 @@ export default function PostDetailScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#DBDBDB',
-  },
+      flex: 1,
+      backgroundColor: '#fff',
+      paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingHorizontal: 16,
+      height: 50,
+      borderBottomWidth: 0.5,
+      borderBottomColor: '#ddd',
+    }, 
   headerTitle: {
     fontSize: 16,
     fontWeight: '600',
