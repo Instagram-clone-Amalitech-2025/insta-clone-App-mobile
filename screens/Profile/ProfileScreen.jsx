@@ -2,24 +2,25 @@ import React, { useState, useEffect, useRef } from 'react';
 import {  View,  Text,  StyleSheet,  Image,  TouchableOpacity,  ScrollView,  SafeAreaView,  FlatList, Modal, Animated} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Platform,StatusBar } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
 export default function ProfileScreen({ navigation, route }) {
   
+// Dummy user data for testing
+// In the real app, this data would be fetched from an API or database
   const [user, setUser] = useState({
-    username: 'User1',
-    name: 'User 1',
-    bio: 'Mobile Developer | React Native Enthusiast',
-    avatar: '../assets/pravatar.jpg',
-    posts: 24,
-    followers: 1000,
-    following: 321,
-    website: '',
-    phone: '',
-    email: 'user1@example.com',
-    gender: ''
-  });
-  
+  username: 'User1',
+  name: 'User 1',
+  bio: 'Mobile Developer | React Native Enthusiast',
+  avatar: 'https://i.pravatar.cc/150?img=12', // ✅ fixed dummy avatar
+  posts: 9,
+  followers: 10,
+  following: 30,
+  website: '',
+  phone: '',
+  email: 'user1@example.com',
+  gender: ''
+});
+
   // Add active tab state
   const [activeTab, setActiveTab] = useState('posts');
   
@@ -87,23 +88,21 @@ export default function ProfileScreen({ navigation, route }) {
   // Create data for each tab
   //Post data
   const postsData = Array(9).fill().map((_, index) => ({
-  id: `post-${index}`,
-  imageFile: `post${index + 1}.jpg`, // Add images as post1.jpg, post2.jpg, etc.
-}));
-
+    id: `post-${index}`,
+    imageUrl: `https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=500&q=60`,
+  }));
   //Reels data
- const reelsData = Array(6).fill().map((_, index) => ({
-  id: `reel-${index}`,
-  thumbnailFile: `reel${index + 1}.jpg`,
-  views: Math.floor(Math.random() * 10000) + 100,
-}));
-
+  const reelsData = Array(6).fill().map((_, index) => ({
+    id: `reel-${index}`,
+    thumbnailUrl: `https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=500&q=60`,
+    views: Math.floor(Math.random() * 1000) + 100,
+  }));
   //Tagged data
- const taggedData = Array(5).fill().map((_, index) => ({
-  id: `tagged-${index}`,
-  imageFile: `tagged${index + 1}.jpg`,
-  taggedBy: `user_${Math.floor(Math.random() * 100)}`,
-}));
+  const taggedData = Array(5).fill().map((_, index) => ({
+    id: `tagged-${index}`,
+    imageUrl: `https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=500&q=60`,
+    taggedBy: `user_${Math.floor(Math.random() * 100)}`,
+  }));
 
   // Navigate to post detail screen
   const navigateToPostDetail = (item, type) => {
@@ -120,6 +119,7 @@ export default function ProfileScreen({ navigation, route }) {
       <Image 
         source={{ uri: item.imageUrl }} 
         style={styles.gridPhoto} 
+        resizeMode="cover"
       />
     </TouchableOpacity>
   );
@@ -134,6 +134,7 @@ export default function ProfileScreen({ navigation, route }) {
       <Image 
         source={{ uri: item.thumbnailUrl }} 
         style={styles.gridPhoto} 
+        resizeMode="cover"
       />
       <View style={styles.reelOverlay}>
         <Feather name="play" size={14} color="white" />
@@ -152,6 +153,7 @@ export default function ProfileScreen({ navigation, route }) {
       <Image 
         source={{ uri: item.imageUrl }} 
         style={styles.gridPhoto} 
+        resizeMode="cover"
       />
       <View style={styles.taggedIndicator}>
         <Feather name="user" size={12} color="white" />
@@ -213,6 +215,8 @@ export default function ProfileScreen({ navigation, route }) {
     opacity: menuAnimation,
   };
 
+  // Render the main profile screen
+  // This is the main profile screen component
   return (
     <SafeAreaView style={styles.container}>
       {/* Menu Modal */}
@@ -372,6 +376,7 @@ export default function ProfileScreen({ navigation, route }) {
     </SafeAreaView>
   );
 }
+// Import necessary libraries and components
 
 const styles = StyleSheet.create({
   container: {
@@ -562,41 +567,47 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   // Menu styles
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+modalOverlay: {
+  flex: 1,
+  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  justifyContent: 'flex-start', // ensures the menu is pushed to the top
+},
+menuContainer: {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  backgroundColor: 'white',
+  borderBottomLeftRadius: 15,
+  borderBottomRightRadius: 15,
+  paddingVertical: 15,
+  paddingHorizontal: 20,
+  width: '100%',
+  shadowColor: '#000',
+  shadowOffset: {
+    width: 0,
+    height: 2,
   },
-  menuContainer: {
-    backgroundColor: 'white',
-    borderBottomLeftRadius: 15,
-    borderBottomRightRadius: 15,
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    width: '100%',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 15,
-  },
-  menuText: {
-    marginLeft: 15,
-    fontSize: 16,
-  },
-  menuDivider: {
-    height: 1,
-    backgroundColor: '#DBDBDB',
-    marginVertical: 10,
-  },
-  logoutText: {
-    color: '#FF3B30',
-  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5,
+},
+menuItem: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingVertical: 15,
+},
+menuText: {
+  marginLeft: 15,
+  fontSize: 16,
+},
+menuDivider: {
+  height: 1,
+  backgroundColor: '#DBDBDB',
+  marginVertical: 10,
+},
+logoutText: {
+  color: '#FF3B30',
+},
+
 });

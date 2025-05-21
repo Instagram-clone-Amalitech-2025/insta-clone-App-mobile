@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, SafeAreaView, TextInput, ScrollView } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
 const UploadStoryScreen = () => {
   const navigation = useNavigation();
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
+  const [caption, setCaption] = useState('');
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -18,68 +19,185 @@ const UploadStoryScreen = () => {
 
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [6, 9],
+      allowsMultipleSelection: true, // ✅ allow multiple selection
+      allowsEditing: false,
       quality: 1,
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      const uris = result.assets.map(asset => asset.uri);
+      setImages(prev => [...prev, ...uris]); // ✅ append new images
     }
   };
 
+  const handlePost = () => {
+    // Handle posting the story with multiple images
+    navigation.goBack();
+  };
+
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={24} color="black" />
-      </TouchableOpacity>
-      <Text style={styles.title}>Upload Your Story</Text>
-      <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
-        {image ? (
-          <Image source={{ uri: image }} style={styles.image} />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="close" size={28} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>New Story</Text>
+        <TouchableOpacity 
+          style={[styles.postButton, images.length === 0 && styles.postButtonDisabled]} 
+          disabled={images.length === 0}
+          onPress={handlePost}
+        >
+          <Text style={[styles.postButtonText, images.length === 0 && styles.postButtonTextDisabled]}>
+            Share
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.imageContainer}>
+        {images.length > 0 ? (
+          <ScrollView horizontal pagingEnabled>
+            {images.map((uri, index) => (
+              <Image key={index} source={{ uri }} style={styles.image} />
+            ))}
+          </ScrollView>
         ) : (
-          <Text style={styles.imagePlaceholder}>Tap to select an image</Text>
+          <TouchableOpacity style={styles.imagePicker} onPress={pickImage}>
+            <Ionicons name="add-circle-outline" size={50} color="#0095f6" />
+            <Text style={styles.imagePickerText}>Add to your story</Text>
+          </TouchableOpacity>
         )}
-      </TouchableOpacity>
-    </View>
+      </View>
+
+      {images.length > 0 && (
+        <View style={styles.controls}>
+          <View style={styles.captionContainer}>
+            <TextInput
+              placeholder="Write a caption..."
+              style={styles.captionInput}
+              value={caption}
+              onChangeText={setCaption}
+              multiline
+              placeholderTextColor="#8e8e8e"
+            />
+          </View>
+
+          <View style={styles.actionsRow}>
+            <TouchableOpacity style={styles.actionButton} onPress={pickImage}>
+              <Ionicons name="image-outline" size={26} color="black" />
+              <Text style={styles.actionText}>Gallery</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="brush-outline" size={26} color="black" />
+              <Text style={styles.actionText}>Draw</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="text-outline" size={26} color="black" />
+              <Text style={styles.actionText}>Text</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="happy-outline" size={26} color="black" />
+              <Text style={styles.actionText}>Sticker</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
-    paddingHorizontal: 20,
     backgroundColor: '#fff',
+    marginTop: 20,
   },
-  backButton: {
-    position: 'absolute',
-    top: 50,
-    left: 20,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#dbdbdb',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    marginBottom: 20,
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  postButton: {
+    padding: 8,
+  },
+  postButtonDisabled: {
+    opacity: 0.5,
+  },
+  postButtonText: {
+    color: '#0095f6',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  postButtonTextDisabled: {
+    color: '#0095f6',
+  },
+  imageContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
+    marginBottom: 10,
   },
   imagePicker: {
-    marginTop: 100,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    height: 200,
+    height: '100%',
+    width: '100%',
+  },
+  imagePickerText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#0095f6',
+    fontWeight: '500',
   },
   image: {
-    width: '100%',
+    width: 300,
     height: '100%',
-    borderRadius: 10,
+    resizeMode: 'cover',
+    marginHorizontal: 5,
   },
-  imagePlaceholder: {
-    color: '#888',
+  controls: {
+    padding: 15,
+    borderTopWidth: 0.5,
+    borderTopColor: '#dbdbdb',
   },
+  captionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom: 15,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#dbdbdb',
+  },
+  captionInput: {
+    flex: 1,
+    minHeight: 40,
+    fontSize: 16,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 15,
+    marginBottom: 40,
+  },
+  actionButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionText: {
+    marginTop: 5,
+    fontSize: 12,
+    color: '#262626',
+  }
 });
 
 export default UploadStoryScreen;

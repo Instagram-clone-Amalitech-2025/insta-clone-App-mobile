@@ -279,11 +279,4 @@ export default function AppNavigator() {
   );
 }
 
-function PlaceholderScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 18 }}>Coming Soon</Text>
-      <Text style={{ fontSize: 14, color: '#777', marginTop: 10 }}>This feature is under development</Text>
-    </View>
-  );
-}
+// Note: The above code assumes that you have already set up the necessary screens and context.   

@@ -79,11 +79,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    marginTop: 20,
   },
   searchContainer: {
     paddingHorizontal: 15,
     paddingVertical: 30,
-    marginTop: 15,
+    marginTop: 1,
     borderBottomWidth: 0.5,
     borderBottomColor: '#dbdbdb',
   },
