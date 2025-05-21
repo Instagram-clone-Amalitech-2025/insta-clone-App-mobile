@@ -10,7 +10,7 @@ export default function PostDetailScreen({ route, navigation }) {
   // State for likes (just for demo functionality)
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [likeCount, setLikeCount] = useState(Math.floor(Math.random() * 500) + 50);
+  const [likeCount, setLikeCount] = useState(Math.floor(Math.random() * 50) + 50);
   
   // Handle like action
   const handleLike = () => {
@@ -148,17 +148,18 @@ const styles = StyleSheet.create({
   container: {
       flex: 1,
       backgroundColor: '#fff',
+      marginTop: 20,
       paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
-    header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingHorizontal: 16,
-      height: 50,
-      borderBottomWidth: 0.5,
-      borderBottomColor: '#ddd',
-    }, 
+   header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#DBDBDB',
+  }, 
   headerTitle: {
     fontSize: 16,
     fontWeight: '600',
