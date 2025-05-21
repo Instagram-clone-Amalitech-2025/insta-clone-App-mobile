@@ -1,21 +1,38 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, Switch, Image, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { useEffect } from 'react';
+import { View, Text, StyleSheet, Switch, SafeAreaView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleTheme } from '../../redux/slices/themeSlice';
 import AuthTextInput from '../../components/Auth/AuthTextInput';
 import Button from '../../components/Common/Button';
-import { AuthContext } from '../../context/AuthContext';
-import { ThemeContext } from '../../context/ThemeContext';
+import { login } from '../../redux/slices/authSlice';
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const { login } = useContext(AuthContext);
-  const { theme, toggleTheme } = useContext(ThemeContext);
-
+  const dispatch = useDispatch();
+  const theme = useSelector((state) => state.theme.theme);
   const isDark = theme === 'dark';
 
-  const handleLogin = () => {
-    login({ email });
-  };
+  const [username, setUsername] = useState('');
+   const [password, setPassword] = useState(false);
+
+   // Auth state
+   const auth = useSelector((state) => state.auth);
+
+    const handleLogin = () => {
+    if (!username || !password) {
+      alert('Please enter both username and password.');
+      return;
+    }
+    dispatch(login({ username, password }));
+    };
+
+const { isAuthenticated } = useSelector((state) => state.auth);
+
+useEffect(() => {
+  if (isAuthenticated) {
+    navigation.replace('HomeScreen'); // or whichever screen is your landing page
+  }
+}, [isAuthenticated]);
 
   return (
     <SafeAreaView style={[styles.container, isDark && styles.darkContainer]}>
@@ -24,24 +41,26 @@ export default function LoginScreen({ navigation }) {
         style={styles.keyboardAvoid}
       >
         <View style={styles.logoContainer}>
-          {/* Instagram logo - using a placeholder that would be replaced with actual logo */}
           <Text style={[styles.logoText, isDark && styles.darkText]}>Instagram</Text>
         </View>
 
         <View style={styles.formContainer}>
           <AuthTextInput
             placeholder="Phone number, username, or email"
-            value={email}
-            onChangeText={setEmail}
+            value={username}
+            onChangeText={setUsername}
             style={styles.input}
           />
           <AuthTextInput
             placeholder="Password"
-            secureTextEntry
+            secureTextEntry={!password}
             value={password}
             onChangeText={setPassword}
-            style={styles.input}
           />
+          <TouchableOpacity onPress={() => setPassword(!password)}>
+            <Text>{password ? 'Hide' : 'Show'}</Text>
+          </TouchableOpacity>
+
 
           <Button 
             title="Log in" 
@@ -85,7 +104,7 @@ export default function LoginScreen({ navigation }) {
             </Text>
             <Switch 
               value={isDark} 
-              onValueChange={toggleTheme}
+              onValueChange={() => dispatch(toggleTheme())}
               trackColor={{ false: '#767577', true: '#8a8a8a' }}
               thumbColor={isDark ? '#3897f0' : '#f4f3f4'}
             />
