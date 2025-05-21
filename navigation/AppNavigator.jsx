@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AuthContext } from '../context/AuthContext';
 import { Feather } from '@expo/vector-icons';
 import { Platform } from 'react-native';
+import { useSelector } from 'react-redux';
+
 
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignupScreen';
@@ -105,7 +106,7 @@ function AuthStack() {
 }
 
 export default function AppNavigator() {
-  const { user } = useContext(AuthContext);
+  const user = useSelector((state) => state.auth.user);
 
   return (
     <RootStack.Navigator screenOptions={{ headerShown: false }}>

@@ -1,17 +1,26 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
+import { Provider, useDispatch } from 'react-redux';
+import { store, AppDispatch } from './redux/store';
 import AppNavigator from './navigation/AppNavigator'; 
-import { AuthProvider } from './context/AuthContext';
-import { ThemeProvider } from './context/ThemeContext';
+import { checkLoginStatus } from './redux/slices/userSlice';
+
+const InitApp = () => {
+  const dispatch = useDispatch<typeof AppDispatch>();
+
+  useEffect(() => {
+    dispatch(checkLoginStatus());
+  }, []);
+
+  return <AppNavigator />;
+};
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <NavigationContainer>
-          <AppNavigator />
-        </NavigationContainer>
-      </AuthProvider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <NavigationContainer>
+        <InitApp />
+      </NavigationContainer>
+    </Provider>
   );
 }

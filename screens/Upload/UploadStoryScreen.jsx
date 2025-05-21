@@ -11,16 +11,35 @@ const UploadStoryScreen = () => {
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
     if (status !== 'granted') {
       alert('Sorry, we need camera roll permissions to make this work!');
       return;
     }
 
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true, // ✅ allow multiple selection
-      allowsEditing: false,
+      allowsEditing: true,
+      allowsMultipleSelection: true, // allow multiple images
+      aspect: [9, 16],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const selectedUris = result.assets.map(asset => asset.uri);
+      setImages(prev => [...prev, ...selectedUris]);
+    }
+  };
+
+  const takePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      alert('Camera permission is required!');
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [9, 16],
       quality: 1,
     });
 
@@ -47,9 +66,7 @@ const UploadStoryScreen = () => {
           disabled={images.length === 0}
           onPress={handlePost}
         >
-          <Text style={[styles.postButtonText, images.length === 0 && styles.postButtonTextDisabled]}>
-            Share
-          </Text>
+          <Text style={[styles.postButtonText, images.length === 0 && styles.postButtonTextDisabled]}>Share</Text>
         </TouchableOpacity>
       </View>
 
@@ -87,6 +104,11 @@ const UploadStoryScreen = () => {
               <Text style={styles.actionText}>Gallery</Text>
             </TouchableOpacity>
 
+            <TouchableOpacity style={styles.actionButton} onPress={takePhoto}>
+              <Ionicons name="camera-outline" size={26} color="black" />
+              <Text style={styles.actionText}>Camera</Text>
+            </TouchableOpacity>
+            
             <TouchableOpacity style={styles.actionButton}>
               <Ionicons name="brush-outline" size={26} color="black" />
               <Text style={styles.actionText}>Draw</Text>

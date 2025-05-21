@@ -1,22 +1,28 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Switch, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
 import AuthTextInput from '../../components/Auth/AuthTextInput';
 import Button from '../../components/Common/Button';
-import { AuthContext } from '../../context/AuthContext';
-import { ThemeContext } from '../../context/ThemeContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { signup } from '../../redux/slices/authSlice';
+import { toggleTheme } from '../../redux/slices/themeSlice';
 
 export default function SignupScreen({ navigation }) {
   const [email, setEmail] = useState('');
-  const [fullName, setFullName] = useState('');
+  const [full_name, setFull_name] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { signup } = useContext(AuthContext);
-  const { theme, toggleTheme } = useContext(ThemeContext);
 
+  const dispatch = useDispatch();
+
+  // Auth state
+  const { loading, error } = useSelector((state) => state.auth);
+
+  // Theme state from Redux
+  const theme = useSelector((state) => state.theme.theme);
   const isDark = theme === 'dark';
 
   const handleSignup = () => {
-    signup({ email, fullName, username, password });
+    dispatch(signup({ email, full_name, username, password }));
   };
 
   return (
@@ -54,8 +60,8 @@ export default function SignupScreen({ navigation }) {
           />
           <AuthTextInput
             placeholder="Full Name"
-            value={fullName}
-            onChangeText={setFullName}
+            value={full_name}
+            onChangeText={setFull_name}
             style={styles.input}
           />
           <AuthTextInput
@@ -72,15 +78,18 @@ export default function SignupScreen({ navigation }) {
             style={styles.input}
           />
 
+          {error && <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>}
+          {loading && <Text style={{ marginBottom: 10 }}>Signing up...</Text>}
+
           <Text style={[styles.policyText, isDark && styles.darkText]}>
             By signing up, you agree to our{' '}
             <Text style={styles.link}>Terms</Text>, <Text style={styles.link}>Data Policy</Text> and{' '}
             <Text style={styles.link}>Cookies Policy</Text>.
           </Text>
 
-          <Button 
-            title="Sign up" 
-            onPress={handleSignup} 
+          <Button
+            title="Sign up"
+            onPress={handleSignup}
             style={styles.signupButton}
             textStyle={styles.signupButtonText}
           />
@@ -99,9 +108,9 @@ export default function SignupScreen({ navigation }) {
           <Text style={[styles.toggleLabel, isDark && styles.darkText]}>
             {isDark ? 'Dark' : 'Light'} Mode
           </Text>
-          <Switch 
-            value={isDark} 
-            onValueChange={toggleTheme}
+          <Switch
+            value={isDark}
+            onValueChange={() => dispatch(toggleTheme())}
             trackColor={{ false: '#767577', true: '#8a8a8a' }}
             thumbColor={isDark ? '#3897f0' : '#f4f3f4'}
           />
@@ -244,3 +253,10 @@ const styles = StyleSheet.create({
     color: '#8e8e8e',
   },
 });
+
+
+
+
+
+
+

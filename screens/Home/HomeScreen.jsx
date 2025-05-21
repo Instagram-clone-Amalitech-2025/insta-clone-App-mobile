@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
+import { setPosts } from '../../redux/slices/postSlice'; 
 
 export default function HomeScreen() {
-  const navigation = useNavigation(); // Navigation hook
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  // Mock data for posts
-  const posts = [
+  const posts = useSelector((state) => state.posts.posts);
+
+  // Temporary mock data
+  const mockPosts = [
     {
       id: 1,
       username: 'user1',
@@ -42,6 +47,10 @@ export default function HomeScreen() {
       timeAgo: '6h'
     }
   ];
+
+  useEffect(() => {
+    dispatch(setPosts(mockPosts)); // Load initial posts into Redux
+  }, [dispatch]);
 
   const renderPost = (post) => (
     <View key={post.id} style={styles.post}>
