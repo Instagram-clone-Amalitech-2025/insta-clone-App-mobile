@@ -1,6 +1,9 @@
 import React from 'react';
 import {  View, Text, StyleSheet, ScrollView, Image, TouchableOpacity,  Linking} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons'; // Import Feather for the back icon
+import { SafeAreaView } from 'react-native-safe-area-context'; // Import SafeAreaView
+import { useSelector } from 'react-redux'; // Import useSelector for theme
 
 const AboutAppScreen = ({ navigation }) => {
   // App information
@@ -8,6 +11,7 @@ const AboutAppScreen = ({ navigation }) => {
     version: '1.1.0',
     releaseDate: 'May 5, 2025',
     developer: 'Intagram Group. ',
+    website: 'https://example.com', // Added website for handleOpenWebsite
   };
 
   // Team members
@@ -21,6 +25,9 @@ const AboutAppScreen = ({ navigation }) => {
     { name: 'Vincent Dorkenoo', role: 'Cyber Security Analyst' },
   ];
   
+  const appTheme = useSelector((state) => state.theme.theme);
+  const isDark = appTheme === 'dark';
+
   const handleOpenWebsite = async () => {
     const supported = await Linking.canOpenURL(appInfo.website);
     
@@ -31,6 +38,8 @@ const AboutAppScreen = ({ navigation }) => {
     }
   };
   
+  const goBack = () => navigation.goBack();
+
 
   const handleViewLicenses = () => {
     navigation.navigate('Licenses');
@@ -44,10 +53,31 @@ const AboutAppScreen = ({ navigation }) => {
     navigation.navigate('TermsOfService');
   };
 
+  // Dark mode styles (can be moved to a shared theme file later)
+  const dynamicStyles = {
+    text: isDark ? styles.darkText : styles.lightText,
+    mutedText: isDark ? styles.darkMutedText : styles.lightMutedText,
+    sectionTitle: isDark ? styles.darkSectionTitleText : styles.lightSectionTitleText,
+    containerBackground: isDark ? styles.darkContainerBackground : styles.lightContainerBackground,
+    sectionBackground: isDark ? styles.darkSectionBackground : styles.lightSectionBackground,
+    headerBackground: isDark ? styles.darkHeaderBackground : styles.lightHeaderBackground,
+    headerBorder: isDark ? styles.darkHeaderBorder : styles.lightHeaderBorder,
+  };
+
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={[styles.container, dynamicStyles.containerBackground]}>
+      {/* Header */}
+      <View style={[styles.header, dynamicStyles.headerBackground, dynamicStyles.headerBorder]}>
+        <TouchableOpacity onPress={goBack} style={styles.backButton}>
+          <Feather name="arrow-left" size={24} color={isDark ? "#FFFFFF" : "black"} />
+        </TouchableOpacity>
+        <Text style={[styles.headerTitle, dynamicStyles.text]}>About</Text>
+        <View style={styles.headerRightPlaceholder} /> {/* For centering title */}
+      </View>
+
+      <ScrollView style={[styles.scrollViewContent, dynamicStyles.containerBackground]}>
       {/* App logo and name */}
-      <View style={styles.headerSection}>
+      <View style={[styles.headerSection, dynamicStyles.sectionBackground]}>
         <Image 
           source={require('../../assets/app-logo.png')} 
           style={styles.appLogo}
@@ -55,13 +85,13 @@ const AboutAppScreen = ({ navigation }) => {
         />
         <Text style={styles.appName}>Instagram Clone Project</Text>
         <Text style={styles.appVersion}>Version {appInfo.version}</Text>
-        <Text style={styles.releaseDate}>Released on {appInfo.releaseDate}</Text>
+        <Text style={[styles.releaseDate, dynamicStyles.mutedText]}>Released on {appInfo.releaseDate}</Text>
       </View>
 
       {/* App description */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>About Us</Text>
-        <Text style={styles.description}>
+      <View style={[styles.section, dynamicStyles.sectionBackground]}>
+        <Text style={[styles.sectionTitle, dynamicStyles.sectionTitle]}>About Us</Text>
+        <Text style={[styles.description, dynamicStyles.text]}>
           As a team, we collaborated to create this Instagram clone project,
           showcasing our skills in mobile and web development. Our goal is was to create this App in our respective fields of expertise.
           We utilised React Native for the mobile app, Figma for the design, Django for the backend, and React for the web app.
@@ -70,14 +100,14 @@ const AboutAppScreen = ({ navigation }) => {
       </View>
 
       {/* Features highlights */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Key Features</Text>
+      <View style={[styles.section, dynamicStyles.sectionBackground]}>
+        <Text style={[styles.sectionTitle, dynamicStyles.sectionTitle]}>Key Features</Text>
         
         <View style={styles.featureItem}>
           <MaterialIcons name="people" size={24} color="#4a86f7" style={styles.featureIcon} />
           <View style={styles.featureContent}>
-            <Text style={styles.featureTitle}>Connect With Friends</Text>
-            <Text style={styles.featureDescription}>
+            <Text style={[styles.featureTitle, dynamicStyles.text]}>Connect With Friends</Text>
+            <Text style={[styles.featureDescription, dynamicStyles.text]}>
               Follow friends and family to stay updated on their latest posts and activities.
             </Text>
           </View>
@@ -86,8 +116,8 @@ const AboutAppScreen = ({ navigation }) => {
         <View style={styles.featureItem}>
           <MaterialIcons name="photo-library" size={24} color="#4a86f7" style={styles.featureIcon} />
           <View style={styles.featureContent}>
-            <Text style={styles.featureTitle}>Share Your Moments</Text>
-            <Text style={styles.featureDescription}>
+            <Text style={[styles.featureTitle, dynamicStyles.text]}>Share Your Moments</Text>
+            <Text style={[styles.featureDescription, dynamicStyles.text]}>
               Post photos, videos, and updates to share your experiences with your network.
             </Text>
           </View>
@@ -96,8 +126,8 @@ const AboutAppScreen = ({ navigation }) => {
         <View style={styles.featureItem}>
           <MaterialIcons name="explore" size={24} color="#4a86f7" style={styles.featureIcon} />
           <View style={styles.featureContent}>
-            <Text style={styles.featureTitle}>Sign Up/Log In</Text>
-            <Text style={styles.featureDescription}>
+            <Text style={[styles.featureTitle, dynamicStyles.text]}>Sign Up/Log In</Text>
+            <Text style={[styles.featureDescription, dynamicStyles.text]}>
               Sign Up/Log In to connect with friends.
             </Text>
           </View>
@@ -105,8 +135,8 @@ const AboutAppScreen = ({ navigation }) => {
       </View>
 
       {/* Team section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Our Team</Text>
+      <View style={[styles.section, dynamicStyles.sectionBackground]}>
+        <Text style={[styles.sectionTitle, dynamicStyles.sectionTitle]}>Our Team</Text>
         <View style={styles.teamGrid}>
           {teamMembers.map((member, index) => (
             <View key={index} style={styles.teamMember}>
@@ -115,16 +145,16 @@ const AboutAppScreen = ({ navigation }) => {
                   {member.name.charAt(0)}
                 </Text>
               </View>
-              <Text style={styles.teamMemberName}>{member.name}</Text>
-              <Text style={styles.teamMemberRole}>{member.role}</Text>
+              <Text style={[styles.teamMemberName, dynamicStyles.text]}>{member.name}</Text>
+              <Text style={[styles.teamMemberRole, dynamicStyles.mutedText]}>{member.role}</Text>
             </View>
           ))}
         </View>
       </View>
 
       {/* Contact and links */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Check Out the Web App</Text>
+      <View style={[styles.section, dynamicStyles.sectionBackground]}>
+        <Text style={[styles.sectionTitle, dynamicStyles.sectionTitle]}>Check Out the Web App</Text>
         
         <TouchableOpacity style={styles.linkButton} onPress={handleOpenWebsite}>
           <MaterialIcons name="public" size={22} color="#4a86f7" />
@@ -133,36 +163,75 @@ const AboutAppScreen = ({ navigation }) => {
       </View>
 
       {/* Legal information */}
-      <View style={[styles.section, styles.legalSection]}>
+      <View style={[styles.section, styles.legalSection, dynamicStyles.sectionBackground]}>
         <TouchableOpacity style={styles.legalLink} onPress={handleViewPrivacyPolicy}>
-          <Text style={styles.legalLinkText}>Privacy Policy</Text>
+          <Text style={[styles.legalLinkText, dynamicStyles.mutedText]}>Privacy Policy</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.legalLink} onPress={handleViewTerms}>
-          <Text style={styles.legalLinkText}>Terms of Service</Text>
+          <Text style={[styles.legalLinkText, dynamicStyles.mutedText]}>Terms of Service</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.legalLink} onPress={handleViewLicenses}>
-          <Text style={styles.legalLinkText}>Licenses</Text>
+          <Text style={[styles.legalLinkText, dynamicStyles.mutedText]}>Licenses</Text>
         </TouchableOpacity>
       </View>
 
       {/* Copyright notice */}
-      <View style={styles.copyrightSection}>
+      <View style={[styles.copyrightSection, dynamicStyles.sectionBackground]}>
         <Text style={styles.copyrightText}>
           © {new Date().getFullYear()} {appInfo.developer}. All rights reserved.
         </Text>
       </View>
     </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
     marginTop: 20,
-    marginBottom: 20,
+  },
+  lightContainerBackground: {
+    backgroundColor: '#f9f9f9',
+  },
+  darkContainerBackground: {
+    backgroundColor: '#000000',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    paddingVertical: 12, 
+  },
+  lightHeaderBackground: {
+    backgroundColor: '#FFFFFF',
+  },
+  darkHeaderBackground: {
+    backgroundColor: '#121212',
+  },
+  lightHeaderBorder: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#dbdbdb',
+  },
+  darkHeaderBorder: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#333333',
+  },
+  backButton: {
+    padding: 5, 
+  },
+  headerTitle: {
+    fontSize: 18, 
+    fontWeight: '600', 
+  },
+  headerRightPlaceholder: { 
+        width: 24,
+  },
+  scrollViewContent: {
+    flex: 1,
   },
   headerSection: {
     alignItems: 'center',
@@ -173,6 +242,12 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     marginBottom: 16,
+  },
+  lightSectionBackground: {
+    backgroundColor: '#ffffff', 
+  },
+  darkSectionBackground: {
+    backgroundColor: '#121212',
   },
   appName: {
     fontSize: 22,
@@ -200,6 +275,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333333',
     marginBottom: 16,
+  },
+  lightText: {
+    color: '#333333', // Default text color for light mode
+  },
+  darkText: {
+    color: '#FFFFFF', // Default text color for dark mode
+  },
+  lightMutedText: {
+    color: '#666666',
+  },
+  darkMutedText: {
+    color: '#AAAAAA',
   },
   description: {
     fontSize: 14,
@@ -299,6 +386,12 @@ const styles = StyleSheet.create({
   copyrightText: {
     fontSize: 12,
     color: '#999999',
+  },
+  lightSectionTitleText: { // Specific for section titles if different from general text
+    color: '#333333',
+  },
+  darkSectionTitleText: {
+    color: '#DDDDDD', // Lighter for dark mode section titles
   },
 });
 

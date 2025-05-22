@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, ScrollView, Platform } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for filled heart
 import { StatusBar } from 'expo-status-bar';
 
 export default function PostDetailScreen({ route, navigation }) {
@@ -27,8 +28,6 @@ export default function PostDetailScreen({ route, navigation }) {
     switch(type) {
       case 'post':
         return 'Post';
-      case 'reel':
-        return 'Reel';
       case 'tagged':
         return `Tagged by ${item.taggedBy}`;
       default:
@@ -39,13 +38,6 @@ export default function PostDetailScreen({ route, navigation }) {
   // Render additional info based on post type
   const renderTypeSpecificInfo = () => {
     switch(type) {
-      case 'reel':
-        return (
-          <View style={styles.reelInfo}>
-            <Feather name="play" size={14} color="#666" />
-            <Text style={styles.reelViews}>{item.views} views</Text>
-          </View>
-        );
       case 'tagged':
         return (
           <View style={styles.taggedInfo}>
@@ -94,12 +86,13 @@ export default function PostDetailScreen({ route, navigation }) {
         <View style={styles.actionBar}>
           <View style={styles.leftActions}>
             <TouchableOpacity style={styles.actionButton} onPress={handleLike}>
-              <Feather 
-                name={isLiked ? "heart" : "heart"} 
-                size={24} 
-                color={isLiked ? "red" : "black"} 
-                style={isLiked ? styles.filledHeart : {}}
-              />
+              {isLiked ? (
+                // Render filled heart when liked
+                <Ionicons name="heart" size={24} color="red" />
+              ) : (
+                // Render outline heart when not liked
+                <Feather name="heart" size={24} color="black" />
+              )}
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton}>
               <Feather name="message-circle" size={24} color="black" />
@@ -108,8 +101,12 @@ export default function PostDetailScreen({ route, navigation }) {
               <Feather name="send" size={24} color="black" />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => setIsSaved(!isSaved)}>
-            <Feather name={isSaved ? "bookmark" : "bookmark"} size={24} color={isSaved ? "black" : "black"} />
+          <TouchableOpacity onPress={() => setIsSaved(!isSaved)} style={styles.actionButton}>
+            {isSaved ? (
+              <Ionicons name="bookmark" size={24} color="black" />
+            ) : (
+              <Feather name="bookmark" size={24} color="black" />
+            )}
           </TouchableOpacity>
         </View>
         
@@ -243,16 +240,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 20,
   },
-  reelInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    marginTop: 10,
-  },
-  reelViews: {
-    marginLeft: 5,
-    color: '#666',
-  },
   taggedInfo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -262,8 +249,5 @@ const styles = StyleSheet.create({
   taggedText: {
     marginLeft: 5,
     color: '#666',
-  },
-  filledHeart: {
-    fill: 'red',
   },
 });

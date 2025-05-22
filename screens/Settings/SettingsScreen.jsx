@@ -86,7 +86,7 @@ export default function SettingsScreen({ navigation }) {
           <TouchableOpacity style={styles.menuItem} onPress={navigateToArchived}>
             <View style={styles.menuItemLeft}>
               <Feather name="archive" size={20} color="#555" style={styles.menuItemIcon} />
-              <Text style={styles.menuItemText}>Archived Posts</Text>
+              <Text style={styles.menuItemText}>Archived Stories</Text>
             </View>
             <Feather name="chevron-right" size={20} color="#AAAAAA" />
           </TouchableOpacity>
