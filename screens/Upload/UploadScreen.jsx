@@ -8,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function UploadScreen({ navigation }) {
   const [caption, setCaption] = useState('');
-  const [activeTab, setActiveTab] = useState('Post');
+  const [] = useState('Post');
   const [selectedImage, setSelectedImage] = useState(null);
 
   // New: multiple selection mode toggle and images array
@@ -99,7 +99,7 @@ export default function UploadScreen({ navigation }) {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.closeButton}
-          onPress={() => navigation.goBack()}
+           onPress={() => navigation.goBack()}
         >
           <Feather name="x" size={24} color="#000" />
         </TouchableOpacity>
@@ -266,6 +266,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    marginTop: 30,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {

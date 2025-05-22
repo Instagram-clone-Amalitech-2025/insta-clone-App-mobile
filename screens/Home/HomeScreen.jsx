@@ -157,14 +157,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    marginTop: 30,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
-    marginTop: 8,
-    height: 70,
+    height: 50,
     borderBottomWidth: 1,
     borderBottomColor: '#DBDBDB',
   },

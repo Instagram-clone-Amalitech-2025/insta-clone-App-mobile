@@ -3,6 +3,7 @@ import { View, Text,  StyleSheet,  ScrollView,  Switch,  TouchableOpacity, Activ
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector } from 'react-redux';
 
 const PrivacySettingsScreen = ({ navigation }) => {
   // State for privacy settings
@@ -17,6 +18,9 @@ const PrivacySettingsScreen = ({ navigation }) => {
     saveSearchHistory: true,
     twoFactorAuth: false,
   });
+
+  const appTheme = useSelector((state) => state.theme.theme);
+  const isDark = appTheme === 'dark';
   
   // Load saved settings on component mount
   useEffect(() => {
@@ -105,30 +109,30 @@ const PrivacySettingsScreen = ({ navigation }) => {
   
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0066cc" />
-        <Text style={styles.loadingText}>Loading settings...</Text>
+      <View style={[styles.loadingContainer, isDark && styles.darkContainer]}>
+        <ActivityIndicator size="large" color={isDark ? "#FFFFFF" : "#0066cc"} />
+        <Text style={[styles.loadingText, isDark && styles.darkMutedText]}>Loading settings...</Text>
       </View>
     );
   }
   
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, isDark && styles.darkContainer]}>
+      <View style={[styles.header, isDark && styles.darkHeader]}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="#0066cc" />
+          <Ionicons name="arrow-back" size={24} color={isDark ? "#4dabf7" : "#0066cc"} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Privacy Settings</Text>
+        <Text style={[styles.headerTitle, isDark && styles.darkText]}>Privacy Settings</Text>
       </View>
       
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>App Permissions</Text>
+      <ScrollView style={[styles.scrollView, isDark && styles.darkContainer]}>
+        <View style={[styles.sectionContainer, isDark && styles.darkSectionContainer]}>
+          <Text style={[styles.sectionTitle, isDark && styles.darkText]}>App Permissions</Text>
           
-          <View style={styles.settingRow}>
+          <View style={[styles.settingRow, isDark && styles.darkSettingRow]}>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Location Tracking</Text>
-              <Text style={styles.settingDescription}>Allow app to track your location</Text>
+              <Text style={[styles.settingTitle, isDark && styles.darkText]}>Location Tracking</Text>
+              <Text style={[styles.settingDescription, isDark && styles.darkMutedText]}>Allow app to track your location</Text>
             </View>
             <Switch
               value={settings.locationTracking}
@@ -138,10 +142,10 @@ const PrivacySettingsScreen = ({ navigation }) => {
             />
           </View>
           
-          <View style={styles.settingRow}>
+          <View style={[styles.settingRow, isDark && styles.darkSettingRow]}>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Analytics Collection</Text>
-              <Text style={styles.settingDescription}>Allow app to collect usage data</Text>
+              <Text style={[styles.settingTitle, isDark && styles.darkText]}>Analytics Collection</Text>
+              <Text style={[styles.settingDescription, isDark && styles.darkMutedText]}>Allow app to collect usage data</Text>
             </View>
             <Switch
               value={settings.analyticsCollection}
@@ -152,13 +156,13 @@ const PrivacySettingsScreen = ({ navigation }) => {
           </View>
         </View>
         
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Data Sharing</Text>
+        <View style={[styles.sectionContainer, isDark && styles.darkSectionContainer]}>
+          <Text style={[styles.sectionTitle, isDark && styles.darkText]}>Data Sharing</Text>
           
-          <View style={styles.settingRow}>
+          <View style={[styles.settingRow, isDark && styles.darkSettingRow]}>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Share with Third Parties</Text>
-              <Text style={styles.settingDescription}>Allow data sharing with partners</Text>
+              <Text style={[styles.settingTitle, isDark && styles.darkText]}>Share with Third Parties</Text>
+              <Text style={[styles.settingDescription, isDark && styles.darkMutedText]}>Allow data sharing with partners</Text>
             </View>
             <Switch
               value={settings.dataSharing}
@@ -168,10 +172,10 @@ const PrivacySettingsScreen = ({ navigation }) => {
             />
           </View>
           
-          <View style={styles.settingRow}>
+          <View style={[styles.settingRow, isDark && styles.darkSettingRow]}>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Personalized Ads</Text>
-              <Text style={styles.settingDescription}>See ads based on your activity</Text>
+              <Text style={[styles.settingTitle, isDark && styles.darkText]}>Personalized Ads</Text>
+              <Text style={[styles.settingDescription, isDark && styles.darkMutedText]}>See ads based on your activity</Text>
             </View>
             <Switch
               value={settings.personalisedAds}
@@ -182,14 +186,14 @@ const PrivacySettingsScreen = ({ navigation }) => {
           </View>
         </View>
         
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Security</Text>
+        <View style={[styles.sectionContainer, isDark && styles.darkSectionContainer]}>
+          <Text style={[styles.sectionTitle, isDark && styles.darkText]}>Security</Text>
           
           {Platform.OS === 'ios' && (
-            <View style={styles.settingRow}>
+            <View style={[styles.settingRow, isDark && styles.darkSettingRow]}>
               <View style={styles.settingInfo}>
-                <Text style={styles.settingTitle}>Face ID Login</Text>
-                <Text style={styles.settingDescription}>Use Face ID for authentication</Text>
+                <Text style={[styles.settingTitle, isDark && styles.darkText]}>Face ID Login</Text>
+                <Text style={[styles.settingDescription, isDark && styles.darkMutedText]}>Use Face ID for authentication</Text>
               </View>
               <Switch
                 value={settings.faceIdLogin}
@@ -201,10 +205,10 @@ const PrivacySettingsScreen = ({ navigation }) => {
           )}
           
           {Platform.OS === 'android' && (
-            <View style={styles.settingRow}>
+            <View style={[styles.settingRow, isDark && styles.darkSettingRow]}>
               <View style={styles.settingInfo}>
-                <Text style={styles.settingTitle}>Biometric Login</Text>
-                <Text style={styles.settingDescription}>Use fingerprint for authentication</Text>
+                <Text style={[styles.settingTitle, isDark && styles.darkText]}>Biometric Login</Text>
+                <Text style={[styles.settingDescription, isDark && styles.darkMutedText]}>Use fingerprint for authentication</Text>
               </View>
               <Switch
                 value={settings.biometricLogin}
@@ -215,10 +219,10 @@ const PrivacySettingsScreen = ({ navigation }) => {
             </View>
           )}
           
-          <View style={styles.settingRow}>
+          <View style={[styles.settingRow, isDark && styles.darkSettingRow]}>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Save Search History</Text>
-              <Text style={styles.settingDescription}>Store your search history</Text>
+              <Text style={[styles.settingTitle, isDark && styles.darkText]}>Save Search History</Text>
+              <Text style={[styles.settingDescription, isDark && styles.darkMutedText]}>Store your search history</Text>
             </View>
             <Switch
               value={settings.saveSearchHistory}
@@ -228,10 +232,10 @@ const PrivacySettingsScreen = ({ navigation }) => {
             />
           </View>
           
-          <View style={styles.settingRow}>
+          <View style={[styles.settingRow, isDark && styles.darkSettingRow]}>
             <View style={styles.settingInfo}>
-              <Text style={styles.settingTitle}>Two-Factor Authentication</Text>
-              <Text style={styles.settingDescription}>Add extra security to your account</Text>
+              <Text style={[styles.settingTitle, isDark && styles.darkText]}>Two-Factor Authentication</Text>
+              <Text style={[styles.settingDescription, isDark && styles.darkMutedText]}>Add extra security to your account</Text>
             </View>
             <Switch
               value={settings.twoFactorAuth}
@@ -242,19 +246,19 @@ const PrivacySettingsScreen = ({ navigation }) => {
           </View>
         </View>
         
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Your Data</Text>
+        <View style={[styles.sectionContainer, isDark && styles.darkSectionContainer]}>
+          <Text style={[styles.sectionTitle, isDark && styles.darkText]}>Your Data</Text>
           
           <TouchableOpacity 
-            style={styles.actionButton} 
+            style={[styles.actionButton, isDark && styles.darkActionButton]}
             onPress={handleExportData}
           >
-            <Ionicons name="download-outline" size={22} color="#0066cc" />
-            <Text style={styles.actionButtonText}>Export My Data</Text>
+            <Ionicons name="download-outline" size={22} color={isDark ? "#4dabf7" : "#0066cc"} />
+            <Text style={[styles.actionButtonText, isDark && styles.darkLinkText]}>Export My Data</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[styles.actionButton, styles.deleteButton]} 
+            style={[styles.actionButton, styles.deleteButton, isDark && styles.darkActionButton]}
             onPress={handleDeleteData}
           >
             <Ionicons name="trash-outline" size={22} color="#ff3b30" />
@@ -262,15 +266,15 @@ const PrivacySettingsScreen = ({ navigation }) => {
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={styles.actionButton} 
+            style={[styles.actionButton, isDark && styles.darkActionButton]}
             onPress={handleViewPrivacyPolicy}
           >
-            <Ionicons name="document-text-outline" size={22} color="#0066cc" />
-            <Text style={styles.actionButtonText}>View Privacy Policy</Text>
+            <Ionicons name="document-text-outline" size={22} color={isDark ? "#4dabf7" : "#0066cc"} />
+            <Text style={[styles.actionButtonText, isDark && styles.darkLinkText]}>View Privacy Policy</Text>
           </TouchableOpacity>
         </View>
         
-        <Text style={styles.footerText}>
+        <Text style={[styles.footerText, isDark && styles.darkMutedText]}>
           Last updated: May 13, 2025
         </Text>
       </ScrollView>
@@ -282,15 +286,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
+    marginTop: 20,
+  },
+  darkContainer: {
+    backgroundColor: '#000000',
+  },
+  darkText: {
+    color: '#FFFFFF',
+  },
+  darkMutedText: {
+    color: '#AAAAAA',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 1,
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
     backgroundColor: '#ffffff',
+  },
+  darkHeader: {
+    backgroundColor: '#121212',
+    borderBottomColor: '#333333',
   },
   backButton: {
     padding: 8,
@@ -316,11 +334,18 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 2,
   },
+  darkSectionContainer: {
+    backgroundColor: '#121212',
+    borderColor: '#333333',
+    shadowColor: '#000', // Shadow might not be very visible in dark mode
+  },
   sectionTitle: {
     fontSize: 17,
     fontWeight: '600',
     marginBottom: 16,
     color: '#000000',
+  },
+  darkSectionTitle: { // Already have darkText, this is more specific if needed
   },
   settingRow: {
     flexDirection: 'row',
@@ -329,6 +354,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
+  },
+  darkSettingRow: {
+    borderBottomColor: '#333333',
   },
   settingInfo: {
     flex: 1,
@@ -351,10 +379,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
   },
+  darkActionButton: {
+    borderBottomColor: '#333333',
+  },
   actionButtonText: {
     marginLeft: 12,
     fontSize: 16,
     color: '#0066cc',
+  },
+  darkLinkText: { // For action button text in dark mode
+    color: '#4dabf7',
   },
   deleteButton: {
     borderBottomWidth: 1,

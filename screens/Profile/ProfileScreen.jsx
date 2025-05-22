@@ -1,9 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import {  View,  Text,  StyleSheet,  Image,  TouchableOpacity,  ScrollView,  SafeAreaView,  FlatList, Modal, Animated, Alert} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {  View,  Text,  StyleSheet,  Image,  TouchableOpacity,  ScrollView,  SafeAreaView,  FlatList} from 'react-native';
 import { Feather } from '@expo/vector-icons'; 
 import { Platform,StatusBar } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { logout } from '../../redux/slices/authSlice';
 
 export default function ProfileScreen({ navigation, route }) {
   
@@ -26,9 +24,6 @@ export default function ProfileScreen({ navigation, route }) {
   // Add active tab state
   const [activeTab, setActiveTab] = useState('posts');
   
-  // Add menu state
-  const [menuVisible, setMenuVisible] = useState(false);
-  const menuAnimation = useRef(new Animated.Value(0)).current;
 
   // Update user data when returning from EditProfileScreen
   useEffect(() => {
@@ -42,70 +37,11 @@ export default function ProfileScreen({ navigation, route }) {
     navigation.navigate('EditProfile', { user });
   };
 
-  // Toggle menu visibility with animation
-  const toggleMenu = () => {
-    if (menuVisible) {
-      Animated.timing(menuAnimation, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }).start(() => {
-        setMenuVisible(false);
-      });
-    } else {
-      setMenuVisible(true);
-      Animated.timing(menuAnimation, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
-    }
-  };
-
-  // Navigate to different screens from menu
-  const navigateToSettings = () => {
-    toggleMenu();
-    navigation.navigate('Settings');
-  };
-
-  const navigateToSaved = () => {
-    toggleMenu();
-    navigation.navigate('SavedPosts');
-  };
-
-  const navigateToArchived = () => {
-    toggleMenu();
-    navigation.navigate('ArchivedPosts');
-  };
-
-  // Handle logout
-  const dispatch = useDispatch();
-
-  const handleLogout = () => {
-    toggleMenu();
-    Alert.alert('Confirm Logout', 'Are you sure you want to logout?', [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Logout',
-        onPress: () => { dispatch(logout()); },
-      },
-    ]);
-  };
-
   // Create data for each tab
   //Post data
   const postsData = Array(9).fill().map((_, index) => ({
     id: `post-${index}`,
     imageUrl: `https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=500&q=60`,
-  }));
-  //Reels data
-  const reelsData = Array(6).fill().map((_, index) => ({
-    id: `reel-${index}`,
-    thumbnailUrl: `https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=500&q=60`,
-    views: Math.floor(Math.random() * 1000) + 100,
   }));
   //Tagged data
   const taggedData = Array(5).fill().map((_, index) => ({
@@ -126,30 +62,9 @@ export default function ProfileScreen({ navigation, route }) {
       onPress={() => navigateToPostDetail(item, 'post')}
       activeOpacity={0.8}
     >
-      <Image 
-        source={{ uri: item.imageUrl }} 
-        style={styles.gridPhoto} 
-        resizeMode="cover"
-      />
-    </TouchableOpacity>
-  );
+      {/* Replaced Image with a grey View */}
+      <View style={styles.greyPlaceholder} />
 
-  // Render reel grid item
-  const renderReelItem = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.reelContainer}
-      onPress={() => navigateToPostDetail(item, 'reel')}
-      activeOpacity={0.8}
-    >
-      <Image 
-        source={{ uri: item.thumbnailUrl }} 
-        style={styles.gridPhoto} 
-        resizeMode="cover"
-      />
-      <View style={styles.reelOverlay}>
-        <Feather name="play" size={14} color="white" />
-        <Text style={styles.reelViewCount}>{item.views}</Text>
-      </View>
     </TouchableOpacity>
   );
 
@@ -160,11 +75,8 @@ export default function ProfileScreen({ navigation, route }) {
       onPress={() => navigateToPostDetail(item, 'tagged')}
       activeOpacity={0.8}
     >
-      <Image 
-        source={{ uri: item.imageUrl }} 
-        style={styles.gridPhoto} 
-        resizeMode="cover"
-      />
+      {/* Replaced Image with a grey View */}
+      <View style={styles.greyPlaceholder} />
       <View style={styles.taggedIndicator}>
         <Feather name="user" size={12} color="white" />
       </View>
@@ -179,17 +91,6 @@ export default function ProfileScreen({ navigation, route }) {
           <FlatList
             data={postsData}
             renderItem={renderPostItem}
-            keyExtractor={item => item.id}
-            numColumns={3}
-            scrollEnabled={false}
-            contentContainerStyle={styles.gridContainer}
-          />
-        );
-      case 'reels':
-        return (
-          <FlatList
-            data={reelsData}
-            renderItem={renderReelItem}
             keyExtractor={item => item.id}
             numColumns={3}
             scrollEnabled={false}
@@ -212,75 +113,10 @@ export default function ProfileScreen({ navigation, route }) {
     }
   };
 
-  // Menu animation styles
-  const menuContainerStyle = {
-    transform: [
-      {
-        translateY: menuAnimation.interpolate({
-          inputRange: [0, 1],
-          outputRange: [-300, 0],
-        }),
-      },
-    ],
-    opacity: menuAnimation,
-  };
-
   // Render the main profile screen
   // This is the main profile screen component
   return (
     <SafeAreaView style={styles.container}>
-      {/* Menu Modal */}
-      <Modal
-        visible={menuVisible}
-        transparent={true}
-        animationType="none"
-        onRequestClose={toggleMenu}
-      >
-        <TouchableOpacity 
-          style={styles.modalOverlay} 
-          activeOpacity={1} 
-          onPress={toggleMenu}
-        >
-          <Animated.View 
-            style={[styles.menuContainer, menuContainerStyle]}
-          >
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={navigateToSettings}
-            >
-              <Feather name="settings" size={20} color="black" />
-              <Text style={styles.menuText}>Settings</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={navigateToSaved}
-            >
-              <Feather name="bookmark" size={20} color="black" />
-              <Text style={styles.menuText}>Saved</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={navigateToArchived}
-            >
-              <Feather name="archive" size={20} color="black" />
-              <Text style={styles.menuText}>Archived</Text>
-            </TouchableOpacity>
-            
-            <View style={styles.menuDivider} />
-            
-            <TouchableOpacity 
-              style={styles.menuItem} 
-              onPress={handleLogout}
-            >
-              <Feather name="log-out" size={20} color="#FF3B30" />
-              <Text style={[styles.menuText, styles.logoutText]}>Log Out</Text>
-            </TouchableOpacity>
-          </Animated.View>
-        </TouchableOpacity>
-      </Modal>
-
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header with username and settings */}
         <View style={styles.header}>
@@ -289,7 +125,7 @@ export default function ProfileScreen({ navigation, route }) {
             <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Upload')}>
               <Feather name="plus-square" size={24} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton} onPress={toggleMenu}>
+            <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Settings')}>
               <Feather name="menu" size={24} color="black" />
             </TouchableOpacity>
           </View>
@@ -357,16 +193,6 @@ export default function ProfileScreen({ navigation, route }) {
             />
           </TouchableOpacity>
           <TouchableOpacity 
-            style={[styles.tab, activeTab === 'reels' && styles.activeTab]}
-            onPress={() => setActiveTab('reels')}
-          >
-            <Feather 
-              name="film" 
-              size={24} 
-              color={activeTab === 'reels' ? "black" : "gray"} 
-            />
-          </TouchableOpacity>
-          <TouchableOpacity 
             style={[styles.tab, activeTab === 'tagged' && styles.activeTab]}
             onPress={() => setActiveTab('tagged')}
           >
@@ -392,6 +218,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    marginTop: 20,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {
@@ -534,26 +361,10 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 1,
   },
-  reelContainer: {
-    width: '33.33%',
-    position: 'relative',
-    padding: 1,
-  },
-  reelOverlay: {
-    position: 'absolute',
-    bottom: 8,
-    left: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  reelViewCount: {
-    color: 'white',
-    fontSize: 12,
-    marginLeft: 4,
-    fontWeight: '600',
-    textShadowColor: 'rgba(0, 0, 0, 0.7)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 3,
+  greyPlaceholder: {
+    width: '100%',
+    aspectRatio: 1,
+    backgroundColor: '#EFEFEF', // A light grey color
   },
   taggedContainer: {
     width: '33.33%',
@@ -576,48 +387,5 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     width: '100%',
   },
-  // Menu styles
-modalOverlay: {
-  flex: 1,
-  backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  justifyContent: 'flex-start', // ensures the menu is pushed to the top
-},
-menuContainer: {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  backgroundColor: 'white',
-  borderBottomLeftRadius: 15,
-  borderBottomRightRadius: 15,
-  paddingVertical: 15,
-  paddingHorizontal: 20,
-  width: '100%',
-  shadowColor: '#000',
-  shadowOffset: {
-    width: 0,
-    height: 2,
-  },
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-  elevation: 5,
-},
-menuItem: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  paddingVertical: 15,
-},
-menuText: {
-  marginLeft: 15,
-  fontSize: 16,
-},
-menuDivider: {
-  height: 1,
-  backgroundColor: '#DBDBDB',
-  marginVertical: 10,
-},
-logoutText: {
-  color: '#FF3B30',
-},
 
 });

@@ -36,7 +36,7 @@ function TabNavigator() {
           borderTopWidth: 0.5,
           borderTopColor: '#DBDBDB',
           elevation: 0,
-          height: Platform.OS === 'android' ? 90 : 70, // slightly increase height
+          height: Platform.OS === 'android' ? 80 : 70, // slightly decreased height
           paddingBottom: Platform.OS === 'android' ? 10 : 20 // add bottom padding
         }
       }}

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Switch, Platform} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Switch, Platform, Alert} from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/slices/authSlice';
 
 export default function SettingsScreen({ navigation }) {
   const [notifications, setNotifications] = useState(true);
@@ -11,11 +13,32 @@ export default function SettingsScreen({ navigation }) {
   const toggleDarkMode = () => setDarkMode(prev => !prev);
   const togglePrivateAccount = () => setPrivateAccount(prev => !prev);
 
+  const dispatch = useDispatch();
+
   const goBack = () => navigation.goBack();
   const navigateToAccount = () => navigation.navigate('AccountSettings');
   const navigateToPrivacy = () => navigation.navigate('PrivacySettings');
   const navigateToHelp = () => navigation.navigate('HelpCenter');
   const navigateToAbout = () => navigation.navigate('AboutApp');
+  const navigateToSaved = () => navigation.navigate('SavedPosts');
+  const navigateToArchived = () => navigation.navigate('ArchivedPosts');
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Confirm Logout',
+      'Are you sure you want to logout?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Logout',
+          onPress: () => { dispatch(logout()); },
+        },
+      ]
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -48,6 +71,22 @@ export default function SettingsScreen({ navigation }) {
             <View style={styles.menuItemLeft}>
               <Feather name="lock" size={20} color="#555" style={styles.menuItemIcon} />
               <Text style={styles.menuItemText}>Privacy</Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#AAAAAA" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={navigateToSaved}>
+            <View style={styles.menuItemLeft}>
+              <Feather name="bookmark" size={20} color="#555" style={styles.menuItemIcon} />
+              <Text style={styles.menuItemText}>Saved Posts</Text>
+            </View>
+            <Feather name="chevron-right" size={20} color="#AAAAAA" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.menuItem} onPress={navigateToArchived}>
+            <View style={styles.menuItemLeft}>
+              <Feather name="archive" size={20} color="#555" style={styles.menuItemIcon} />
+              <Text style={styles.menuItemText}>Archived Posts</Text>
             </View>
             <Feather name="chevron-right" size={20} color="#AAAAAA" />
           </TouchableOpacity>
@@ -134,12 +173,8 @@ export default function SettingsScreen({ navigation }) {
 
         {/* Danger Zone */}
         <View style={styles.section}>
-          <TouchableOpacity style={styles.dangerButton}>
+          <TouchableOpacity style={styles.dangerButton} onPress={handleLogout}>
             <Text style={styles.dangerButtonText}>Log Out</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.dangerButton, styles.deleteButton]}>
-            <Text style={[styles.dangerButtonText, styles.deleteButtonText]}>Delete Account</Text>
           </TouchableOpacity>
         </View>
 
@@ -156,7 +191,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    marginBottom: -20,
+    marginTop: 30,
   },
   header: {
     flexDirection: 'row',
@@ -164,7 +199,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 15,
     paddingVertical: 15,
-    marginTop: 8,
+    marginTop: 1,
     borderBottomWidth: 0.5,
     borderBottomColor: '#DBDBDB',
   },
@@ -229,14 +264,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
-  },
-  deleteButton: {
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#FF3B30',
-  },
-  deleteButtonText: {
-    color: '#FF3B30',
   },
   versionContainer: {
     alignItems: 'center',
