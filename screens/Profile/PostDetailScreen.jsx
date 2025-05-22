@@ -67,7 +67,7 @@ export default function PostDetailScreen({ route, navigation }) {
         {/* User info */}
         <View style={styles.userInfo}>
           <Image 
-            source={{ uri: 'https://i.pravatar.cc/150?img=12' }} 
+            source={{ uri: 'https://i.pravatar.cc/150?img=64' }} 
             style={styles.userAvatar} 
           />
           <View style={styles.userName}>

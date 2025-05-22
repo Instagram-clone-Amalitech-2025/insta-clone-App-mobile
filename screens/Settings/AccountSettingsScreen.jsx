@@ -3,6 +3,7 @@ import { StyleSheet, View, Text,TouchableOpacity,Switch, ScrollView, Image, Aler
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
+import { Feather } from '@expo/vector-icons'; // Import Feather
 import { logout } from '../../redux/slices/authSlice';
 
 const AccountSettingsScreen = () => {
@@ -63,26 +64,27 @@ const AccountSettingsScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, isDark && styles.darkContainer]}>
+      <View style={[styles.header, isDark && styles.darkHeader]}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <Text style={[styles.backButtonText, isDark && styles.darkText]}>←</Text>
+          <Feather name="arrow-left" size={24} color={isDark ? "#FFFFFF" : "black"} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, isDark && styles.darkText]}>Account Settings</Text>
+        <View style={styles.headerRightPlaceholder} /> 
       </View>
 
       <ScrollView style={styles.content}>
         <View style={[styles.profileSection, isDark && styles.darkProfileSection]}>
           <Image
-            source={{ uri: 'https://via.placeholder.com/100' }}
+            source={{ uri: 'https://i.pravatar.cc/150?img=64' }}
             style={styles.profileImage}
           />
           <View style={styles.profileInfo}>
-            <Text style={[styles.profileName, isDark && styles.darkText]}>John Doe</Text>
-            <Text style={[styles.profileEmail, isDark && styles.darkMutedText]}>john.doe@example.com</Text>
+            <Text style={[styles.profileName, isDark && styles.darkText]}>User 1</Text>
+            <Text style={[styles.profileEmail, isDark && styles.darkMutedText]}>user1@example.com</Text>
             <TouchableOpacity
   style={styles.editButton}
   onPress={() => navigation.navigate('EditProfile')}
@@ -168,29 +170,28 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between', // Changed for better title centering
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#e1e4e8',
     backgroundColor: '#fff',
   },
-  backButton: {
-    padding: 8,
+  darkHeader: {
+    backgroundColor: '#121212',
+    borderBottomColor: '#333333',
   },
-  backButtonText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#000', // Default back button color
+  backButton: {
+    padding: 5, // Matched SettingsScreen
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 12,
+    // marginLeft: 12, // Removed as justifyContent will handle spacing
     color: '#000', // Default header title color
   },
-  darkHeader: {
-    backgroundColor: '#121212',
-    borderBottomColor: '#333333',
+  headerRightPlaceholder: { // Added for centering title, similar to SettingsScreen
+    width: 24, // Should match the effective width of the back button icon area
   },
   content: {
     flex: 1,
