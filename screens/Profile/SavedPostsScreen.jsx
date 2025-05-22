@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, Image, Dimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
 
 const SavedPostsScreen = ({ navigation }) => {
   const [savedPosts, setSavedPosts] = useState([]);
@@ -9,6 +10,9 @@ const SavedPostsScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
   const [activeCollection, setActiveCollection] = useState(null);
+
+  const appTheme = useSelector((state) => state.theme.theme);
+  const isDark = appTheme === 'dark';
 
   const windowWidth = Dimensions.get('window').width;
   const numColumns = 3;
@@ -44,17 +48,17 @@ const SavedPostsScreen = ({ navigation }) => {
   };
 
   const renderHeader = () => (
-    <View style={styles.header}>
+    <View style={[styles.header, isDark && styles.darkHeader]}>
       <TouchableOpacity onPress={goBack}>
-        <Feather name="arrow-left" size={24} color="black" />
+        <Feather name="arrow-left" size={24} color={isDark ? "#FFFFFF" : "black"} />
       </TouchableOpacity>
-      <Text style={styles.headerTitle}>Saved</Text>
+      <Text style={[styles.headerTitle, isDark && styles.darkText]}>Saved</Text>
       <View style={styles.headerButtons}>
         <TouchableOpacity style={styles.headerButton} onPress={toggleViewMode}>
-          <Feather name={viewMode === 'grid' ? 'folder' : 'grid'} size={24} color="#000" />
+          <Feather name={viewMode === 'grid' ? 'folder' : 'grid'} size={24} color={isDark ? "#FFFFFF" :"#000"} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.headerButton}>
-          <Feather name="plus-circle" size={24} color="#000" />
+          <Feather name="plus-circle" size={24} color={isDark ? "#FFFFFF" :"#000"} />
         </TouchableOpacity>
       </View>
     </View>
@@ -62,19 +66,19 @@ const SavedPostsScreen = ({ navigation }) => {
 
   // Render the saved posts in grid or collection view
   const renderEmptyState = () => (
-    <View style={styles.emptyContainer}>
-      <Feather name="bookmark" size={64} color="#cccccc" />
-      <Text style={styles.emptyText}>No saved items</Text>
-      <Text style={styles.emptySubtext}>Anything you save will appear here</Text>
+    <View style={[styles.emptyContainer, isDark && styles.darkContainer]}>
+      <Feather name="bookmark" size={64} color={isDark ? "#555555" : "#cccccc"} />
+      <Text style={[styles.emptyText, isDark && styles.darkText]}>No saved items</Text>
+      <Text style={[styles.emptySubtext, isDark && styles.darkMutedText]}>Anything you save will appear here</Text>
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDark && styles.darkContainer]}>
       {renderHeader()}
       {loading && !refreshing ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#000" />
+        <View style={[styles.loadingContainer, isDark && styles.darkContainer]}>
+          <ActivityIndicator size="large" color={isDark ? "#FFFFFF" : "#000"} />
         </View>
       ) : (
         renderEmptyState()
@@ -84,7 +88,10 @@ const SavedPostsScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', marginTop: 20 },
+  container: { flex: 1, backgroundColor: '#fff', marginTop: 30 },
+  darkContainer: { backgroundColor: '#000' },
+  darkText: { color: '#FFFFFF' },
+  darkMutedText: { color: '#AAAAAA' },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -93,12 +100,17 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderBottomWidth: 0.5,
     borderBottomColor: '#dbdbdb',
+    backgroundColor: '#fff',
   },
-  headerTitle: { fontSize: 20, fontWeight: '600' },
+  darkHeader: {
+    backgroundColor: '#121212',
+    borderBottomColor: '#333333',
+  },
+  headerTitle: { fontSize: 20, fontWeight: '600', color: '#000' },
   headerButtons: { flexDirection: 'row', alignItems: 'center' },
   headerButton: { marginLeft: 20 },
-  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24 },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' },
+  emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, backgroundColor: '#fff' },
   emptyText: { fontSize: 18, color: '#555', marginTop: 12, fontWeight: '600' },
   emptySubtext: { fontSize: 14, color: '#888', marginTop: 4, textAlign: 'center' },
 });

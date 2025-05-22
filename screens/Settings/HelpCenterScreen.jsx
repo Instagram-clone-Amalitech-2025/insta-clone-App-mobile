@@ -16,8 +16,8 @@ const HelpCenterScreen = () => {
     },
     {
       id: '2',
-      question: 'How can I update my profile information?',
-      answer: 'Go to Account Settings > Edit Profile. There you can update your name, email, profile picture, and other personal information.'
+      question: 'Can I edit my profile?',
+      answer: 'Yes! On the main screen and the settings section(Account Settings) you will find an Edit Profile button. There you can update your name, email, profile picture, and other personal information.'
     },
     {
       id: '3',
@@ -27,17 +27,7 @@ const HelpCenterScreen = () => {
     {
       id: '4',
       question: 'How do I delete my account?',
-      answer: 'To delete your account, go to Account Settings and scroll down to the bottom. Tap "Delete Account" and follow the confirmation process. Please note that this action is permanent and cannot be undone.'
-    },
-    {
-      id: '5',
-      question: 'Is my data secure?',
-      answer: 'Yes, we use industry-standard encryption and security practices to protect your data. You can review our privacy policy for more details on how we handle and protect your information.'
-    },
-    {
-      id: '6',
-      question: 'How do I report a bug?',
-      answer: 'You can report bugs by going to Help Center > Contact Support and selecting "Report a Bug". Please provide as much detail as possible including steps to reproduce the issue.'
+      answer: 'To delete your account, go to Account Settings, go to the Account Information tab and scroll down to the bottom. Tap "Delete Account" and follow the confirmation process. Please note that this action is permanent and cannot be undone.'
     },
   ];
 
@@ -46,8 +36,6 @@ const HelpCenterScreen = () => {
     { id: '2', title: 'Billing & Payments', icon: '💰' },
     { id: '3', title: 'Technical Support', icon: '🔧' },
     { id: '4', title: 'Feature Requests', icon: '✨' },
-    { id: '5', title: 'Report a Bug', icon: '🐛' },
-    { id: '6', title: 'Privacy Concerns', icon: '🔒' }
   ];
 
   const filteredFaqs = searchQuery 
@@ -139,7 +127,7 @@ const HelpCenterScreen = () => {
         <View style={styles.faqSection}>
           <Text style={styles.sectionTitle}>Frequently Asked Questions</Text>
           {filteredFaqs.length > 0 ? (
-            filteredFaqs.map(item => renderFaqItem({ item }))
+            filteredFaqs.map(item => <View key={item.id}>{renderFaqItem({ item })}</View>)
           ) : (
             <Text style={styles.noResultsText}>
               No matching questions found. Try a different search term or contact our support team.

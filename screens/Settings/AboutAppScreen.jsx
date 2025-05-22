@@ -5,19 +5,20 @@ import { MaterialIcons } from '@expo/vector-icons';
 const AboutAppScreen = ({ navigation }) => {
   // App information
   const appInfo = {
-    version: '2.5.1',
+    version: '1.1.0',
     releaseDate: 'May 5, 2025',
-    developer: 'AppDevelopers Inc.',
-    website: 'https://appdevelopers.example.com',
-    email: 'support@appdevelopers.example.com',
+    developer: 'Intagram Group. ',
   };
 
   // Team members
   const teamMembers = [
-    { name: 'Alex Johnson', role: 'Founder & CEO' },
-    { name: 'Maria Garcia', role: 'Lead Developer' },
-    { name: 'James Wilson', role: 'Product Designer' },
-    { name: 'Sarah Chen', role: 'Marketing Director' },
+    { name: 'Kofi Atta Agyare', role: 'Mobile Developer(React Native)' },
+    { name: 'Kingsley Thompson', role: 'Backend Developer(Django)' },
+    { name: 'Ursula Yankson', role: 'Product Designer' },
+    { name: 'Raymond Adoe', role: 'Web Developer(React)' },
+    { name: 'George Hayford', role: 'Backend Developer(Django)' },
+    { name: 'Felix Owusu Brobbey', role: 'Backend Developer(Django)' },
+    { name: 'Vincent Dorkenoo', role: 'Cyber Security Analyst' },
   ];
   
   const handleOpenWebsite = async () => {
@@ -30,17 +31,6 @@ const AboutAppScreen = ({ navigation }) => {
     }
   };
   
-  const handleContactSupport = async () => {
-    const emailUrl = `mailto:${appInfo.email}?subject=App Support Request`;
-    
-    const supported = await Linking.canOpenURL(emailUrl);
-    
-    if (supported) {
-      await Linking.openURL(emailUrl);
-    } else {
-      console.error("Don't know how to open email URI");
-    }
-  };
 
   const handleViewLicenses = () => {
     navigation.navigate('Licenses');
@@ -63,7 +53,7 @@ const AboutAppScreen = ({ navigation }) => {
           style={styles.appLogo}
           resizeMode="contain"
         />
-        <Text style={styles.appName}>Social Media App</Text>
+        <Text style={styles.appName}>Instagram Clone Project</Text>
         <Text style={styles.appVersion}>Version {appInfo.version}</Text>
         <Text style={styles.releaseDate}>Released on {appInfo.releaseDate}</Text>
       </View>
@@ -72,9 +62,10 @@ const AboutAppScreen = ({ navigation }) => {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>About Us</Text>
         <Text style={styles.description}>
-          Our mission is to help you connect with friends and family, share moments, 
-          and discover content that matters to you. We're committed to creating a safe, 
-          inclusive platform where everyone's voice can be heard.
+          As a team, we collaborated to create this Instagram clone project,
+          showcasing our skills in mobile and web development. Our goal is was to create this App in our respective fields of expertise.
+          We utilised React Native for the mobile app, Figma for the design, Django for the backend, and React for the web app.
+          For collaboration, we used Slack and Microsoft Teams. 
         </Text>
       </View>
 
@@ -105,9 +96,9 @@ const AboutAppScreen = ({ navigation }) => {
         <View style={styles.featureItem}>
           <MaterialIcons name="explore" size={24} color="#4a86f7" style={styles.featureIcon} />
           <View style={styles.featureContent}>
-            <Text style={styles.featureTitle}>Discover Content</Text>
+            <Text style={styles.featureTitle}>Sign Up/Log In</Text>
             <Text style={styles.featureDescription}>
-              Find personalized content tailored to your interests and preferences.
+              Sign Up/Log In to connect with friends.
             </Text>
           </View>
         </View>
@@ -133,16 +124,11 @@ const AboutAppScreen = ({ navigation }) => {
 
       {/* Contact and links */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Connect With Us</Text>
+        <Text style={styles.sectionTitle}>Check Out the Web App</Text>
         
         <TouchableOpacity style={styles.linkButton} onPress={handleOpenWebsite}>
           <MaterialIcons name="public" size={22} color="#4a86f7" />
           <Text style={styles.linkButtonText}>Visit Our Website</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.linkButton} onPress={handleContactSupport}>
-          <MaterialIcons name="mail" size={22} color="#4a86f7" />
-          <Text style={styles.linkButtonText}>Contact Support</Text>
         </TouchableOpacity>
       </View>
 
@@ -175,6 +161,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
+    marginTop: 20,
+    marginBottom: 20,
   },
   headerSection: {
     alignItems: 'center',

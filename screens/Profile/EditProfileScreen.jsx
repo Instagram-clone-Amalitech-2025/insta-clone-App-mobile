@@ -6,16 +6,19 @@ import {
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
+// Define the default placeholder URI
+const DEFAULT_AVATAR_PLACEHOLDER = 'https://via.placeholder.com/150';
+
 export default function EditProfileScreen({ navigation, route }) {
   // Get user data passed from ProfileScreen
   const initialUser = route.params?.user || {
     username: 'User1',
     name: 'User 1',
     bio: 'Mobile Developer | React Native Enthusiast',
-    avatar: '/assets/pravatar.jpg',
-    posts: 24,
-    followers: 1000,
-    following: 321,
+    avatar: DEFAULT_AVATAR_PLACEHOLDER,
+    posts: 9,
+    followers: 10,
+    following: 30,
     website: '',
     phone: '',
     email: 'user1@example.com',
@@ -114,7 +117,13 @@ export default function EditProfileScreen({ navigation, route }) {
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* Profile Picture Section */}
           <View style={styles.avatarSection}>
-            <Image source={{ uri: userData.avatar }} style={styles.avatar} />
+            {userData.avatar === DEFAULT_AVATAR_PLACEHOLDER ? (
+              // Show grey placeholder if avatar is the default placeholder
+              <View style={[styles.avatar, styles.greyAvatarPlaceholder]} />
+            ) : (
+              // Show actual image if avatar is not the default placeholder
+              <Image source={{ uri: userData.avatar }} style={styles.avatar} />
+            )}
             <TouchableOpacity onPress={handleChangeAvatar}>
               <Text style={styles.changePhotoText}>Change Profile Photo</Text>
             </TouchableOpacity>
@@ -274,6 +283,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+    marginTop: 30,
   },
   header: {
     flexDirection: 'row',
@@ -298,6 +308,9 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     marginBottom: 8,
+  },
+  greyAvatarPlaceholder: { // Added style for grey background
+    backgroundColor: '#E0E0E0', 
   },
   changePhotoText: {
     color: '#3897F0',

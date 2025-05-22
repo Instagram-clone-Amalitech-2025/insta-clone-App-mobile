@@ -36,7 +36,7 @@ function TabNavigator() {
           borderTopWidth: 0.5,
           borderTopColor: '#DBDBDB',
           elevation: 0,
-          height: Platform.OS === 'android' ? 90 : 70, // slightly increase height
+          height: Platform.OS === 'android' ? 80 : 70, // slightly decreased height
           paddingBottom: Platform.OS === 'android' ? 10 : 20 // add bottom padding
         }
       }}
@@ -96,14 +96,7 @@ function TabNavigator() {
     </Tab.Navigator>
   );
 }
-function AuthStack() {
-  return (
-    <RootStack.Navigator screenOptions={{ headerShown: false }}>
-      <RootStack.Screen name="Login" component={LoginScreen} />
-      <RootStack.Screen name="Signup" component={SignupScreen} />
-    </RootStack.Navigator>
-  );
-}
+
 
 export default function AppNavigator() {
   const user = useSelector((state) => state.auth.user);
@@ -273,7 +266,8 @@ export default function AppNavigator() {
         </>
       ) : (
         <>
-          <RootStack.Screen name="AuthStack" component={AuthStack} />
+          <RootStack.Screen name="Login" component={LoginScreen} />
+          <RootStack.Screen name="Signup" component={SignupScreen} />
         </>
       )}
     </RootStack.Navigator>

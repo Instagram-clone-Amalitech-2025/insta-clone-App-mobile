@@ -87,11 +87,8 @@ export default function PostDetailScreen({ route, navigation }) {
         </View>
 
         {/* Post image */}
-        <Image 
-          source={{ uri: item.imageUrl || item.thumbnailUrl }} 
-          style={styles.postImage} 
-          resizeMode="cover"
-        />
+        {/* Replaced Image with a grey View */}
+        <View style={[styles.postImage, styles.greyPlaceholder]} />
 
         {/* Action buttons */}
         <View style={styles.actionBar}>
@@ -148,7 +145,7 @@ const styles = StyleSheet.create({
   container: {
       flex: 1,
       backgroundColor: '#fff',
-      marginTop: 20,
+      marginTop: 30,
       paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
    header: {
@@ -196,6 +193,10 @@ const styles = StyleSheet.create({
   postImage: {
     width: '100%',
     aspectRatio: 1,
+  },
+  greyPlaceholder: { // Added for the main image placeholder
+    backgroundColor: '#E0E0E0', // Or another shade of grey
+    // Dimensions are handled by styles.postImage
   },
   actionBar: {
     flexDirection: 'row',
