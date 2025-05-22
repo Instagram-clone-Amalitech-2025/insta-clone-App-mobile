@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {  View,  Text,  StyleSheet,  Image,  TouchableOpacity,  ScrollView,  SafeAreaView,  FlatList, Modal, Animated} from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import {  View,  Text,  StyleSheet,  Image,  TouchableOpacity,  ScrollView,  SafeAreaView,  FlatList, Modal, Animated, Alert} from 'react-native';
+import { Feather } from '@expo/vector-icons'; 
 import { Platform,StatusBar } from 'react-native';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/slices/authSlice';
 
 export default function ProfileScreen({ navigation, route }) {
   
@@ -77,12 +79,20 @@ export default function ProfileScreen({ navigation, route }) {
   };
 
   // Handle logout
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
     toggleMenu();
-    // Add logout logic here
-    alert('Logged out successfully');
-    // Navigate to Login screen or Auth stack
-     navigation.navigate('Login');
+    Alert.alert('Confirm Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Logout',
+        onPress: () => { dispatch(logout()); },
+      },
+    ]);
   };
 
   // Create data for each tab

@@ -96,14 +96,7 @@ function TabNavigator() {
     </Tab.Navigator>
   );
 }
-function AuthStack() {
-  return (
-    <RootStack.Navigator screenOptions={{ headerShown: false }}>
-      <RootStack.Screen name="Login" component={LoginScreen} />
-      <RootStack.Screen name="Signup" component={SignupScreen} />
-    </RootStack.Navigator>
-  );
-}
+
 
 export default function AppNavigator() {
   const user = useSelector((state) => state.auth.user);
@@ -273,7 +266,8 @@ export default function AppNavigator() {
         </>
       ) : (
         <>
-          <RootStack.Screen name="AuthStack" component={AuthStack} />
+          <RootStack.Screen name="Login" component={LoginScreen} />
+          <RootStack.Screen name="Signup" component={SignupScreen} />
         </>
       )}
     </RootStack.Navigator>
