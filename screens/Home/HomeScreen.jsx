@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for filled heart
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPosts } from '../../redux/slices/postSlice'; 
@@ -10,6 +11,13 @@ export default function HomeScreen() {
   const dispatch = useDispatch();
 
   const posts = useSelector((state) => state.posts.posts);
+  const appTheme = useSelector((state) => state.theme.theme); // Get theme state
+  const isDark = appTheme === 'dark';
+
+  const [likedStatuses, setLikedStatuses] = useState({}); // postId: boolean
+  const [dynamicLikeCounts, setDynamicLikeCounts] = useState({}); // postId: number
+  const [bookmarkedStatuses, setBookmarkedStatuses] = useState({}); // postId: boolean
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Temporary mock data
   const mockPosts = [
@@ -48,12 +56,58 @@ export default function HomeScreen() {
     }
   ];
 
-  useEffect(() => {
+  const loadPosts = () => {
     dispatch(setPosts(mockPosts)); // Load initial posts into Redux
+    // Initialize dynamicLikeCounts from mockPosts
+    const initialLikeCounts = {};
+    mockPosts.forEach(post => {
+      initialLikeCounts[post.id] = post.likes;
+    });
+    setDynamicLikeCounts(initialLikeCounts);
+  };
+
+  useEffect(() => {
+    loadPosts();
   }, [dispatch]);
+  
+  const handleLike = (postId) => {
+    const currentlyLiked = likedStatuses[postId];
+    setLikedStatuses(prev => ({
+      ...prev,
+      [postId]: !prev[postId],
+    }));
+
+    setDynamicLikeCounts(prevCounts => {
+      const currentCount = prevCounts[postId] !== undefined ? prevCounts[postId] : mockPosts.find(p => p.id === postId)?.likes || 0;
+      return {
+        ...prevCounts,
+        [postId]: currentlyLiked ? currentCount - 1 : currentCount + 1,
+      };
+    });
+  };
+
+  const handleBookmark = (postId) => {
+    setBookmarkedStatuses(prev => ({
+      ...prev,
+      [postId]: !prev[postId],
+    }));
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setIsRefreshing(true);
+    // Simulate fetching new data
+    setTimeout(() => {
+      loadPosts(); // Reload mock posts or fetch new ones
+      // Reset interaction states if desired, or they can persist
+      setLikedStatuses({}); 
+      setBookmarkedStatuses({});
+      setIsRefreshing(false);
+    });
+  }, []);
 
   const renderPost = (post) => (
-    <View key={post.id} style={styles.post}>
+    // Ensure dark mode styles are applied to post container if needed
+    <View key={post.id} style={[styles.post, isDark && styles.darkPost]}> 
       <View style={styles.postHeader}>
         <View style={styles.userInfo}>
           <View style={styles.userAvatar}>
@@ -61,11 +115,11 @@ export default function HomeScreen() {
           </View>
           <View>
             <Text style={styles.username}>{post.username}</Text>
-            <Text style={styles.location}>{post.location}</Text>
+            <Text style={[styles.location, isDark && styles.darkMutedText]}>{post.location}</Text>
           </View>
         </View>
         <TouchableOpacity>
-          <Text style={styles.moreOptions}>•••</Text>
+          <Text style={[styles.moreOptions, isDark && styles.darkText]}>•••</Text>
         </TouchableOpacity>
       </View>
 
@@ -73,53 +127,74 @@ export default function HomeScreen() {
 
       <View style={styles.postActions}>
         <View style={styles.leftActions}>
-          <TouchableOpacity style={styles.actionButton}>
-            <Feather name="heart" size={24} color="#000000" />
+          <TouchableOpacity style={styles.actionButton} onPress={() => handleLike(post.id)}>
+            {likedStatuses[post.id] ? (
+              <Ionicons name="heart" size={24} color="red" />
+            ) : (
+              <Feather name="heart" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
+            )}
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-            <Feather name="message-circle" size={24} color="#000000" />
+            <Feather name="message-circle" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-            <Feather name="send" size={24} color="#000000" />
+            <Feather name="send" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
-          <Feather name="bookmark" size={24} color="#000000" />
+        <TouchableOpacity onPress={() => handleBookmark(post.id)}>
+          {bookmarkedStatuses[post.id] ? (
+            <Ionicons name="bookmark" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
+          ) : (
+            <Feather name="bookmark" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
+          )}
         </TouchableOpacity>
       </View>
 
       <View style={styles.postDetails}>
-        <Text style={styles.likes}>{post.likes} likes</Text>
-        <Text style={styles.caption}>
-          <Text style={styles.username}>{post.username}</Text> {post.caption}
+        <Text style={[styles.likes, isDark && styles.darkText]}>
+          {dynamicLikeCounts[post.id] !== undefined ? dynamicLikeCounts[post.id] : post.likes} likes
+        </Text>
+        <Text style={[styles.caption, isDark && styles.darkText]}>
+          <Text style={[styles.username, isDark && styles.darkText]}>{post.username}</Text> {post.caption}
         </Text>
         <TouchableOpacity>
-          <Text style={styles.comments}>View all {post.comments} comments</Text>
+          <Text style={[styles.comments, isDark && styles.darkMutedText]}>View all {post.comments} comments</Text>
         </TouchableOpacity>
-        <Text style={styles.timeAgo}>{post.timeAgo}</Text>
+        <Text style={[styles.timeAgo, isDark && styles.darkMutedText]}>{post.timeAgo}</Text>
       </View>
     </View>
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerLogo}>Instagram</Text>
+    <View style={[styles.container, isDark && styles.darkContainer]}>
+      <View style={[styles.header, isDark && styles.darkHeader]}>
+        <Text style={[styles.headerLogo, isDark && styles.darkText]}>Instagram</Text>
         <View style={styles.headerActions}>
           <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Upload')}>
-            <Feather name="plus-square" size={24} color="#000000" />
+            <Feather name="plus-square" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerButton}>
-            <Feather name="heart" size={24} color="#000000" />
+            <Feather name="heart" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerButton}>
-            <Feather name="message-circle" size={24} color="#000000" />
+            <Feather name="message-circle" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Stories Section */}
-      <ScrollView style={styles.feed} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.feed} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={onRefresh}
+            colors={isDark ? ['#FFFFFF'] : ['#000000']} // Spinner color
+            tintColor={isDark ? '#FFFFFF' : '#000000'} // iOS spinner color
+          />
+        }
+      >
         <View style={styles.storiesContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             <View style={styles.storyItem}>
@@ -131,7 +206,7 @@ export default function HomeScreen() {
                   </View>
                 </View>
               </TouchableOpacity>
-              <Text style={styles.storyUsername}>Your Story</Text>
+              <Text style={[styles.storyUsername, isDark && styles.darkText]}>Your Story</Text>
             </View>
 
             {['user1', 'travel_enthusiast', 'foodie', 'photographer', 'fitness_guru'].map((user, index) => (
@@ -139,7 +214,7 @@ export default function HomeScreen() {
                 <View style={styles.storyRing}>
                   <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
                 </View>
-                <Text style={styles.storyUsername}>
+                <Text style={[styles.storyUsername, isDark && styles.darkText]}>
                   {user.length > 9 ? user.substring(0, 9) + '...' : user}
                 </Text>
               </View>
@@ -159,14 +234,28 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     marginTop: 30,
   },
+  darkContainer: {
+    backgroundColor: '#000000',
+  },
+  darkText: {
+    color: '#FFFFFF',
+  },
+  darkMutedText: {
+    color: '#AAAAAA',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
-    height: 50,
+    height: 60, // Adjusted height for better spacing
     borderBottomWidth: 1,
     borderBottomColor: '#DBDBDB',
+    backgroundColor: '#FFFFFF',
+  },
+  darkHeader: {
+    backgroundColor: '#121212',
+    borderBottomColor: '#333333',
   },
   headerLogo: {
     fontWeight: 'bold',
@@ -185,6 +274,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: '#DBDBDB',
     marginBottom: 10,
+  },
+  darkStoriesContainer: { // Added for dark mode consistency
+    borderBottomColor: '#333333',
   },
   storyItem: {
     alignItems: 'center',
@@ -234,6 +326,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: '#DBDBDB',
     backgroundColor: '#FFF',
+  },
+  darkPost: { // Added for dark mode post background
+    backgroundColor: '#121212',
+    borderBottomColor: '#333333',
   },
   postHeader: {
     flexDirection: 'row',
