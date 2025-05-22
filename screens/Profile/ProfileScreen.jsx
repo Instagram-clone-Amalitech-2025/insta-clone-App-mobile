@@ -11,7 +11,7 @@ export default function ProfileScreen({ navigation, route }) {
   username: 'User1',
   name: 'User 1',
   bio: 'Mobile Developer | React Native Enthusiast',
-  avatar: 'https://i.pravatar.cc/150?img=12', // ✅ fixed dummy avatar
+  avatar: 'https://i.pravatar.cc/150?img=64', // ✅ fixed dummy avatar
   posts: 9,
   followers: 10,
   following: 30,

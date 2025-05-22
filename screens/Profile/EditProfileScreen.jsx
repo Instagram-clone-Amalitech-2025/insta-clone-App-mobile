@@ -7,7 +7,7 @@ import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 
 // Define the default placeholder URI
-const DEFAULT_AVATAR_PLACEHOLDER = 'https://via.placeholder.com/150';
+const DEFAULT_AVATAR_PLACEHOLDER = 'https://i.pravatar.cc/150?img=64';
 
 export default function EditProfileScreen({ navigation, route }) {
   // Get user data passed from ProfileScreen

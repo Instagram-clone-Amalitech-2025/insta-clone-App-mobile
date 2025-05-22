@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { StyleSheet,View,Text,TouchableOpacity,FlatList,TextInput, ScrollView,Linking,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { Feather } from '@expo/vector-icons'; // Import Feather
+import { useSelector } from 'react-redux'; // Import useSelector for theme
 
 const HelpCenterScreen = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedFaq, setExpandedFaq] = useState(null);
+  const appTheme = useSelector((state) => state.theme.theme);
+  const isDark = appTheme === 'dark';
 
   const faqs = [
     {
@@ -91,15 +95,16 @@ const HelpCenterScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+    <SafeAreaView style={[styles.container, isDark && styles.darkContainer]}>
+      <View style={[styles.header, isDark && styles.darkHeader]}>
         <TouchableOpacity 
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <Text style={styles.backButtonText}>←</Text>
+          <Feather name="arrow-left" size={24} color={isDark ? "#FFFFFF" : "black"} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Help Center</Text>
+        <Text style={[styles.headerTitle, isDark && styles.darkText]}>Help Center</Text>
+        <View style={styles.headerRightPlaceholder} /> 
       </View>
 
       <ScrollView style={styles.content}>
@@ -155,27 +160,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
+    marginTop: 30, // Added to match SettingsScreen
+  },
+  darkContainer: { // Added for dark mode
+    backgroundColor: '#000000',
+  },
+  darkText: { // Added for dark mode
+    color: '#FFFFFF',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between', // Changed for title centering
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e1e4e8',
   },
-  backButton: {
-    padding: 8,
+  darkHeader: { // Added for dark mode
+    backgroundColor: '#121212',
+    borderBottomColor: '#333333',
   },
-  backButtonText: {
-    fontSize: 22,
-    fontWeight: 'bold',
+  backButton: {
+    padding: 5, // Matched SettingsScreen
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 12,
+    // marginLeft: 12, // Removed for better centering with justifyContent
+  },
+  headerRightPlaceholder: { // Added for centering title
+    width: 24, // Match icon size
   },
   content: {
     flex: 1,

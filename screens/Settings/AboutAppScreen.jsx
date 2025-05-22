@@ -66,17 +66,16 @@ const AboutAppScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={[styles.container, dynamicStyles.containerBackground]}>
-      {/* Header */}
+      
       <View style={[styles.header, dynamicStyles.headerBackground, dynamicStyles.headerBorder]}>
         <TouchableOpacity onPress={goBack} style={styles.backButton}>
           <Feather name="arrow-left" size={24} color={isDark ? "#FFFFFF" : "black"} />
         </TouchableOpacity>
         <Text style={[styles.headerTitle, dynamicStyles.text]}>About</Text>
-        <View style={styles.headerRightPlaceholder} /> {/* For centering title */}
-      </View>
+        <View style={styles.headerRightPlaceholder} />       </View>
 
       <ScrollView style={[styles.scrollViewContent, dynamicStyles.containerBackground]}>
-      {/* App logo and name */}
+      
       <View style={[styles.headerSection, dynamicStyles.sectionBackground]}>
         <Image 
           source={require('../../assets/app-logo.png')} 
@@ -88,7 +87,6 @@ const AboutAppScreen = ({ navigation }) => {
         <Text style={[styles.releaseDate, dynamicStyles.mutedText]}>Released on {appInfo.releaseDate}</Text>
       </View>
 
-      {/* App description */}
       <View style={[styles.section, dynamicStyles.sectionBackground]}>
         <Text style={[styles.sectionTitle, dynamicStyles.sectionTitle]}>About Us</Text>
         <Text style={[styles.description, dynamicStyles.text]}>
@@ -99,7 +97,6 @@ const AboutAppScreen = ({ navigation }) => {
         </Text>
       </View>
 
-      {/* Features highlights */}
       <View style={[styles.section, dynamicStyles.sectionBackground]}>
         <Text style={[styles.sectionTitle, dynamicStyles.sectionTitle]}>Key Features</Text>
         
@@ -134,7 +131,6 @@ const AboutAppScreen = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Team section */}
       <View style={[styles.section, dynamicStyles.sectionBackground]}>
         <Text style={[styles.sectionTitle, dynamicStyles.sectionTitle]}>Our Team</Text>
         <View style={styles.teamGrid}>
@@ -152,7 +148,6 @@ const AboutAppScreen = ({ navigation }) => {
         </View>
       </View>
 
-      {/* Contact and links */}
       <View style={[styles.section, dynamicStyles.sectionBackground]}>
         <Text style={[styles.sectionTitle, dynamicStyles.sectionTitle]}>Check Out the Web App</Text>
         
@@ -162,7 +157,6 @@ const AboutAppScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Legal information */}
       <View style={[styles.section, styles.legalSection, dynamicStyles.sectionBackground]}>
         <TouchableOpacity style={styles.legalLink} onPress={handleViewPrivacyPolicy}>
           <Text style={[styles.legalLinkText, dynamicStyles.mutedText]}>Privacy Policy</Text>
@@ -177,7 +171,6 @@ const AboutAppScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Copyright notice */}
       <View style={[styles.copyrightSection, dynamicStyles.sectionBackground]}>
         <Text style={styles.copyrightText}>
           © {new Date().getFullYear()} {appInfo.developer}. All rights reserved.
