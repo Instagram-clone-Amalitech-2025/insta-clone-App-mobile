@@ -22,6 +22,7 @@ import AccountSettingsScreen from '../screens/Settings/AccountSettingsScreen';
 import PrivacySettingsScreen from '../screens/Settings/PrivacySettingsScreen';
 import HelpCenterScreen from '../screens/Settings/HelpCenterScreen';
 import AboutAppScreen from '../screens/Settings/AboutAppScreen';
+import NotificationsScreen from '../screens/Home/NotificationsScreen'; // Import NotificationsScreen
 
 const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -124,6 +125,14 @@ export default function AppNavigator() {
           })}
           />
 
+          {/* Notifications Screen */}
+          <RootStack.Screen
+            name="Notifications"
+            component={NotificationsScreen}
+            options={{
+              headerShown: false, // Assuming custom header in NotificationsScreen
+            }}
+          />
           {/* PostDetailScreen */}
           <RootStack.Screen 
             name="PostDetail" 

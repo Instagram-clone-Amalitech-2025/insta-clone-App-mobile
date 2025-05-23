@@ -173,7 +173,7 @@ export default function HomeScreen() {
           <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Upload')}>
             <Feather name="plus-square" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.headerButton}>
+          <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Notifications')}>
             <Feather name="heart" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerButton}>
