@@ -68,8 +68,8 @@ const SavedPostsScreen = ({ navigation }) => {
   const renderEmptyState = () => (
     <View style={[styles.emptyContainer, isDark && styles.darkContainer]}>
       <Feather name="bookmark" size={64} color={isDark ? "#555555" : "#cccccc"} />
-      <Text style={[styles.emptyText, isDark && styles.darkText]}>No saved items</Text>
-      <Text style={[styles.emptySubtext, isDark && styles.darkMutedText]}>Anything you save will appear here</Text>
+      <Text style={[styles.emptyText, isDark && styles.darkText]}>No saved items!</Text>
+      <Text style={[styles.emptySubtext, isDark && styles.darkMutedText]}>Anything you save will appear here.</Text>
     </View>
   );
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Feather, MaterialIcons } from '@expo/vector-icons'; // Added Feather
-import { useSelector } from 'react-redux'; // Added useSelector
+import { Feather, MaterialIcons } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
 
 const ArchivedPostsScreen = ({ navigation }) => {
   const [archivedPosts, setArchivedPosts] = useState([]);
@@ -99,17 +99,16 @@ const ArchivedPostsScreen = ({ navigation }) => {
           onRefresh={handleRefresh}
         />
       ) : (
-        // Updated empty state to match SavedPostsScreen
         <View style={[styles.emptyContainer, isDark && styles.darkContainer]}>
-          <Feather name="bookmark" size={64} color={isDark ? "#555555" : "#cccccc"} />
+          <Feather name="archive" size={64} color={isDark ? "#555555" : "#cccccc"} />
           <Text style={[
             styles.emptyText,
             isDark && styles.darkText
-          ]}>No story items saved</Text>
+          ]}>No story items saved!</Text>
           <Text style={[
             styles.emptySubtext,
             isDark && styles.darkMutedText
-          ]}>Anything you save will appear here
+          ]}>Anything you save will appear here.
           </Text>
         </View>
       )}
@@ -147,8 +146,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#333333',
   },
   headerTitle: { fontSize: 20, fontWeight: '600', color: '#000' },
-  headerButtons: { flexDirection: 'row', alignItems: 'center' }, // Added
-  headerButton: { marginLeft: 20 }, // Added
+  headerButtons: { flexDirection: 'row', alignItems: 'center' },
+  headerButton: { marginLeft: 20 },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
@@ -182,7 +181,7 @@ const styles = StyleSheet.create({
   postTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333333', // Default light mode text
+    color: '#333333', 
     // For dark mode: color: isDark ? '#FFFFFF' : '#333333',
     marginBottom: 4,
   },
@@ -211,7 +210,7 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#555', // Matched SavedPostsScreen
+    color: '#555', 
     marginTop: 16,
   },
   emptySubtext: {
