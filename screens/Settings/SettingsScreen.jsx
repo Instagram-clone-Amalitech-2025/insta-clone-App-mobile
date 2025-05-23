@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Switch, Platform, Alert} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Switch, Platform, Alert, Modal, Pressable} from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../redux/slices/authSlice';
@@ -8,10 +8,18 @@ export default function SettingsScreen({ navigation }) {
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [privateAccount, setPrivateAccount] = useState(true);
+  const [selectedLanguage, setSelectedLanguage] = useState('English');
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
 
   const toggleNotifications = () => setNotifications(prev => !prev);
   const toggleDarkMode = () => setDarkMode(prev => !prev);
   const togglePrivateAccount = () => setPrivateAccount(prev => !prev);
+
+  const languages = [
+    { code: 'en', name: 'English' }, { code: 'fr', name: 'French' },
+    { code: 'es', name: 'Spanish' }, { code: 'zh', name: 'Chinese' },
+    { code: 'sw', name: 'Swahili' },
+  ];
 
   const dispatch = useDispatch();
 
@@ -38,6 +46,13 @@ export default function SettingsScreen({ navigation }) {
         },
       ]
     );
+  };
+
+  const handleLanguageSelect = (language) => {
+    setSelectedLanguage(language.name);
+    setLanguageModalVisible(false);
+    // Here you would typically dispatch an action to change the app's language
+    // e.g., dispatch(setAppLanguage(language.code));
   };
 
   return (
@@ -138,13 +153,13 @@ export default function SettingsScreen({ navigation }) {
             />
           </View>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => setLanguageModalVisible(true)}>
             <View style={styles.menuItemLeft}>
               <Feather name="globe" size={20} color="#555" style={styles.menuItemIcon} />
               <Text style={styles.menuItemText}>Language</Text>
             </View>
             <View style={styles.menuItemRight}>
-              <Text style={styles.menuItemValue}>English</Text>
+              <Text style={styles.menuItemValue}>{selectedLanguage}</Text>
               <Feather name="chevron-right" size={20} color="#AAAAAA" />
             </View>
           </TouchableOpacity>
@@ -182,6 +197,36 @@ export default function SettingsScreen({ navigation }) {
         <View style={styles.versionContainer}>
           <Text style={styles.versionText}>Version 1.0.0</Text>
         </View>
+
+        {/* Language Selection Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={languageModalVisible}
+          onRequestClose={() => setLanguageModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalTitle}>Select Language</Text>
+              {languages.map((lang) => (
+                <Pressable
+                  key={lang.code}
+                  style={styles.modalOption}
+                  onPress={() => handleLanguageSelect(lang)}
+                >
+                  <Text style={styles.modalOptionText}>{lang.name}</Text>
+                </Pressable>
+              ))}
+              <Pressable
+                style={[styles.modalOption, styles.modalCancel]}
+                onPress={() => setLanguageModalVisible(false)}
+              >
+                <Text style={styles.modalCancelText}>Cancel</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -272,5 +317,49 @@ const styles = StyleSheet.create({
   versionText: {
     color: '#999',
     fontSize: 14,
+  },
+  // Modal Styles
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    paddingVertical: 20,
+    paddingHorizontal: 15,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 20,
+  },
+  modalOption: {
+    paddingVertical: 15,
+    width: '100%',
+    alignItems: 'center',
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#eee',
+  },
+  modalOptionText: {
+    fontSize: 16,
+  },
+  modalCancel: {
+    borderBottomWidth: 0,
+    marginTop: 10,
+  },
+  modalCancelText: {
+    fontSize: 16,
+    color: '#FF3B30', // A cancel color, e.g., red
+    fontWeight: '600',
   },
 });
