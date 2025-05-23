@@ -114,7 +114,7 @@ const NotificationsScreen = ({ navigation }) => {
         />
       ) : (
         <View style={[styles.emptyContainer, isDark && styles.darkContainer]}>
-          <Feather name="bell" size={64} color={isDark ? "#555555" : "#cccccc"} />
+          <Feather name="heart" size={64} color={isDark ? "#555555" : "#cccccc"} />
           <Text style={[
             styles.emptyText,
             isDark && styles.darkText
