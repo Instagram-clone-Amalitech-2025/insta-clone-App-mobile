@@ -12,9 +12,6 @@ export default function SignupScreen({ navigation }) {
   const theme = useSelector((state) => state.theme.theme);
   const isDark = theme === 'dark';
 
-  // Determine if the Next button should be disabled
-  const isNextDisabled = !mobileNumber.trim();
-
   const handleNext = () => {
     if (!mobileNumber.trim()) {
       alert('Please enter your mobile number.');
@@ -51,7 +48,6 @@ export default function SignupScreen({ navigation }) {
           onPress={handleNext}
           style={[styles.button, isDark && styles.darkButton]}
           textStyle={[styles.buttonText, isDark && styles.darkButtonText]}
-          disabled={isNextDisabled}
         />
         <TouchableOpacity
             style={[styles.outlineButton, isDark && styles.darkOutlineButton]}

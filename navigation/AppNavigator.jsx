@@ -10,6 +10,7 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignupScreen';
 import SignupEmailScreen from '../screens/Auth/SignUp/SignupEmailScreen';
 import SignupNameScreen from '../screens/Auth/SignUp/SignupNameScreen';
+import SignupAvatarScreen from '../screens/Auth/SignUp/SignupAvatarScreen';
 import SignupUsernameScreen from '../screens/Auth/SignUp/SignupUsernameScreen';
 import SignupPasswordScreen from '../screens/Auth/SignUp/SignupPasswordScreen';
 
@@ -28,6 +29,7 @@ import PrivacySettingsScreen from '../screens/Settings/PrivacySettingsScreen';
 import HelpCenterScreen from '../screens/Settings/HelpCenterScreen';
 import AboutAppScreen from '../screens/Settings/AboutAppScreen';
 import NotificationsScreen from '../screens/Home/NotificationsScreen'; // Import NotificationsScreen
+import CreateScreen from '../screens/Profile/CreateScreen'; // Import CreateScreen
 
 const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -276,6 +278,13 @@ export default function AppNavigator() {
                 />
               )
             }}
+      />
+
+      {/* Create Screen */}
+      <RootStack.Screen
+        name="Create"
+        component={CreateScreen}
+        options={{ headerShown: false }} // Assuming custom header in CreateScreen
           />
         </>
       ) : (
@@ -285,6 +294,7 @@ export default function AppNavigator() {
                     {/* Subsequent steps in the signup flow */}
           <RootStack.Screen name="SignupEmail" component={SignupEmailScreen} options={{ headerShown: false }} />
           <RootStack.Screen name="SignupName" component={SignupNameScreen} options={{ headerShown: false }} />
+          <RootStack.Screen name="SignupAvatar" component={SignupAvatarScreen} options={{ headerShown: false }} />
           <RootStack.Screen name="SignupUsername" component={SignupUsernameScreen} options={{ headerShown: false }} />
           <RootStack.Screen name="SignupPassword" component={SignupPasswordScreen} options={{ headerShown: false }} />
         </>

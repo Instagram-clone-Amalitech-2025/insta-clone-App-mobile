@@ -170,14 +170,11 @@ export default function HomeScreen() {
       <View style={[styles.header, isDark && styles.darkHeader]}>
         <Text style={[styles.headerLogo, isDark && styles.darkText]}>Instagram</Text>
         <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Upload')}>
-            <Feather name="plus-square" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.headerButton} onPress={() => navigation.navigate('Notifications')}>
             <Feather name="heart" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerButton}>
-            <Feather name="message-circle" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
+            <Feather name="send" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
           </TouchableOpacity>
         </View>
       </View>

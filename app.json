@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.anonymous.instaclone"
     },
     "web": {
       "favicon": "./assets/favicon.png"

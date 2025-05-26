@@ -16,7 +16,7 @@ export default function SignupNameScreen({ route, navigation }) {
       alert('Please enter your full name.');
       return;
     }
-    navigation.navigate('SignupUsername', { identifier, fullName });
+    navigation.navigate('SignupAvatar', { identifier, fullName });
   };
 
   return (
