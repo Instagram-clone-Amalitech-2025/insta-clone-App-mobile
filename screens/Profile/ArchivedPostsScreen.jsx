@@ -76,7 +76,7 @@ const ArchivedPostsScreen = ({ navigation }) => {
         <TouchableOpacity onPress={goBack}>
           <Feather name="arrow-left" size={24} color={isDark ? "#FFFFFF" : "black"} />
         </TouchableOpacity>
-        <Text style={[styles.headerTitle, isDark && styles.darkText]}>Archived</Text>
+        <Text style={[styles.headerTitle, isDark && styles.darkText]}>Stories archive</Text>
         {/* Added Plus Button */}
         <View style={styles.headerButtons}>
           <TouchableOpacity style={styles.headerButton}>
@@ -100,15 +100,15 @@ const ArchivedPostsScreen = ({ navigation }) => {
         />
       ) : (
         <View style={[styles.emptyContainer, isDark && styles.darkContainer]}>
-          <Feather name="archive" size={64} color={isDark ? "#555555" : "#cccccc"} />
+          <Feather name="clock" size={64} color={isDark ? "#555555" : "#cccccc"} />
           <Text style={[
             styles.emptyText,
             isDark && styles.darkText
-          ]}>No story items saved!</Text>
+          ]}>Add to your story</Text>
           <Text style={[
             styles.emptySubtext,
             isDark && styles.darkMutedText
-          ]}>Anything you save will appear here.
+          ]}>Keep your stories in your archive after they disappear, so you can look back on your memories. Only you can see what's in your archive.
           </Text>
         </View>
       )}

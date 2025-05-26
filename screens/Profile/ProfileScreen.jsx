@@ -122,7 +122,7 @@ export default function ProfileScreen({ navigation, route }) {
         <View style={styles.header}>
           <Text style={styles.username}>{user.username}</Text>
           <View style={styles.headerIcons}>
-            <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Upload')}>
+            <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Create')}>
               <Feather name="plus-square" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('Settings')}>
