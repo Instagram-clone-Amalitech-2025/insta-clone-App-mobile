@@ -1,27 +1,23 @@
 import React from 'react';
-import { TextInput, StyleSheet, View } from 'react-native';
+import { TextInput, View, StyleSheet } from 'react-native';
 
-const AuthTextInput = ({ placeholder, secureTextEntry, onChangeText }) => {
+const AuthTextInput = ({ containerStyle, style, ...props }) => {
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        placeholder={placeholder}
-        secureTextEntry={secureTextEntry}
-        onChangeText={onChangeText}
-      />
+    <View style={[styles.container, containerStyle]}>
+      <TextInput style={[styles.input, style]} {...props} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 10,
+    width: '100%',
   },
   input: {
+    width: '100%',
+    padding: 12,
     borderWidth: 1,
     borderColor: '#ccc',
-    padding: 10,
     borderRadius: 5,
   },
 });

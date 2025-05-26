@@ -1,99 +1,65 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Switch, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
 import AuthTextInput from '../../components/Auth/AuthTextInput';
 import Button from '../../components/Common/Button';
 import { useDispatch, useSelector } from 'react-redux';
-import { signup } from '../../redux/slices/authSlice';
-import { toggleTheme } from '../../redux/slices/themeSlice';
+import { Feather } from '@expo/vector-icons';
 
 export default function SignupScreen({ navigation }) {
-  const [email, setEmail] = useState('');
-  const [full_name, setFull_name] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
 
   const dispatch = useDispatch();
-
-  // Auth state
-  const { loading, error } = useSelector((state) => state.auth);
-
-  // Theme state from Redux
   const theme = useSelector((state) => state.theme.theme);
   const isDark = theme === 'dark';
 
-  const handleSignup = () => {
-    dispatch(signup({ email, full_name, username, password }));
+  // Determine if the Next button should be disabled
+  const isNextDisabled = !mobileNumber.trim();
+
+  const handleNext = () => {
+    if (!mobileNumber.trim()) {
+      alert('Please enter your mobile number.');
+      return;
+    }
+    navigation.navigate('SignupName', { identifier: mobileNumber });
   };
 
   return (
     <SafeAreaView style={[styles.container, isDark && styles.darkContainer]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardAvoid}
+        style={styles.keyboardAvoidContent}
       >
-        <View style={styles.logoContainer}>
-          <Text style={[styles.logoText, isDark && styles.darkText]}>Instagram</Text>
-        </View>
-
-        <Text style={[styles.welcomeText, isDark && styles.darkText]}>
-          Sign up to see photos and videos from your friends.
-        </Text>
-
-        <TouchableOpacity style={styles.facebookButton}>
-          <Text style={styles.facebookButtonText}>
-            <Text style={styles.facebookIcon}>f</Text> Log in with Facebook
-          </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.backButton}>
+            <Feather name="arrow-left" size={24} color={isDark ? "#FFFFFF" : "black"} />
         </TouchableOpacity>
 
-        <View style={styles.separator}>
-          <View style={styles.separatorLine} />
-          <Text style={[styles.separatorText, isDark && styles.darkText]}>OR</Text>
-          <View style={styles.separatorLine} />
-        </View>
+        <Text style={[styles.title, isDark && styles.darkText]}>What's your mobile number?</Text>
+        <Text style={[styles.subtitle, isDark && styles.darkMutedText]}>
+          Enter the mobile number you can be reached on. You can also add an email later.
+        </Text>
+        <AuthTextInput
+          containerStyle={styles.inputContainer}
+          placeholder="Mobile Number"
+          value={mobileNumber}
+          onChangeText={setMobileNumber}
+          style={[styles.input, isDark && styles.darkInput]}
+          keyboardType="phone-pad"
+        />
+        <Button
+          containerStyle={styles.buttonContainer}
+          title="Next"
+          onPress={handleNext}
+          style={[styles.button, isDark && styles.darkButton]}
+          textStyle={[styles.buttonText, isDark && styles.darkButtonText]}
+          disabled={isNextDisabled}
+        />
+        <TouchableOpacity
+            style={[styles.outlineButton, isDark && styles.darkOutlineButton]}
+            onPress={() => navigation.navigate('SignupEmail')}
+        >
+            <Text style={[styles.outlineButtonText, isDark && styles.darkOutlineButtonText]}>Sign up with email instead</Text>
+        </TouchableOpacity>
 
-        <View style={styles.formContainer}>
-          <AuthTextInput
-            placeholder="Mobile Number or Email"
-            value={email}
-            onChangeText={setEmail}
-            style={styles.input}
-          />
-          <AuthTextInput
-            placeholder="Full Name"
-            value={full_name}
-            onChangeText={setFull_name}
-            style={styles.input}
-          />
-          <AuthTextInput
-            placeholder="Username"
-            value={username}
-            onChangeText={setUsername}
-            style={styles.input}
-          />
-          <AuthTextInput
-            placeholder="Password"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            style={styles.input}
-          />
-
-          {error && <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>}
-          {loading && <Text style={{ marginBottom: 10 }}>Signing up...</Text>}
-
-          <Text style={[styles.policyText, isDark && styles.darkText]}>
-            By signing up, you agree to our{' '}
-            <Text style={styles.link}>Terms</Text>, <Text style={styles.link}>Data Policy</Text> and{' '}
-            <Text style={styles.link}>Cookies Policy</Text>.
-          </Text>
-
-          <Button
-            title="Sign up"
-            onPress={handleSignup}
-            style={styles.signupButton}
-            textStyle={styles.signupButtonText}
-          />
-        </View>
 
         <View style={styles.loginContainer}>
           <Text style={[styles.loginText, isDark && styles.darkText]}>
@@ -104,17 +70,6 @@ export default function SignupScreen({ navigation }) {
           </Text>
         </View>
 
-        <View style={styles.themeToggleContainer}>
-          <Text style={[styles.toggleLabel, isDark && styles.darkText]}>
-            {isDark ? 'Dark' : 'Light'} Mode
-          </Text>
-          <Switch
-            value={isDark}
-            onValueChange={() => dispatch(toggleTheme())}
-            trackColor={{ false: '#767577', true: '#8a8a8a' }}
-            thumbColor={isDark ? '#3897f0' : '#f4f3f4'}
-          />
-        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -124,30 +79,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: 30,
+    marginTop: 20,
   },
   darkContainer: {
     backgroundColor: '#000',
   },
-  keyboardAvoid: {
+  keyboardAvoidContent: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     width: '100%',
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 80,
   },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
+  backButton: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 40 : 20,
+    left: 20,
+    zIndex: 1,
   },
-  logoText: {
-    fontSize: 50,
-    fontFamily: Platform.OS === 'ios' ? 'Noteworthy' : 'normal',
-    fontWeight: '500',
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 10,
     color: '#000',
   },
-  darkText: {
-    color: '#fff',
+  subtitle: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: '#666',
+    marginBottom: 30,
+    paddingHorizontal: 20,
   },
   welcomeText: {
     fontSize: 17,
@@ -157,26 +120,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     maxWidth: 280,
   },
-  facebookButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#0095f6',
-    borderRadius: 4,
-    padding: 12,
-    width: '100%',
-    maxWidth: 350,
-    marginBottom: 20,
-  },
-  facebookButtonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  facebookIcon: {
-    fontWeight: 'bold',
-  },
-  separator: {
+
+  orSeparatorContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
@@ -194,7 +139,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     paddingHorizontal: 10,
   },
-  formContainer: {
+  
+  inputContainer: {
     width: '100%',
     maxWidth: 350,
   },
@@ -202,10 +148,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafafa',
     borderWidth: 1,
     borderColor: '#dbdbdb',
-    borderRadius: 4,
-    padding: 10,
-    marginVertical: 6,
-    fontSize: 14,
+    borderRadius: 5,
+    padding: 12,
+    marginVertical: 10,
+    fontSize: 16,
+    width: '100%',
+  },
+  darkInput: {
+    backgroundColor: '#333',
+    borderColor: '#555',
+    color: '#fff',
   },
   policyText: {
     fontSize: 12,
@@ -213,17 +165,51 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 15,
   },
-  signupButton: {
+
+  buttonContainer: {
+    width: '100%',
+    maxWidth: 350,
+  },
+  button: {
     backgroundColor: '#0095f6',
-    borderRadius: 4,
+    borderRadius: 5,
     padding: 12,
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 15,
+    width: '100%',
   },
-  signupButtonText: {
+  darkButton: {
+    backgroundColor: '#007bff',
+  },
+  buttonText: {
     color: '#fff',
     fontWeight: '600',
     fontSize: 14,
+    },
+  darkButtonText: {
+    color: '#fff',
+  },
+  outlineButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: '#0095f6',
+    borderRadius: 5,
+    padding: 15,
+    alignItems: 'center',
+    marginTop: 15,
+    width: '100%',
+    maxWidth: 350,
+  },
+  darkOutlineButton: {
+    borderColor: '#007bff',
+  },
+  outlineButtonText: {
+    color: '#0095f6',
+    fontWeight: '600',
+    fontSize: 14,
+  },
+  darkOutlineButtonText: {
+    color: '#007bff',
   },
   loginContainer: {
     flexDirection: 'row',
@@ -254,10 +240,3 @@ const styles = StyleSheet.create({
     color: '#8e8e8e',
   },
 });
-
-
-
-
-
-
-
