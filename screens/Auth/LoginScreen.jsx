@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
-import { View, Text, StyleSheet, Switch, SafeAreaView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleTheme } from '../../redux/slices/themeSlice';
 import AuthTextInput from '../../components/Auth/AuthTextInput';
 import Button from '../../components/Common/Button';
 import { login } from '../../redux/slices/authSlice';
@@ -13,9 +12,9 @@ export default function LoginScreen({ navigation }) {
   const isDark = theme === 'dark';
 
   const [username, setUsername] = useState('');
-   const [password, setPassword] = useState(false);
+  const [password, setPassword] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-   // Auth state
    const auth = useSelector((state) => state.auth);
 
     const handleLogin = () => {
@@ -30,7 +29,7 @@ const { isAuthenticated } = useSelector((state) => state.auth);
 
 useEffect(() => {
   if (isAuthenticated) {
-    navigation.replace('HomeScreen'); // or whichever screen is your landing page
+    navigation.replace('HomeScreen');
   }
 }, [isAuthenticated]);
 
@@ -53,12 +52,14 @@ useEffect(() => {
           />
           <AuthTextInput
             placeholder="Password"
-            secureTextEntry={!password}
+            secureTextEntry={!isPasswordVisible}
             value={password}
             onChangeText={setPassword}
           />
-          <TouchableOpacity onPress={() => setPassword(!password)}>
-            <Text>{password ? 'Hide' : 'Show'}</Text>
+          <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={styles.showHideButton}>
+            <Text style={[styles.showHideText, isDark && styles.darkShowHideText]}>
+              {isPasswordVisible ? 'Hide' : 'Show'}
+            </Text>
           </TouchableOpacity>
 
 
@@ -97,18 +98,6 @@ useEffect(() => {
               </Text>
             </Text>
           </View>
-
-          <View style={styles.themeToggleContainer}>
-            <Text style={[styles.toggleLabel, isDark && styles.darkText]}>
-              {isDark ? 'Dark' : 'Light'} Mode
-            </Text>
-            <Switch 
-              value={isDark} 
-              onValueChange={() => dispatch(toggleTheme())}
-              trackColor={{ false: '#767577', true: '#8a8a8a' }}
-              thumbColor={isDark ? '#3897f0' : '#f4f3f4'}
-            />
-          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -120,6 +109,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     marginTop: 20,
+    marginBottom: 20,
   },
   darkContainer: {
     backgroundColor: '#000',
@@ -230,14 +220,16 @@ const styles = StyleSheet.create({
     color: '#0095f6',
     fontWeight: '600',
   },
-  themeToggleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+  showHideButton: {
+    alignSelf: 'flex-end',
+    paddingVertical: 5,
+    marginBottom: 5,
   },
-  toggleLabel: {
-    marginRight: 10,
-    fontSize: 12,
-    color: '#8e8e8e',
+  showHideText: {
+    color: '#0095f6',
+    fontWeight: '600',
+  },
+  darkShowHideText: {
+    color: '#007bff',
   },
 });

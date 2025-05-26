@@ -8,6 +8,11 @@ import { useSelector } from 'react-redux';
 
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignupScreen from '../screens/Auth/SignupScreen';
+import SignupEmailScreen from '../screens/Auth/SignUp/SignupEmailScreen';
+import SignupNameScreen from '../screens/Auth/SignUp/SignupNameScreen';
+import SignupUsernameScreen from '../screens/Auth/SignUp/SignupUsernameScreen';
+import SignupPasswordScreen from '../screens/Auth/SignUp/SignupPasswordScreen';
+
 import HomeScreen from '../screens/Home/HomeScreen';
 import UploadScreen from '../screens/Upload/UploadScreen';
 import UploadStoryScreen from '../screens/Upload/UploadStoryScreen';
@@ -277,6 +282,11 @@ export default function AppNavigator() {
         <>
           <RootStack.Screen name="Login" component={LoginScreen} />
           <RootStack.Screen name="Signup" component={SignupScreen} />
+                    {/* Subsequent steps in the signup flow */}
+          <RootStack.Screen name="SignupEmail" component={SignupEmailScreen} options={{ headerShown: false }} />
+          <RootStack.Screen name="SignupName" component={SignupNameScreen} options={{ headerShown: false }} />
+          <RootStack.Screen name="SignupUsername" component={SignupUsernameScreen} options={{ headerShown: false }} />
+          <RootStack.Screen name="SignupPassword" component={SignupPasswordScreen} options={{ headerShown: false }} />
         </>
       )}
     </RootStack.Navigator>
