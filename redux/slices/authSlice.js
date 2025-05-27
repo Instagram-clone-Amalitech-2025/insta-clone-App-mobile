@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // API endpoints
-const SIGNUP_URL = 'https://instaclone-backend-79yc.onrender.com/auth/register/';
-const LOGIN_URL = 'https://instaclone-backend-79yc.onrender.com/auth/login/';
+const SIGNUP_URL = 'https://felnan.pythonanywhere.com/auth/register/';
+const LOGIN_URL = 'https://felnan.pythonanywhere.com/auth/login/';
 
 // Thunk for user signup
 export const signup = createAsyncThunk(

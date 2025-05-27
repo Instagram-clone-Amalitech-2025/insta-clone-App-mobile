@@ -1,9 +1,9 @@
 import React from 'react';
 import {  View, Text, StyleSheet, ScrollView, Image, TouchableOpacity,  Linking} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons'; // Import Feather for the back icon
-import { SafeAreaView } from 'react-native-safe-area-context'; // Import SafeAreaView
-import { useSelector } from 'react-redux'; // Import useSelector for theme
+import { Feather } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux'; 
 
 const AboutAppScreen = ({ navigation }) => {
   // App information
@@ -82,8 +82,8 @@ const AboutAppScreen = ({ navigation }) => {
           style={styles.appLogo}
           resizeMode="contain"
         />
-        <Text style={styles.appName}>Instagram Clone Project</Text>
-        <Text style={styles.appVersion}>Version {appInfo.version}</Text>
+        <Text style={[styles.appName, dynamicStyles.text]}>Instagram Clone Project</Text>
+        <Text style={[styles.appVersion, dynamicStyles.mutedText]}>Version {appInfo.version}</Text>
         <Text style={[styles.releaseDate, dynamicStyles.mutedText]}>Released on {appInfo.releaseDate}</Text>
       </View>
 
@@ -172,7 +172,7 @@ const AboutAppScreen = ({ navigation }) => {
       </View>
 
       <View style={[styles.copyrightSection, dynamicStyles.sectionBackground]}>
-        <Text style={styles.copyrightText}>
+        <Text style={[styles.copyrightText, dynamicStyles.mutedText]}>
           © {new Date().getFullYear()} {appInfo.developer}. All rights reserved.
         </Text>
       </View>
@@ -270,10 +270,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   lightText: {
-    color: '#333333', // Default text color for light mode
+    color: '#333333', 
   },
   darkText: {
-    color: '#FFFFFF', // Default text color for dark mode
+    color: '#FFFFFF', 
   },
   lightMutedText: {
     color: '#666666',
@@ -380,11 +380,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999999',
   },
-  lightSectionTitleText: { // Specific for section titles if different from general text
+  lightSectionTitleText: { 
     color: '#333333',
   },
   darkSectionTitleText: {
-    color: '#DDDDDD', // Lighter for dark mode section titles
+    color: '#DDDDDD', 
   },
 });
 
