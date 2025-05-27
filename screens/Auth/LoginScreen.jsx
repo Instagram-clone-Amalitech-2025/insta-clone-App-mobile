@@ -8,6 +8,7 @@ import { login } from '../../redux/slices/authSlice';
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
+    const { loading, error } = useSelector((state) => state.auth);
   const theme = useSelector((state) => state.theme.theme);
   const isDark = theme === 'dark';
 
@@ -62,12 +63,13 @@ useEffect(() => {
             </Text>
           </TouchableOpacity>
 
-
+        {error && <Text style={styles.errorText}>{error}</Text>}
           <Button 
-            title="Log in" 
+            title={loading ? "Logging In..." : "Log In"}
             onPress={handleLogin} 
             style={styles.loginButton}
             textStyle={styles.loginButtonText}
+            disabled={loading || !username.trim() || !password.trim()}
           />
 
           <View style={styles.forgotContainer}>
