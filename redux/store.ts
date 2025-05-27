@@ -1,4 +1,3 @@
-// redux/store.ts
 import { configureStore } from '@reduxjs/toolkit';
 import themeReducer from './slices/themeSlice';
 import authReducer from './slices/authSlice';
@@ -14,7 +13,6 @@ export const store = configureStore({
   },
 });
 
-export const RootState = (store) => store.getState();
-export const AppDispatch = (store) => store.dispatch;
-// This code sets up a Redux store using Redux Toolkit.
-// It imports the user slice reducer and configures the store with it.
+// ✅ Define and export types based on the store
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

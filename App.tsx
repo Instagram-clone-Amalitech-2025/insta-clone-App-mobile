@@ -6,7 +6,7 @@ import AppNavigator from './navigation/AppNavigator';
 import { checkLoginStatus } from './redux/slices/userSlice';
 
 const InitApp = () => {
-  const dispatch = useDispatch<typeof AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(checkLoginStatus());
