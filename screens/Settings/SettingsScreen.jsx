@@ -82,14 +82,6 @@ export default function SettingsScreen({ navigation }) {
             <Feather name="chevron-right" size={20} color="#AAAAAA" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem} onPress={navigateToPrivacy}>
-            <View style={styles.menuItemLeft}>
-              <Feather name="lock" size={20} color="#555" style={styles.menuItemIcon} />
-              <Text style={styles.menuItemText}>Privacy</Text>
-            </View>
-            <Feather name="chevron-right" size={20} color="#AAAAAA" />
-          </TouchableOpacity>
-
           <TouchableOpacity style={styles.menuItem} onPress={navigateToSaved}>
             <View style={styles.menuItemLeft}>
               <Feather name="bookmark" size={20} color="#555" style={styles.menuItemIcon} />
@@ -105,20 +97,6 @@ export default function SettingsScreen({ navigation }) {
             </View>
             <Feather name="chevron-right" size={20} color="#AAAAAA" />
           </TouchableOpacity>
-
-          <View style={styles.menuItem}>
-            <View style={styles.menuItemLeft}>
-              <Feather name="eye" size={20} color="#555" style={styles.menuItemIcon} />
-              <Text style={styles.menuItemText}>Private Account</Text>
-            </View>
-            <Switch
-              trackColor={{ false: "#DDDDDD", true: "#34C759" }}
-              thumbColor={"#FFFFFF"}
-              ios_backgroundColor="#DDDDDD"
-              onValueChange={togglePrivateAccount}
-              value={privateAccount}
-            />
-          </View>
         </View>
 
         {/* Preferences Section */}
@@ -236,15 +214,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    marginTop: 30,
+    marginTop: 50,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 15,
-    paddingVertical: 15,
-    marginTop: 1,
+    paddingVertical: 12,
     borderBottomWidth: 0.5,
     borderBottomColor: '#DBDBDB',
   },

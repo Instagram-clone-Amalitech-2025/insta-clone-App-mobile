@@ -88,7 +88,7 @@ const SavedPostsScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', marginTop: 30 },
+  container: { flex: 1, backgroundColor: '#fff', marginTop: 50 },
   darkContainer: { backgroundColor: '#000' },
   darkText: { color: '#FFFFFF' },
   darkMutedText: { color: '#AAAAAA' },

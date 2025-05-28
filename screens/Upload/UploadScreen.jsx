@@ -262,7 +262,6 @@ export default function UploadScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  // (same styles as before)
   container: {
     flex: 1,
     backgroundColor: '#fff',

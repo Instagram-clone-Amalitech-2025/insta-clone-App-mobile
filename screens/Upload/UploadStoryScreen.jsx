@@ -45,7 +45,7 @@ const UploadStoryScreen = () => {
 
     if (!result.canceled) {
       const uris = result.assets.map(asset => asset.uri);
-      setImages(prev => [...prev, ...uris]); // ✅ append new images
+      setImages(prev => [...prev, ...uris]);
     }
   };
 
