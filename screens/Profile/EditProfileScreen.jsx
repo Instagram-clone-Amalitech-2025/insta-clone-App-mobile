@@ -283,13 +283,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    marginTop: 30,
+    marginTop: 50,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 15,
+    marginTop: 5,
     paddingHorizontal: 15,
     paddingVertical: 10,
     borderBottomWidth: 0.5,
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 8,
   },
-  greyAvatarPlaceholder: { // Added style for grey background
+  greyAvatarPlaceholder: { 
     backgroundColor: '#E0E0E0', 
   },
   changePhotoText: {

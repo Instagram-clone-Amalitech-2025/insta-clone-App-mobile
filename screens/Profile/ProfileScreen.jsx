@@ -11,7 +11,7 @@ export default function ProfileScreen({ navigation, route }) {
   username: 'User1',
   name: 'User 1',
   bio: 'Mobile Developer | React Native Enthusiast',
-  avatar: 'https://i.pravatar.cc/150?img=64', // ✅ fixed dummy avatar
+  avatar: 'https://i.pravatar.cc/150?img=64', 
   posts: 9,
   followers: 10,
   following: 30,
@@ -113,7 +113,6 @@ export default function ProfileScreen({ navigation, route }) {
     }
   };
 
-  // Render the main profile screen
   // This is the main profile screen component
   return (
     <SafeAreaView style={styles.container}>
@@ -212,13 +211,12 @@ export default function ProfileScreen({ navigation, route }) {
     </SafeAreaView>
   );
 }
-// Import necessary libraries and components
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    marginTop: 20,
+    marginTop: 50,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {

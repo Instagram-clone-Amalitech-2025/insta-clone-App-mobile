@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
   darkSectionContainer: {
     backgroundColor: '#121212',
     borderColor: '#333333',
-    shadowColor: '#000', // Shadow might not be very visible in dark mode
+    shadowColor: '#000',
   },
   sectionTitle: {
     fontSize: 17,
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     color: '#000000',
   },
-  darkSectionTitle: { // Already have darkText, this is more specific if needed
+  darkSectionTitle: {
   },
   settingRow: {
     flexDirection: 'row',
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#0066cc',
   },
-  darkLinkText: { // For action button text in dark mode
+  darkLinkText: {
     color: '#4dabf7',
   },
   deleteButton: {

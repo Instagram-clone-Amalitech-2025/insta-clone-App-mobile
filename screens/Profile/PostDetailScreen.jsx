@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, ScrollView, Platform } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for filled heart
+import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 
 export default function PostDetailScreen({ route, navigation }) {
@@ -191,9 +191,8 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 1,
   },
-  greyPlaceholder: { // Added for the main image placeholder
-    backgroundColor: '#E0E0E0', // Or another shade of grey
-    // Dimensions are handled by styles.postImage
+  greyPlaceholder: {
+    backgroundColor: '#E0E0E0',
   },
   actionBar: {
     flexDirection: 'row',

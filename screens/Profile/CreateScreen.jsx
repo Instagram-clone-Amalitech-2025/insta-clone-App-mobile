@@ -10,11 +10,11 @@ export default function CreateScreen({ navigation }) {
   const goBack = () => navigation.goBack();
 
   const navigateToUploadPost = () => {
-    navigation.navigate('MainTabs', { screen: 'Upload' }); // Assuming 'Upload' is the route name for UploadScreen.jsx
+    navigation.navigate('MainTabs', { screen: 'Upload' }); 
   };
 
   const navigateToUploadStory = () => {
-    navigation.navigate('UploadStory'); // Assuming 'UploadStory' is the route name for UploadStoryScreen.jsx
+    navigation.navigate('UploadStory'); 
   };
 
   // Dynamic styles for dark mode
@@ -77,7 +77,7 @@ export default function CreateScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 30, // Consistent with SettingsScreen
+    marginTop: 50, 
   },
   header: {
     flexDirection: 'row',
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
   },
-  headerRight: { // Placeholder to help center the title
+  headerRight: { 
     width: 24,
   },
   content: {
@@ -103,23 +103,23 @@ const styles = StyleSheet.create({
   section: {
     paddingVertical: 15,
     paddingHorizontal: 20,
-    // borderBottomWidth: 0.5, // Optional: if you want separators between sections
-    // borderBottomColor: '#DBDBDB',
+    borderBottomWidth: 0.5, 
+    borderBottomColor: '#DBDBDB',
   },
   menuItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 16, // Increased padding for better touch area
+    paddingVertical: 16, 
   },
   menuItemLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   menuItemIcon: {
-    marginRight: 20, // Increased spacing for icon
+    marginRight: 20, 
   },
   menuItemText: {
-    fontSize: 17, // Slightly larger font size
+    fontSize: 17, 
   },
 });

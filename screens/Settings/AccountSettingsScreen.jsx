@@ -3,14 +3,14 @@ import { StyleSheet, View, Text,TouchableOpacity,Switch, ScrollView, Image, Aler
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { Feather } from '@expo/vector-icons'; // Import Feather
+import { Feather } from '@expo/vector-icons';
 import { logout } from '../../redux/slices/authSlice';
 
 const AccountSettingsScreen = () => {
   const navigation = useNavigation();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-  // const [darkModeEnabled, setDarkModeEnabled] = useState(false); // Will be driven by Redux
-  const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+   const [privateAccountEnabled, setprivateAccountEnabled] = useState(true);
+
   const appTheme = useSelector((state) => state.theme.theme);
   const isDark = appTheme === 'dark';
   const dispatch = useDispatch();
@@ -97,9 +97,7 @@ const AccountSettingsScreen = () => {
         <View style={[styles.section, isDark && styles.darkSection]}>
           <Text style={[styles.sectionTitle, isDark && styles.darkSectionTitle]}>Preferences</Text>
           {renderSettingItem('Notifications', notificationsEnabled, setNotificationsEnabled)}
-          {/* Dark mode toggle here would be redundant if global theme is used, but keeping for structure if needed locally */}
-          {/* {renderSettingItem('Dark Mode', isDark, () => dispatch(toggleTheme()), true)} */}
-          {renderSettingItem('Auto Save', autoSaveEnabled, setAutoSaveEnabled)}
+          {renderSettingItem('Private Account', privateAccountEnabled, setprivateAccountEnabled)}
         </View>
         
         <View style={[styles.section, isDark && styles.darkSection]}>
@@ -152,11 +150,11 @@ const AccountSettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f2f5', // Light mode background
-    marginTop: 20,
+    backgroundColor: '#f0f2f5', 
+    marginTop: 0,
   },
   darkContainer: {
-    backgroundColor: '#000000', // Dark mode background
+    backgroundColor: '#000000',
   },
   darkText: {
     color: '#FFFFFF',
@@ -165,12 +163,12 @@ const styles = StyleSheet.create({
     color: '#AAAAAA',
   },
   darkLinkText: {
-    color: '#4dabf7', // A lighter blue for dark mode links
+    color: '#4dabf7', 
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Changed for better title centering
+    justifyContent: 'space-between', 
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
@@ -182,16 +180,15 @@ const styles = StyleSheet.create({
     borderBottomColor: '#333333',
   },
   backButton: {
-    padding: 5, // Matched SettingsScreen
+    padding: 5, 
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    // marginLeft: 12, // Removed as justifyContent will handle spacing
-    color: '#000', // Default header title color
+    color: '#000',
   },
-  headerRightPlaceholder: { // Added for centering title, similar to SettingsScreen
-    width: 24, // Should match the effective width of the back button icon area
+  headerRightPlaceholder: {
+    width: 24,
   },
   content: {
     flex: 1,
@@ -237,7 +234,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopWidth: 1,
     borderBottomWidth: 1,
-    borderColor: '#e1e4e8', // Default border color
+    borderColor: '#e1e4e8',
   },
   darkSection: {
     backgroundColor: '#121212',
@@ -249,11 +246,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#666',
-    backgroundColor: '#f0f2f5', // Light mode section title background
+    backgroundColor: '#f0f2f5',
   },
   darkSectionTitle: {
     color: '#AAAAAA',
-    backgroundColor: '#000000', // Dark mode section title background
+    backgroundColor: '#000000',
   },
   settingItem: {
     flexDirection: 'row',
@@ -269,7 +266,7 @@ const styles = StyleSheet.create({
   },
   settingTitle: {
     fontSize: 16,
-    color: '#000', // Default setting title color
+    color: '#000',
   },
   optionItem: {
     flexDirection: 'row',
@@ -285,51 +282,50 @@ const styles = StyleSheet.create({
   },
   optionTitle: {
     fontSize: 16,
-    color: '#000', // Default option title color
+    color: '#000',
   },
   optionArrow: {
     fontSize: 18,
     color: '#666',
   },
   dangerSection: {
-    flexDirection: 'row', // Arrange children horizontally
-    justifyContent: 'space-between', // Space out the buttons
-    alignItems: 'center', // Vertically align buttons
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginTop: 24,
     marginBottom: 40,
     paddingHorizontal: 16,
   },
   logoutButton: {
-    backgroundColor: '#FF3B30', // Match SettingsScreen dangerButton
-    borderRadius: 5,             // Match SettingsScreen dangerButton
+    backgroundColor: '#FF3B30',
+    borderRadius: 5,
     alignItems: 'center',
-    flex: 1, // Take equal space
-    marginRight: 8, // Add space between buttons
-    paddingVertical: 10, // Slightly reduced padding for smaller height
+    flex: 1,
+    marginRight: 8,
+    paddingVertical: 10,
   },
   darkLogoutButton: {
-    backgroundColor: '#FF3B30', // Keep it the same red for dark mode, consistent with SettingsScreen
+    backgroundColor: '#FF3B30',
   },
   logoutButtonText: {
-    color: '#FFFFFF',            // Match SettingsScreen dangerButtonText
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '600',           // Match SettingsScreen dangerButtonText
+    fontWeight: '600',
   },
-  // Shared dark style for both danger buttons
   darkDangerButton: {
-    backgroundColor: '#FF3B30', // Keep the same red in dark mode
+    backgroundColor: '#FF3B30',
   },
   deleteAccountButton: {
-    backgroundColor: '#FF3B30', // Match Logout button
-    borderRadius: 5,             // Match Logout button
+    backgroundColor: '#FF3B30',
+    borderRadius: 5,
     alignItems: 'center',
-    flex: 1, // Take equal space
-    paddingVertical: 10, // Slightly reduced padding for smaller height
+    flex: 1,
+    paddingVertical: 10,
   },
   deleteAccountButtonText: {
-    color: '#FFFFFF',            // Match Logout button text
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: '600',           // Match Logout button text
+    fontWeight: '600',
   },
 });
 

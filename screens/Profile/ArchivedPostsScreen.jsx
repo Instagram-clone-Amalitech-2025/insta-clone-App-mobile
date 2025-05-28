@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9f9f9',
-    marginTop: 30,
+  marginTop: 50,
   },
   darkContainer: {
     backgroundColor: '#000000',
@@ -152,13 +152,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f9f9f9', // Ensure loading container matches light theme
+    backgroundColor: '#f9f9f9', 
   },
   listContainer: {
     paddingVertical: 12,
   },
   darkListContainer: {
-    // Potentially add dark mode specific styles for the list if needed, e.g., different separator color
   },
   postItem: {
     backgroundColor: '#ffffff',
@@ -173,8 +172,6 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 1,
   },
-  // Add darkPostItem style if needed for dark mode
-  // darkPostItem: { backgroundColor: '#121212', borderColor: '#333333' },
   postContent: {
     flex: 1,
   },
@@ -182,7 +179,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#333333', 
-    // For dark mode: color: isDark ? '#FFFFFF' : '#333333',
     marginBottom: 4,
   },
   postDate: {
@@ -190,13 +186,11 @@ const styles = StyleSheet.create({
     color: '#888888',
     marginBottom: 6,
   },
-  // For dark mode: color: isDark ? '#AAAAAA' : '#888888',
   postPreview: {
     fontSize: 14,
     color: '#666666',
     lineHeight: 20,
   },
-  // For dark mode: color: isDark ? '#CCCCCC' : '#666666',
   unarchiveButton: {
     justifyContent: 'center',
     paddingLeft: 12,

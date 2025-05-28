@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for filled heart
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPosts } from '../../redux/slices/postSlice'; 
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
-    height: 60, // Adjusted height for better spacing
+    height: 60,
     borderBottomWidth: 1,
     borderBottomColor: '#DBDBDB',
     backgroundColor: '#FFFFFF',
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#DBDBDB',
     marginBottom: 10,
   },
-  darkStoriesContainer: { // Added for dark mode consistency
+  darkStoriesContainer: {
     borderBottomColor: '#333333',
   },
   storyItem: {
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#DBDBDB',
     backgroundColor: '#FFF',
   },
-  darkPost: { // Added for dark mode post background
+  darkPost: {
     backgroundColor: '#121212',
     borderBottomColor: '#333333',
   },

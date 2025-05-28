@@ -11,14 +11,6 @@ const NotificationsScreen = ({ navigation }) => {
   const appTheme = useSelector((state) => state.theme.theme);
   const isDark = appTheme === 'dark';
 
-    // Mock data for notifications
-//   const mockNotifications = [
-//     { id: '1', type: 'like', user: 'John Doe', userAvatar: 'https://i.pravatar.cc/150?img=1', postPreview: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=100&q=60', message: 'liked your photo.', timestamp: '2h ago', postId: 'post1' },
-//     { id: '2', type: 'comment', user: 'Jane Smith', userAvatar: 'https://i.pravatar.cc/150?img=2', message: 'commented: "Great shot!"', timestamp: '5h ago', postId: 'post2' },
-//     { id: '3', type: 'follow', user: 'Alex Johnson', userAvatar: 'https://i.pravatar.cc/150?img=3', message: 'started following you.', timestamp: '1d ago', userId: 'user3' },
-//     { id: '4', type: 'mention', user: 'Chris Lee', userAvatar: 'https://i.pravatar.cc/150?img=4', postPreview: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=100&q=60', message: 'mentioned you in a comment.', timestamp: '3d ago', postId: 'post4' },
-//   ];
-
   useEffect(() => {
     // Simulate fetching archived posts from API
      fetchNotifications();
@@ -79,7 +71,7 @@ const NotificationsScreen = ({ navigation }) => {
         <Image source={{ uri: item.postPreview }} style={styles.postPreviewImage} />
       )}
       <TouchableOpacity 
-        style={styles.deleteButton} // Also, ensure this style name matches if it was intended to be 'deleteButton'
+        style={styles.deleteButton}
         onPress={() => handleDeleteNotification(item.id)}
       >
         <Feather name="x" size={20} color={isDark ? "#AAAAAA" : "#888888"} />
@@ -155,7 +147,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#dbdbdb',
     backgroundColor: '#fff',
   },
-    backButton: { padding: 5 }, // Added for consistent spacing
+    backButton: { padding: 5 },
   darkHeader: {
     backgroundColor: '#121212',
     borderBottomColor: '#333333',
@@ -165,13 +157,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f9f9f9', // Ensure loading container matches light theme
+    backgroundColor: '#f9f9f9',
   },
   listContainer: {
     paddingVertical: 12,
   },
   darkListContainer: {
-    // Potentially add dark mode specific styles for the list if needed, e.g., different separator color
   },
   notificationItem: {
     backgroundColor: '#ffffff',
@@ -189,8 +180,7 @@ const styles = StyleSheet.create({
 
   darkNotificationItem: {
     backgroundColor: '#121212',
-    // borderColor: '#333333', // If using borders
-    shadowColor: '#000', // Shadow might not be very visible
+    shadowColor: '#000',
   },
   userAvatar: {
     width: 40,
@@ -213,20 +203,19 @@ const styles = StyleSheet.create({
   timestamp: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333333', // Default light mode text
-    // For dark mode: color: isDark ? '#FFFFFF' : '#333333',
+    color: '#333333',
     marginBottom: 4,
   },
   postPreviewImage: {
     width: 40,
     height: 40,
-    borderRadius: 4, // Optional: slight rounding for image
+    borderRadius: 4,
     marginLeft: 10,
   },
   deleteButton: {
     justifyContent: 'center',
     paddingLeft: 12,
-    paddingRight: 4, // Give some space from the edge
+    paddingRight: 4,
   },
   emptyContainer: {
     flex: 1,

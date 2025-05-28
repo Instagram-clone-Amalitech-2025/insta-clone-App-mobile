@@ -11,7 +11,7 @@ const AboutAppScreen = ({ navigation }) => {
     version: '1.1.0',
     releaseDate: 'May 5, 2025',
     developer: 'Intagram Group. ',
-    website: 'https://example.com', // Added website for handleOpenWebsite
+    website: 'https://example.com', // Added dummy website for handleOpenWebsite
   };
 
   // Team members

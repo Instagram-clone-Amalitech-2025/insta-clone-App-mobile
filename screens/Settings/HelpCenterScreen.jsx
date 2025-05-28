@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { StyleSheet,View,Text,TouchableOpacity,FlatList,TextInput, ScrollView,Linking,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { Feather } from '@expo/vector-icons'; // Import Feather
-import { useSelector } from 'react-redux'; // Import useSelector for theme
+import { Feather } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
 
 const HelpCenterScreen = () => {
   const navigation = useNavigation();
@@ -160,38 +160,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
-    marginTop: 30, // Added to match SettingsScreen
+    marginTop: 10,
   },
-  darkContainer: { // Added for dark mode
+  darkContainer: {
     backgroundColor: '#000000',
   },
-  darkText: { // Added for dark mode
+  darkText: {
     color: '#FFFFFF',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Changed for title centering
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e1e4e8',
   },
-  darkHeader: { // Added for dark mode
+  darkHeader: {
     backgroundColor: '#121212',
     borderBottomColor: '#333333',
   },
   backButton: {
-    padding: 5, // Matched SettingsScreen
+    padding: 5,
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    // marginLeft: 12, // Removed for better centering with justifyContent
   },
-  headerRightPlaceholder: { // Added for centering title
-    width: 24, // Match icon size
+  headerRightPlaceholder: {
+    width: 24,
   },
   content: {
     flex: 1,
