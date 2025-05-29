@@ -28,8 +28,8 @@ import AccountSettingsScreen from '../screens/Settings/AccountSettingsScreen';
 import PrivacySettingsScreen from '../screens/Settings/PrivacySettingsScreen';
 import HelpCenterScreen from '../screens/Settings/HelpCenterScreen';
 import AboutAppScreen from '../screens/Settings/AboutAppScreen';
-import NotificationsScreen from '../screens/Home/NotificationsScreen'; // Import NotificationsScreen
-import CreateScreen from '../screens/Profile/CreateScreen'; // Import CreateScreen
+import NotificationsScreen from '../screens/Home/NotificationsScreen'; 
+import CreateScreen from '../screens/Profile/CreateScreen'; 
 
 const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -301,6 +301,4 @@ export default function AppNavigator() {
       )}
     </RootStack.Navigator>
   );
-}
-
-// Note: The above code assumes that you have already set up the necessary screens and context.   
+} 
