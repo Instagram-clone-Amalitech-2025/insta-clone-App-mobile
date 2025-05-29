@@ -39,6 +39,7 @@ export const login = createAsyncThunk(
 
 const initialState = {
   user: null,
+  token: null,
   loading: false,
   error: null,
   isAuthenticated: false,
@@ -66,7 +67,8 @@ const authSlice = createSlice({
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
         state.isAuthenticated = true;
       })
       .addCase(signup.rejected, (state, action) => {

@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f8f9fa',
-    marginTop: 10,
+    marginTop: 0,
   },
   darkContainer: {
     backgroundColor: '#000000',

@@ -30,7 +30,7 @@ const { isAuthenticated } = useSelector((state) => state.auth);
 
 useEffect(() => {
   if (isAuthenticated) {
-    navigation.replace('HomeScreen');
+navigation.replace('MainTabs', { screen: 'HomeScreen' });
   }
 }, [isAuthenticated]);
 
@@ -87,7 +87,7 @@ useEffect(() => {
 
         <TouchableOpacity style={styles.facebookLogin}>
           <Text style={styles.facebookText}>
-            <Text style={styles.facebookIcon}>f</Text> Log in with Facebook
+            <Text style={styles.facebookIcon}></Text> Log in with Facebook
           </Text>
         </TouchableOpacity>
 
