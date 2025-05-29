@@ -5,6 +5,7 @@ import { store, AppDispatch } from './redux/store';
 import AppNavigator from './navigation/AppNavigator'; 
 import { checkLoginStatus } from './redux/slices/userSlice';
 
+
 const InitApp = () => {
   const dispatch = useDispatch<AppDispatch>();
 

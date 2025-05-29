@@ -47,7 +47,11 @@ export default function EditProfileScreen({ navigation, route }) {
   const handleSave = () => {
     if (hasChanges) {
       // Return to ProfileScreen with updated user data
-      navigation.navigate('Profile', { updatedUser: userData });
+      navigation.navigate('MainTabs', {
+  screen: 'Profile',
+  params: { updatedUser: userData },
+});
+
     } else {
       navigation.goBack();
     }

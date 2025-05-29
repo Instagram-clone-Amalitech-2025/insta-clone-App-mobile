@@ -1,81 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import {  View,  Text,  StyleSheet,  Image,  TouchableOpacity,  ScrollView,  SafeAreaView,  FlatList} from 'react-native';
-import { Feather } from '@expo/vector-icons'; 
-import { Platform,StatusBar } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, FlatList, Platform, StatusBar} from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { fetchUserProfile } from '../../redux/slices/userSlice';
 
 export default function ProfileScreen({ navigation, route }) {
-  
-// Dummy user data for testing
-// In the real app, this data would be fetched from an API or database
-  const [user, setUser] = useState({
-  username: 'User1',
-  name: 'User 1',
-  bio: 'Mobile Developer | React Native Enthusiast',
-  avatar: 'https://i.pravatar.cc/150?img=64', 
-  posts: 9,
-  followers: 10,
-  following: 30,
-  website: '',
-  phone: '',
-  email: 'user1@example.com',
-  gender: ''
-});
+  const dispatch = useDispatch();
+const { user, loading, error } = useSelector(state => state.user);
 
-  // Add active tab state
+// Fetch user profile on mount
+useEffect(() => {
+  dispatch(fetchUserProfile());
+}, []);
+
   const [activeTab, setActiveTab] = useState('posts');
-  
-
-  // Update user data when returning from EditProfileScreen
-  useEffect(() => {
-    if (route.params?.updatedUser) {
-      setUser(route.params.updatedUser);
-    }
-  }, [route.params?.updatedUser]);
 
   // Navigate to Edit Profile screen with current user data
   const handleEditProfile = () => {
     navigation.navigate('EditProfile', { user });
   };
 
-  // Create data for each tab
-  //Post data
   const postsData = Array(9).fill().map((_, index) => ({
     id: `post-${index}`,
     imageUrl: `https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=500&q=60`,
   }));
-  //Tagged data
+
   const taggedData = Array(5).fill().map((_, index) => ({
     id: `tagged-${index}`,
     imageUrl: `https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=500&q=60`,
     taggedBy: `user_${Math.floor(Math.random() * 100)}`,
   }));
 
-  // Navigate to post detail screen
   const navigateToPostDetail = (item, type) => {
     navigation.navigate('PostDetail', { item, type });
   };
 
-  // Render post grid item
   const renderPostItem = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.postItemContainer}
-      onPress={() => navigateToPostDetail(item, 'post')}
-      activeOpacity={0.8}
-    >
-      {/* Replaced Image with a grey View */}
+    <TouchableOpacity style={styles.postItemContainer} onPress={() => navigateToPostDetail(item, 'post')} activeOpacity={0.8}>
       <View style={styles.greyPlaceholder} />
-
     </TouchableOpacity>
   );
 
-  // Render tagged grid item
   const renderTaggedItem = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.taggedContainer}
-      onPress={() => navigateToPostDetail(item, 'tagged')}
-      activeOpacity={0.8}
-    >
-      {/* Replaced Image with a grey View */}
+    <TouchableOpacity style={styles.taggedContainer} onPress={() => navigateToPostDetail(item, 'tagged')} activeOpacity={0.8}>
       <View style={styles.greyPlaceholder} />
       <View style={styles.taggedIndicator}>
         <Feather name="user" size={12} color="white" />
@@ -83,9 +50,8 @@ export default function ProfileScreen({ navigation, route }) {
     </TouchableOpacity>
   );
 
-  // Render content based on active tab
   const renderTabContent = () => {
-    switch(activeTab) {
+    switch (activeTab) {
       case 'posts':
         return (
           <FlatList
@@ -113,11 +79,35 @@ export default function ProfileScreen({ navigation, route }) {
     }
   };
 
-  // This is the main profile screen component
+if (loading) {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={{ textAlign: 'center', marginTop: 50 }}>Loading user profile...</Text>
+    </SafeAreaView>
+  );
+}
+
+if (error) {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={{ textAlign: 'center', marginTop: 50 }}>Error: {error}</Text>
+    </SafeAreaView>
+  );
+}
+
+// Add a check for the user object itself after loading and error checks
+if (!user) {
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text style={{ textAlign: 'center', marginTop: 50 }}>User profile not available.</Text>
+    </SafeAreaView>
+  );
+}
+
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header with username and settings */}
         <View style={styles.header}>
           <Text style={styles.username}>{user.username}</Text>
           <View style={styles.headerIcons}>
@@ -130,33 +120,29 @@ export default function ProfileScreen({ navigation, route }) {
           </View>
         </View>
 
-        {/* Profile info section */}
         <View style={styles.profileSection}>
-          <Image source={{ uri: user.avatar }} style={styles.avatar} />
-          
+          <Image source={{ uri: user.profile_picture}} style={styles.avatar} />
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{user.posts}</Text>
+              <Text style={styles.statNumber}>{user.post_count}</Text>
               <Text style={styles.statLabel}>Posts</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{user.followers}</Text>
+              <Text style={styles.statNumber}>{user.followers_count}</Text>
               <Text style={styles.statLabel}>Followers</Text>
             </View>
             <View style={styles.statItem}>
-              <Text style={styles.statNumber}>{user.following}</Text>
+              <Text style={styles.statNumber}>{user.following_count}</Text>
               <Text style={styles.statLabel}>Following</Text>
             </View>
           </View>
         </View>
 
-        {/* Bio section */}
         <View style={styles.bioSection}>
-          <Text style={styles.name}>{user.name}</Text>
+          <Text style={styles.name}>{user.full_name}</Text>
           <Text style={styles.bio}>{user.bio}</Text>
         </View>
 
-        {/* Action buttons */}
         <View style={styles.actionButtons}>
           <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
             <Text style={styles.editButtonText}>Edit Profile</Text>
@@ -166,7 +152,6 @@ export default function ProfileScreen({ navigation, route }) {
           </TouchableOpacity>
         </View>
 
-        {/* Story highlights */}
         <View style={styles.highlightsSection}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.highlightsScroll}>
             <View style={styles.highlightItem}>
@@ -175,35 +160,18 @@ export default function ProfileScreen({ navigation, route }) {
               </View>
               <Text style={styles.highlightText}>New</Text>
             </View>
-            {/* Additional highlights would go here */}
           </ScrollView>
         </View>
 
-        {/* Tab view (Posts, Reels, Tagged) */}
         <View style={styles.tabBar}>
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'posts' && styles.activeTab]}
-            onPress={() => setActiveTab('posts')}
-          >
-            <Feather 
-              name="grid" 
-              size={24} 
-              color={activeTab === 'posts' ? "black" : "gray"} 
-            />
+          <TouchableOpacity style={[styles.tab, activeTab === 'posts' && styles.activeTab]} onPress={() => setActiveTab('posts')}>
+            <Feather name="grid" size={24} color={activeTab === 'posts' ? 'black' : 'gray'} />
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={[styles.tab, activeTab === 'tagged' && styles.activeTab]}
-            onPress={() => setActiveTab('tagged')}
-          >
-            <Feather 
-              name="user" 
-              size={24} 
-              color={activeTab === 'tagged' ? "black" : "gray"} 
-            />
+          <TouchableOpacity style={[styles.tab, activeTab === 'tagged' && styles.activeTab]} onPress={() => setActiveTab('tagged')}>
+            <Feather name="user" size={24} color={activeTab === 'tagged' ? 'black' : 'gray'} />
           </TouchableOpacity>
         </View>
 
-        {/* Content based on selected tab */}
         <View style={styles.tabContent}>
           {renderTabContent()}
         </View>
@@ -211,6 +179,7 @@ export default function ProfileScreen({ navigation, route }) {
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
