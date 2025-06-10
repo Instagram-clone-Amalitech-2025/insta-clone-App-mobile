@@ -28,8 +28,8 @@ import AccountSettingsScreen from '../screens/Settings/AccountSettingsScreen';
 import PrivacySettingsScreen from '../screens/Settings/PrivacySettingsScreen';
 import HelpCenterScreen from '../screens/Settings/HelpCenterScreen';
 import AboutAppScreen from '../screens/Settings/AboutAppScreen';
-import NotificationsScreen from '../screens/Home/NotificationsScreen'; // Import NotificationsScreen
-import CreateScreen from '../screens/Profile/CreateScreen'; // Import CreateScreen
+import NotificationsScreen from '../screens/Home/NotificationsScreen'; 
+import CreateScreen from '../screens/Profile/CreateScreen'; 
 
 const RootStack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -137,7 +137,7 @@ export default function AppNavigator() {
             name="Notifications"
             component={NotificationsScreen}
             options={{
-              headerShown: false, // Assuming custom header in NotificationsScreen
+              headerShown: false, 
             }}
           />
           {/* PostDetailScreen */}
@@ -145,7 +145,7 @@ export default function AppNavigator() {
             name="PostDetail" 
             component={PostDetailScreen}
             options={{
-              headerShown: false // Using custom header in the component
+              headerShown: false 
             }}
           />
           
@@ -154,7 +154,7 @@ export default function AppNavigator() {
             name="Settings" 
             component={SettingsScreen}
             options={{
-              headerShown: false // Custom header in the component
+              headerShown: false 
             }}
           />
           
@@ -284,14 +284,14 @@ export default function AppNavigator() {
       <RootStack.Screen
         name="Create"
         component={CreateScreen}
-        options={{ headerShown: false }} // Assuming custom header in CreateScreen
+        options={{ headerShown: false }} 
           />
         </>
       ) : (
         <>
           <RootStack.Screen name="Login" component={LoginScreen} />
           <RootStack.Screen name="Signup" component={SignupScreen} />
-                    {/* Subsequent steps in the signup flow */}
+          {/* Subsequent steps in the signup flow */}
           <RootStack.Screen name="SignupEmail" component={SignupEmailScreen} options={{ headerShown: false }} />
           <RootStack.Screen name="SignupName" component={SignupNameScreen} options={{ headerShown: false }} />
           <RootStack.Screen name="SignupAvatar" component={SignupAvatarScreen} options={{ headerShown: false }} />
@@ -301,6 +301,4 @@ export default function AppNavigator() {
       )}
     </RootStack.Navigator>
   );
-}
-
-// Note: The above code assumes that you have already set up the necessary screens and context.   
+} 

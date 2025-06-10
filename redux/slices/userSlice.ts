@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { RootState } from '../store'; // Adjust import path as needed
-
-// Types
+import { RootState } from '../store'; 
 interface UserProfile {
   username: string;
   id: number;
@@ -39,7 +37,7 @@ const storage = {
 
 // ========================= Thunks =========================
 
-// Check login status (e.g. on app start)
+// Check login status
 export const checkLoginStatus = createAsyncThunk(
   'user/checkLoginStatus',
   async (_, thunkAPI) => {
