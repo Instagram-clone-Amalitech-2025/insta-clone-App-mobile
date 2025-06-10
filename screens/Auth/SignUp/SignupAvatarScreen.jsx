@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TouchableOpacity, Image } from 'react-native';
-import Button from '../../../components/Common/Button'; // Adjust path if necessary
+import Button from '../../../components/Common/Button'; 
 import { Feather } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
@@ -67,21 +67,21 @@ export default function SignupAvatarScreen({ route, navigation }) {
         {/* Buttons */}
         <Button
           title="Add a Picture"
-          onPress={handleAddPicture} // Call image picker
+          onPress={handleAddPicture} 
           style={[styles.button, isDark && styles.darkButton]}
           textStyle={[styles.buttonText, isDark && styles.darkButtonText]}
         />
         {/* This button navigates to the next screen */}
          <Button
           title="Next"
-          onPress={handleNext} // Navigate to next screen
+          onPress={handleNext} 
           style={[styles.button, isDark && styles.darkButton]}
           textStyle={[styles.buttonText, isDark && styles.darkButtonText]}
         />
 
         <TouchableOpacity
             style={[styles.outlineButton, isDark && styles.darkOutlineButton]}
-            onPress={handleSkip} // Skip to next screen
+            onPress={handleSkip} 
         >
             <Text style={[styles.outlineButtonText, isDark && styles.darkOutlineButtonText]}>Skip</Text>
         </TouchableOpacity>
@@ -95,16 +95,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: 20,
+    marginTop: 50,
   },
   darkContainer: {
     backgroundColor: '#000',
   },
   keyboardAvoid: {
     flex: 1,
-    justifyContent: 'flex-start', // Align content to top
+    justifyContent: 'flex-start', 
     paddingHorizontal: 20,
-    paddingTop: 80, // Space below back button
+    paddingTop: 80, 
     alignItems: 'center',
   },
   backButton: {
@@ -135,19 +135,19 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#dbdbdb', // Default grey background
+    backgroundColor: '#dbdbdb', 
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarPlaceholder: {
-    backgroundColor: '#dbdbdb', // Grey background for placeholder
+    backgroundColor: '#dbdbdb', 
   },
   button: {
     backgroundColor: '#0095f6',
     borderRadius: 5,
     padding: 15,
     alignItems: 'center',
-    marginTop: 10, // Space between buttons
+    marginTop: 10, 
     width: '100%',
     maxWidth: 350,
   },
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 15,
     alignItems: 'center',
-    marginTop: 15, // Space below the filled button
+    marginTop: 15, 
     width: '100%',
     maxWidth: 350,
   },

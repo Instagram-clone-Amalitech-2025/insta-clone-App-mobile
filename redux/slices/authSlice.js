@@ -11,7 +11,7 @@ export const signup = createAsyncThunk(
   async (userData, thunkAPI) => {
     try {
       const response = await axios.post(SIGNUP_URL, userData);
-      return response.data; // expecting user object or token from backend
+      return response.data; 
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || 'Signup failed'
@@ -26,7 +26,7 @@ export const login = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const response = await axios.post(LOGIN_URL, credentials);
-      return response.data; // expecting user object or token from backend
+      return response.data; 
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || 'Login failed'
