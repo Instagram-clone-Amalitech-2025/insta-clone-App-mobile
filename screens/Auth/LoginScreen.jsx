@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AuthTextInput from '../../components/Auth/AuthTextInput';
 import Button from '../../components/Common/Button';
 import { login } from '../../redux/slices/authSlice';
+import { setTokenAndUser } from '../../redux/slices/userSlice'; 
 
 export default function LoginScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -18,13 +19,31 @@ export default function LoginScreen({ navigation }) {
 
    const auth = useSelector((state) => state.auth);
 
-    const handleLogin = () => {
-    if (!username || !password) {
-      alert('Please enter both username and password.');
-      return;
+    const handleLogin = async () => {
+  if (!username || !password) {
+    alert('Please enter both username and password.');
+    return;
+  }
+
+  try {
+    const resultAction = await dispatch(login({ username, password }));
+
+    if (login.fulfilled.match(resultAction)) {
+      const { access } = resultAction.payload;
+
+      console.log('✅ Login Response:', resultAction.payload);
+      await dispatch(setTokenAndUser({ token: access }));
+    } else {
+      console.log('❌ Login failed:', resultAction.payload);
+      alert(resultAction.payload);
     }
-    dispatch(login({ username, password }));
-    };
+  } catch (err) {
+    console.error('🔥 Unexpected login error:', err);
+  }
+};
+
+
+
 
 const { isAuthenticated } = useSelector((state) => state.auth);
 
