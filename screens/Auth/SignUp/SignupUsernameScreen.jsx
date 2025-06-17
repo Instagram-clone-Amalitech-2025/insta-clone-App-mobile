@@ -6,7 +6,7 @@ import { Feather } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 
 export default function SignupUsernameScreen({ route, navigation }) {
-  const { identifier, fullName } = route.params;
+  const { identifier, full_name } = route.params;
   const [username, setUsername] = useState('');
   const theme = useSelector((state) => state.theme.theme);
   const isDark = theme === 'dark';
@@ -20,7 +20,7 @@ export default function SignupUsernameScreen({ route, navigation }) {
         alert('Username must be at least 3 characters and cannot contain spaces.');
         return;
     }
-    navigation.navigate('SignupPassword', { identifier, fullName, username });
+    navigation.navigate('SignupPassword', { identifier, full_name, username });
   };
 
   return (

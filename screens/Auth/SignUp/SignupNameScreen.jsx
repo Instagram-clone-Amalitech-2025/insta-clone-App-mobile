@@ -7,16 +7,16 @@ import { useSelector } from 'react-redux';
 
 export default function SignupNameScreen({ route, navigation }) {
   const { identifier } = route.params;
-  const [fullName, setFullName] = useState('');
+  const [full_name, setFullName] = useState('');
   const theme = useSelector((state) => state.theme.theme);
   const isDark = theme === 'dark';
 
   const handleNext = () => {
-    if (!fullName.trim()) {
+    if (!full_name.trim()) {
       alert('Please enter your full name.');
       return;
     }
-    navigation.navigate('SignupAvatar', { identifier, fullName });
+    navigation.navigate('SignupAvatar', { identifier, full_name });
   };
 
   return (
@@ -34,7 +34,7 @@ export default function SignupNameScreen({ route, navigation }) {
         </Text>
         <AuthTextInput
           placeholder="Full Name"
-          value={fullName}
+          value={full_name}
           onChangeText={setFullName}
           style={[styles.input, isDark && styles.darkInput]}
         />

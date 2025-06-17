@@ -13,7 +13,7 @@ export default function EditProfileScreen({ navigation, route }) {
   // Get user data passed from ProfileScreen
   const initialUser = route.params?.user || {
     username: 'User1',
-    name: 'User 1',
+    full_name: 'User 1',
     bio: 'Mobile Developer | React Native Enthusiast',
     avatar: DEFAULT_AVATAR_PLACEHOLDER,
     posts: 9,
@@ -140,7 +140,7 @@ export default function EditProfileScreen({ navigation, route }) {
               <TextInput
                 style={styles.textInput}
                 value={userData.name}
-                onChangeText={(text) => handleChange('name', text)}
+                onChangeText={(text) => handleChange('full_name', text)}
                 placeholder="Name"
                 placeholderTextColor="#999"
               />

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
 
 export default function SignupAvatarScreen({ route, navigation }) {
-  const { identifier, fullName } = route.params;
+  const { identifier, full_name } = route.params;
   const [avatarUri, setAvatarUri] = useState(null); 
 
   const theme = useSelector((state) => state.theme.theme);
@@ -31,11 +31,11 @@ export default function SignupAvatarScreen({ route, navigation }) {
   };
 
   const handleNext = () => {
-    navigation.navigate('SignupUsername', { identifier, fullName, avatarUri });
+    navigation.navigate('SignupUsername', { identifier, full_name, avatarUri });
   };
 
   const handleSkip = () => {
-    navigation.navigate('SignupUsername', { identifier, fullName, avatarUri: null });
+    navigation.navigate('SignupUsername', { identifier, full_name, avatarUri: null });
   };
 
   return (
