@@ -7,7 +7,7 @@ import { signup } from '../../../redux/slices/authSlice';
 import { Feather } from '@expo/vector-icons';
 
 export default function SignupPasswordScreen({ route, navigation }) {
-  const { identifier, fullName, username } = route.params;
+  const { identifier, full_name, username } = route.params;
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
@@ -21,7 +21,7 @@ export default function SignupPasswordScreen({ route, navigation }) {
       alert('Password must be at least 6 characters long.');
       return;
     }
-    dispatch(signup({ email: identifier, full_name: fullName, username, password }));
+    dispatch(signup({ email: identifier, full_name, username, password }));
   };
 
   return (
