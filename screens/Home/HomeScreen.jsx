@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { setPosts } from '../../redux/slices/postSlice'; 
+import { fetchPosts } from '../../redux/slices/postSlice';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -19,53 +20,13 @@ export default function HomeScreen() {
   const [bookmarkedStatuses, setBookmarkedStatuses] = useState({}); // postId: boolean
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  // Temporary mock data
-  const mockPosts = [
-    {
-      id: 1,
-      username: 'user1',
-      userAvatar: 'https://via.placeholder.com/150',
-      location: 'New York',
-      image: 'https://via.placeholder.com/400',
-      likes: 125,
-      caption: 'Enjoying a beautiful day in the city! #newyork #summer',
-      comments: 23,
-      timeAgo: '2h'
-    },
-    {
-      id: 2,
-      username: 'travel_enthusiast',
-      userAvatar: 'https://via.placeholder.com/150',
-      location: 'Bali, Indonesia',
-      image: 'https://via.placeholder.com/400',
-      likes: 432,
-      caption: 'Paradise found 🌴 #bali #vacation',
-      comments: 57,
-      timeAgo: '4h'
-    },
-    {
-      id: 3,
-      username: 'foodie_adventures',
-      userAvatar: 'https://via.placeholder.com/150',
-      location: 'Cafe Delicious',
-      image: 'https://via.placeholder.com/400',
-      likes: 88,
-      caption: 'Best brunch ever! #foodporn #weekend',
-      comments: 12,
-      timeAgo: '6h'
-    }
-  ];
-
-  const loadPosts = () => {
-    dispatch(setPosts(mockPosts)); // Load initial posts into Redux
-    // Initialize dynamicLikeCounts from mockPosts
-    const initialLikeCounts = {};
-    mockPosts.forEach(post => {
-      initialLikeCounts[post.id] = post.likes;
-    });
-    setDynamicLikeCounts(initialLikeCounts);
-  };
-
+  const loadPosts = async () => {
+  try {
+    await dispatch(fetchPosts()); // Axios fetch
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+  }
+};
   useEffect(() => {
     loadPosts();
   }, [dispatch]);
@@ -95,15 +56,24 @@ export default function HomeScreen() {
 
   const onRefresh = React.useCallback(() => {
     setIsRefreshing(true);
-    // Simulate fetching new data
-    setTimeout(() => {
-      loadPosts(); // Reload mock posts or fetch new ones
-      // Reset interaction states if desired, or they can persist
-      setLikedStatuses({}); 
+    dispatch(fetchPosts()).then(() => {
+      setLikedStatuses({});
       setBookmarkedStatuses({});
       setIsRefreshing(false);
     });
-  }, []);
+  }, [dispatch]);
+
+  const loading = useSelector((state) => state.posts.loading);
+
+if (loading) {
+  return (
+    <View style={styles.loadingContainer}>
+      <Text style={{ color: isDark ? '#fff' : '#000' }}>Loading posts...</Text>
+    </View>
+  );
+}
+
+
 
   const renderPost = (post) => (
     // Ensure dark mode styles are applied to post container if needed
@@ -218,8 +188,9 @@ export default function HomeScreen() {
             ))}
           </ScrollView>
         </View>
+        {(posts || []).map(post => renderPost(post))}
 
-        {posts.map(post => renderPost(post))}
+        
       </ScrollView>
     </View>
   );

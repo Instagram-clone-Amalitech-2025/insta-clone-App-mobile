@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, AsyncThunkAction, ThunkDispatch, UnknownAction, PayloadAction } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import { RootState } from '../store'; 
+import api from '../../services/api'
 interface UserProfile {
   username: string;
   id: number;
@@ -45,33 +45,46 @@ export const checkLoginStatus = createAsyncThunk(
       const token = await storage.getToken();
       if (!token) throw new Error('No token found');
 
-      const response = await axios.get('https://felnan.pythonanywhere.com/api/profiles/me/', {
+      const response = await api.get('/api/profiles/me/', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       return { token, user: response.data };
-    } catch {
+    } catch (error) {
+      console.warn('⚠️ checkLoginStatus failed:', error);
       return thunkAPI.rejectWithValue('Session expired or invalid token');
     }
   }
 );
 
+
 // Set token after login
 export const setTokenAndUser = createAsyncThunk(
   'user/setTokenAndUser',
-  async ({ token }: { token: string }, thunkAPI) => {
+  async ({ token, user }: { token: string; user?: UserProfile }, thunkAPI) => {
     try {
       await storage.setToken(token);
-      const response = await axios.get('https://felnan.pythonanywhere.com/api/profiles/me/', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      console.log('🔐 Saving token to AsyncStorage:', token);
 
-      return { token, user: response.data };
-    } catch {
+      const profile =
+        user ||
+        (
+          await api.get('/api/profiles/me/', {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+        ).data;
+
+      console.log('✅ User profile fetched:', profile); // ✅ Log added here
+
+      return { token, user: profile };
+    } catch (error) {
+      console.error('❌ Error in setTokenAndUser:', error); // Optional: helpful for catching issues
       return thunkAPI.rejectWithValue('Invalid token');
     }
   }
 );
+
+
 
 // Fetch profile using token from state
 export const fetchUserProfile = createAsyncThunk(
@@ -79,20 +92,40 @@ export const fetchUserProfile = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
-      const token = state.user.token;
 
-      if (!token) throw new Error('No token');
+      // Try getting token from Redux state
+      let token = state.user.token;
 
-      const response = await axios.get('https://felnan.pythonanywhere.com/api/profiles/me/', {
-        headers: { Authorization: `Bearer ${token}` },
+      // Fallback: Try reading token from AsyncStorage
+      if (!token) {
+  token = await AsyncStorage.getItem('token');
+  if (!token) {
+    console.warn('⚠️ No token found in storage or state');
+    throw new Error('No token');
+  }
+
+  thunkAPI.dispatch(setToken(token)); // <-- Save token into Redux store
+}
+
+
+
+      // Make API request with token
+      const response = await api.get('/api/profiles/me/', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       return response.data;
-    } catch {
+    } catch (error) {
+      console.error('❌ Profile fetch failed:', error);
       return thunkAPI.rejectWithValue('Failed to fetch profile');
     }
   }
 );
+
+
+
 
 // Update user profile
 export const updateUserProfile = createAsyncThunk(
@@ -104,8 +137,7 @@ export const updateUserProfile = createAsyncThunk(
 
       if (!token) throw new Error('No token');
 
-      const response = await axios.put(
-        'https://felnan.pythonanywhere.com/api/profiles/me/',
+      const response = await api.put('/api/profiles/me/',
         updatedData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -127,7 +159,11 @@ export const logout = createAsyncThunk('user/logout', async () => {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    setToken(state, action: PayloadAction<string>) {
+      state.token = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(checkLoginStatus.pending, (state) => {
@@ -193,5 +229,9 @@ const userSlice = createSlice({
       });
   },
 });
+export const { setToken } = userSlice.actions;
+
 
 export default userSlice.reducer;
+
+
