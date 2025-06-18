@@ -1,29 +1,38 @@
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { 
   View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, 
-  SafeAreaView, KeyboardAvoidingView, Platform, Alert, Modal, Pressable 
+  SafeAreaView, KeyboardAvoidingView, Platform, Alert, Modal, Pressable, ActivityIndicator
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { useSelector, useDispatch } from 'react-redux';
+import { updateUserProfile } from '../../redux/slices/userSlice'; // adjust path if needed
+
 
 // Define the default placeholder URI
 const DEFAULT_AVATAR_PLACEHOLDER = 'https://i.pravatar.cc/150?img=64';
 
 export default function EditProfileScreen({ navigation, route }) {
   // Get user data passed from ProfileScreen
-  const initialUser = route.params?.user || {
-    username: 'User1',
-    full_name: 'User 1',
-    bio: 'Mobile Developer | React Native Enthusiast',
-    avatar: DEFAULT_AVATAR_PLACEHOLDER,
-    posts: 9,
-    followers: 10,
-    following: 30,
-    website: '',
-    phone: '',
-    email: 'user1@example.com',
-    gender: ''
-  };
+  const initialUser = {
+  username: route.params?.user?.username || '',
+  full_name: route.params?.user?.full_name || '',
+  bio: route.params?.user?.bio || '',
+  avatar: route.params?.user?.profile_picture || DEFAULT_AVATAR_PLACEHOLDER,
+  posts: route.params?.user?.post_count || 0,
+  followers: route.params?.user?.followers_count || 0,
+  following: route.params?.user?.following_count || 0,
+  website: route.params?.user?.website || '',
+  phone: route.params?.user?.phone || '',
+  email: route.params?.user?.email || '',
+  gender: route.params?.user?.gender || '',
+};
+
+const [loading, setLoading] = useState(false); 
+const dispatch = useDispatch();
+const token = useSelector((state) => state.user.token);
+
 
   // State for edited user data
   const [userData, setUserData] = useState({...initialUser});
@@ -44,18 +53,46 @@ export default function EditProfileScreen({ navigation, route }) {
   };
 
   // Handle save changes
-  const handleSave = () => {
-    if (hasChanges) {
-      // Return to ProfileScreen with updated user data
-      navigation.navigate('MainTabs', {
-  screen: 'Profile',
-  params: { updatedUser: userData },
-});
+const handleSave = async () => {
+  try {
+    setLoading(true);
 
-    } else {
-      navigation.goBack();
+    const formData = new FormData();
+    formData.append('username', userData.username);
+    formData.append('full_name', userData.full_name);
+    formData.append('bio', userData.bio);
+    formData.append('website', userData.website);
+
+    if (
+      userData.profile_picture &&
+      typeof userData.profile_picture === 'string' &&
+      !userData.profile_picture.startsWith('http')
+    ) {
+      const uri = userData.profile_picture;
+      const filename = uri.split('/').pop();
+      const type = `image/${filename.split('.').pop()}`;
+
+      formData.append('profile_picture', {
+        uri,
+        name: filename,
+        type,
+      });
     }
-  };
+
+    await dispatch(updateUserProfile(formData)).unwrap();
+    console.log('✅ Profile updated successfully');
+
+    // ✅ Navigate back after success
+    navigation.goBack();
+
+  } catch (err) {
+    console.error('❌ Update failed:', err);
+    Alert.alert('Error', 'Something went wrong. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // Handle discard changes
   const handleDiscard = () => {
@@ -113,9 +150,14 @@ export default function EditProfileScreen({ navigation, route }) {
             <Feather name="x" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Edit Profile</Text>
-          <TouchableOpacity onPress={handleSave}>
-            <Feather name="check" size={24} color="#3897F0" />
-          </TouchableOpacity>
+          <TouchableOpacity onPress={handleSave} disabled={loading}>
+  {loading ? (
+    <ActivityIndicator size="small" color="#3897F0" />
+  ) : (
+    <Feather name="check" size={24} color="#3897F0" />
+  )}
+</TouchableOpacity>
+
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -139,7 +181,7 @@ export default function EditProfileScreen({ navigation, route }) {
               <Text style={styles.fieldLabel}>Name</Text>
               <TextInput
                 style={styles.textInput}
-                value={userData.name}
+                value={userData.full_name}
                 onChangeText={(text) => handleChange('full_name', text)}
                 placeholder="Name"
                 placeholderTextColor="#999"

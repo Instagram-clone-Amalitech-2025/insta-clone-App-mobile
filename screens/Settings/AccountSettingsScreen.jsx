@@ -12,8 +12,19 @@ const AccountSettingsScreen = () => {
    const [privateAccountEnabled, setprivateAccountEnabled] = useState(true);
 
   const appTheme = useSelector((state) => state.theme.theme);
+  const user = useSelector((state) => state.user.user);
   const isDark = appTheme === 'dark';
   const dispatch = useDispatch();
+
+   const handleEditProfile = () => {
+  if (!user) {
+    Alert.alert('Error', 'User data not available');
+    return;
+  }
+
+  navigation.navigate('EditProfile', { user });
+};
+
 
   const handleLogout = () => {
     Alert.alert(
@@ -79,18 +90,21 @@ const AccountSettingsScreen = () => {
       <ScrollView style={styles.content}>
         <View style={[styles.profileSection, isDark && styles.darkProfileSection]}>
           <Image
-            source={{ uri: 'https://i.pravatar.cc/150?img=64' }}
-            style={styles.profileImage}
-          />
+  source={{ uri: user?.profile_picture || 'https://i.pravatar.cc/150?img=64' }}
+  style={styles.profileImage}
+/>
+
           <View style={styles.profileInfo}>
-            <Text style={[styles.profileName, isDark && styles.darkText]}>User 1</Text>
-            <Text style={[styles.profileEmail, isDark && styles.darkMutedText]}>user1@example.com</Text>
-            <TouchableOpacity
-  style={styles.editButton}
-  onPress={() => navigation.navigate('EditProfile')}
->
-              <Text style={[styles.editButtonText, isDark && styles.darkLinkText]}>Edit Profile</Text>
-</TouchableOpacity>
+            <Text style={[styles.profileName, isDark && styles.darkText]}>
+  {user?.full_name || user?.username || 'Unknown User'}
+</Text>
+<Text style={[styles.profileEmail, isDark && styles.darkMutedText]}>
+  {user?.email || 'No email available'}
+</Text>
+
+            <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+                        <Text style={styles.editButtonText}>Edit Profile</Text>
+                      </TouchableOpacity>
           </View>
         </View>
 
