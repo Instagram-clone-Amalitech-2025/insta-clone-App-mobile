@@ -11,7 +11,7 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  const posts = useSelector((state) => state.posts.posts);
+  const posts = useSelector((state) => state.posts.items);
   const appTheme = useSelector((state) => state.theme.theme); // Get theme state
   const isDark = appTheme === 'dark';
 
@@ -73,19 +73,37 @@ if (loading) {
   );
 }
 
+const formatTimeAgo = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diff = Math.floor((now - date) / 1000); // in seconds
+
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+};
 
 
-  const renderPost = (post) => (
-    // Ensure dark mode styles are applied to post container if needed
-    <View key={post.id} style={[styles.post, isDark && styles.darkPost]}> 
+ const renderPost = (post) => {
+  const postId = post.id;
+  const user = post.user || {};
+  const imageUri = post.images?.[0] || null;
+
+  return (
+    <View key={postId} style={[styles.post, isDark && styles.darkPost]}>
+      {/* Header */}
       <View style={styles.postHeader}>
         <View style={styles.userInfo}>
           <View style={styles.userAvatar}>
-            <Image source={{ uri: post.userAvatar }} style={styles.avatarPlaceholder} />
+            <Image
+              source={{ uri: user.profile_picture || 'https://via.placeholder.com/150' }}
+              style={styles.avatarPlaceholder}
+            />
           </View>
           <View>
-            <Text style={styles.username}>{post.username}</Text>
-            <Text style={[styles.location, isDark && styles.darkMutedText]}>{post.location}</Text>
+            <Text style={styles.username}>{user.username || 'Unknown'}</Text>
+            <Text style={[styles.location, isDark && styles.darkMutedText]}>Ghana</Text>
           </View>
         </View>
         <TouchableOpacity>
@@ -93,47 +111,64 @@ if (loading) {
         </TouchableOpacity>
       </View>
 
-      <Image source={{ uri: post.image }} style={styles.postImage} resizeMode="cover" />
+      {/* Post Image */}
+      {imageUri && (
+        <Image
+          source={{ uri: imageUri }}
+          style={styles.postImage}
+          resizeMode="cover"
+        />
+      )}
 
+      {/* Actions */}
       <View style={styles.postActions}>
         <View style={styles.leftActions}>
-          <TouchableOpacity style={styles.actionButton} onPress={() => handleLike(post.id)}>
-            {likedStatuses[post.id] ? (
+          <TouchableOpacity style={styles.actionButton} onPress={() => handleLike(postId)}>
+            {likedStatuses[postId] ? (
               <Ionicons name="heart" size={24} color="red" />
             ) : (
-              <Feather name="heart" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
+              <Feather name="heart" size={24} color={isDark ? "#FFF" : "#000"} />
             )}
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-            <Feather name="message-circle" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
+            <Feather name="message-circle" size={24} color={isDark ? "#FFF" : "#000"} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.actionButton}>
-            <Feather name="send" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
+            <Feather name="send" size={24} color={isDark ? "#FFF" : "#000"} />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={() => handleBookmark(post.id)}>
-          {bookmarkedStatuses[post.id] ? (
-            <Ionicons name="bookmark" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
+        <TouchableOpacity onPress={() => handleBookmark(postId)}>
+          {bookmarkedStatuses[postId] ? (
+            <Ionicons name="bookmark" size={24} color={isDark ? "#FFF" : "#000"} />
           ) : (
-            <Feather name="bookmark" size={24} color={isDark ? "#FFFFFF" : "#000000"} />
+            <Feather name="bookmark" size={24} color={isDark ? "#FFF" : "#000"} />
           )}
         </TouchableOpacity>
       </View>
 
+      {/* Post Details */}
       <View style={styles.postDetails}>
         <Text style={[styles.likes, isDark && styles.darkText]}>
-          {dynamicLikeCounts[post.id] !== undefined ? dynamicLikeCounts[post.id] : post.likes} likes
+          {dynamicLikeCounts[postId] !== undefined ? dynamicLikeCounts[postId] : post.likes || 0} likes
         </Text>
         <Text style={[styles.caption, isDark && styles.darkText]}>
-          <Text style={[styles.username, isDark && styles.darkText]}>{post.username}</Text> {post.caption}
+          <Text style={[styles.username, isDark && styles.darkText]}>
+            {user.username || 'Unknown'}
+          </Text>{' '}
+          {post.caption}
         </Text>
         <TouchableOpacity>
-          <Text style={[styles.comments, isDark && styles.darkMutedText]}>View all {post.comments} comments</Text>
+          <Text style={[styles.comments, isDark && styles.darkMutedText]}>
+            View all {post.comments_count || 0} comments
+          </Text>
         </TouchableOpacity>
-        <Text style={[styles.timeAgo, isDark && styles.darkMutedText]}>{post.timeAgo}</Text>
+        <Text style={[styles.timeAgo, isDark && styles.darkMutedText]}>
+          {formatTimeAgo(post.created)}
+        </Text>
       </View>
     </View>
   );
+};
 
   return (
     <View style={[styles.container, isDark && styles.darkContainer]}>
@@ -151,50 +186,55 @@ if (loading) {
 
       {/* Stories Section */}
       <ScrollView 
-        style={styles.feed} 
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing}
-            onRefresh={onRefresh}
-            colors={isDark ? ['#FFFFFF'] : ['#000000']} // Spinner color
-            tintColor={isDark ? '#FFFFFF' : '#000000'} // iOS spinner color
-          />
-        }
-      >
-        <View style={styles.storiesContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.storyItem}>
-              <TouchableOpacity onPress={() => navigation.navigate('UploadStory')}>
-                <View style={styles.storyPlus}>
-                  <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
-                  <View style={styles.addStoryButton}>
-                    <Feather name="plus" size={12} color="#FFFFFF" />
-                  </View>
-                </View>
-              </TouchableOpacity>
-              <Text style={[styles.storyUsername, isDark && styles.darkText]}>Your Story</Text>
+  style={styles.feed} 
+  showsVerticalScrollIndicator={false}
+  refreshControl={
+    <RefreshControl
+      refreshing={isRefreshing}
+      onRefresh={onRefresh}
+      colors={isDark ? ['#FFFFFF'] : ['#000000']}
+      tintColor={isDark ? '#FFFFFF' : '#000000'}
+    />
+  }
+>
+  {/* Stories Section FIRST */}
+  <View style={styles.storiesContainer}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <View style={styles.storyItem}>
+        <TouchableOpacity onPress={() => navigation.navigate('UploadStory')}>
+          <View style={styles.storyPlus}>
+            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
+            <View style={styles.addStoryButton}>
+              <Feather name="plus" size={12} color="#FFFFFF" />
             </View>
+          </View>
+        </TouchableOpacity>
+        <Text style={[styles.storyUsername, isDark && styles.darkText]}>Your Story</Text>
+      </View>
 
-            {['user1', 'travel_enthusiast', 'foodie', 'photographer', 'fitness_guru'].map((user, index) => (
-              <View key={index} style={styles.storyItem}>
-                <View style={styles.storyRing}>
-                  <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
-                </View>
-                <Text style={[styles.storyUsername, isDark && styles.darkText]}>
-                  {user.length > 9 ? user.substring(0, 9) + '...' : user}
-                </Text>
-              </View>
-            ))}
-          </ScrollView>
+      {['user1', 'travel_enthusiast', 'foodie', 'photographer', 'fitness_guru'].map((user, index) => (
+        <View key={index} style={styles.storyItem}>
+          <View style={styles.storyRing}>
+            <Image source={{ uri: 'https://via.placeholder.com/150' }} style={styles.storyAvatar} />
+          </View>
+          <Text style={[styles.storyUsername, isDark && styles.darkText]}>
+            {user.length > 9 ? user.substring(0, 9) + '...' : user}
+          </Text>
         </View>
-        {(posts || []).map(post => renderPost(post))}
+      ))}
+    </ScrollView>
+  </View>
 
-        
-      </ScrollView>
+  {/* FEED BELOW Stories */}
+  {(posts || []).map(post => renderPost(post))}
+
+</ScrollView>
+
     </View>
   );
+
 }
+
 
 const styles = StyleSheet.create({
   container: {

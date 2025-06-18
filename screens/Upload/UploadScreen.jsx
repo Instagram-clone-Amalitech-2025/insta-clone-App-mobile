@@ -5,262 +5,208 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { useDispatch } from 'react-redux';
+import { createPost } from '../../redux/slices/postSlice';
 
 export default function UploadScreen({ navigation }) {
-  const [caption, setCaption] = useState('');
-  const [] = useState('Post');
-  const [selectedImage, setSelectedImage] = useState(null);
+  const dispatch = useDispatch();
 
-  // New: multiple selection mode toggle and images array
+  const [caption, setCaption] = useState('');
   const [multiSelectMode, setMultiSelectMode] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
 
-  const imagePlaceholders = Array(12).fill(null);
+  const imagePlaceholders = Array(12).fill(null); // <-- ✅ MAKE SURE THIS LINE IS PRESENT
+
 
   const requestPermission = async (permissionType) => {
-    let permissionResult;
-    if (permissionType === 'camera') {
-      permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    } else {
-      permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    }
-    if (permissionResult.status !== 'granted') {
-      Alert.alert(
-        'Permission required',
-        `Permission to access ${permissionType} is required!`
-      );
+    const result =
+      permissionType === 'camera'
+        ? await ImagePicker.requestCameraPermissionsAsync()
+        : await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (result.status !== 'granted') {
+      Alert.alert('Permission required', `Access to ${permissionType} is required.`);
       return false;
     }
     return true;
   };
 
   const pickSingleImage = async (source) => {
-    let hasPermission = false;
+    const permissionGranted = await requestPermission(source === 'camera' ? 'camera' : 'media library');
+    if (!permissionGranted) return null;
 
-    if (source === 'camera') {
-      hasPermission = await requestPermission('camera');
-    } else {
-      hasPermission = await requestPermission('media library');
-    }
+    const result =
+      source === 'camera'
+        ? await ImagePicker.launchCameraAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+          })
+        : await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            quality: 1,
+          });
 
-    if (!hasPermission) return;
-
-    let result;
-    if (source === 'gallery') {
-      result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1,
-      });
-    } else {
-      result = await ImagePicker.launchCameraAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        quality: 1,
-      });
-    }
-
-    if (!result.canceled) {
-      const image = result.assets ? result.assets[0] : result;
-      return image;
-    }
+    if (!result.canceled) return result.assets[0];
     return null;
   };
 
-  // Modified handleSelectImage to work with multiSelectMode
   const handleSelectImage = async (source) => {
+    const image = await pickSingleImage(source);
+    if (!image) return;
+
     if (multiSelectMode) {
-      // In multi-select mode, pick one image and add to array
-      const image = await pickSingleImage(source);
-      if (image) {
-        setSelectedImages((prev) => {
-          // Avoid duplicates by uri
-          if (prev.find((img) => img.uri === image.uri)) return prev;
-          return [...prev, image];
-        });
-      }
+      setSelectedImages((prev) => {
+        if (prev.find((img) => img.uri === image.uri)) return prev;
+        return [...prev, image];
+      });
     } else {
-      // Single image pick mode (normal)
-      const image = await pickSingleImage(source);
-      if (image) setSelectedImage(image);
+      setSelectedImages([image]);
     }
   };
 
-  // Remove image from selectedImages by uri
   const removeSelectedImage = (uri) => {
     setSelectedImages((prev) => prev.filter((img) => img.uri !== uri));
   };
 
+  const handlePost = async () => {
+    if (!caption && selectedImages.length === 0) {
+      Alert.alert('Missing content', 'Please select an image or write a caption.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('caption', caption);
+
+    if (selectedImages.length > 0) {
+      formData.append('image', {
+        uri: selectedImages[0].uri,
+        name: 'image.jpg',
+        type: 'image/jpeg',
+      });
+    }
+
+    try {
+      await dispatch(createPost(formData)).unwrap();
+      setCaption('');
+      setSelectedImages([]);
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error uploading post:', error);
+      Alert.alert('Upload Failed', 'Something went wrong. Please try again.');
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+  <SafeAreaView style={styles.container}>
+    <StatusBar barStyle="dark-content" />
+    
+    {/* Header */}
+    <View style={styles.header}>
+      <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
+        <Feather name="x" size={24} color="#000" />
+      </TouchableOpacity>
+      <Text style={styles.headerTitle}>New Post</Text>
+      <TouchableOpacity style={styles.nextButton} onPress={handlePost}>
+        <Text style={styles.nextButtonText}>Post</Text>
+      </TouchableOpacity>
+    </View>
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.closeButton}
-           onPress={() => navigation.goBack()}
-        >
-          <Feather name="x" size={24} color="#000" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>New Post</Text>
-        <TouchableOpacity style={styles.nextButton}>
-          <Text style={styles.nextButtonText}>Next</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Main Content */}
-      <View style={styles.contentContainer}>
-        {/* Preview Area */}
-        <View style={styles.previewSection}>
-          <View style={styles.previewImageContainer}>
-            {multiSelectMode ? (
-              selectedImages.length > 0 ? (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  {selectedImages.map((img) => (
-                    <View key={img.uri} style={{ marginRight: 8, position: 'relative' }}>
-                      <Image
-                        source={{ uri: img.uri }}
-                        style={{ width: 120, height: 120, borderRadius: 8 }}
-                      />
-                      <TouchableOpacity
-                        onPress={() => removeSelectedImage(img.uri)}
-                        style={{
-                          position: 'absolute',
-                          top: 4,
-                          right: 4,
-                          backgroundColor: 'rgba(0,0,0,0.6)',
-                          borderRadius: 12,
-                          padding: 2,
-                        }}
-                      >
-                        <Feather name="x" size={16} color="white" />
-                      </TouchableOpacity>
-                    </View>
-                  ))}
-                </ScrollView>
-              ) : (
-                <Text style={{ padding: 12, color: '#666' }}>
-                  No images selected yet.
-                </Text>
-              )
-            ) : (
-              <Image
-                source={
-                  selectedImage
-                    ? { uri: selectedImage.uri }
-                    : { uri: 'https://via.placeholder.com/400' }
-                }
-                style={styles.previewImage}
-                resizeMode="cover"
-              />
-            )}
-          </View>
-
-          <View style={styles.captionContainer}>
-            <TextInput
-              style={styles.captionInput}
-              placeholder="Write a caption..."
-              placeholderTextColor="#999"
-              multiline
-              value={caption}
-              onChangeText={setCaption}
-            />
-            <TouchableOpacity style={styles.iconButton}>
-              <Feather name="smile" size={22} color="#999" />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Options */}
-        <View style={styles.optionsSection}>
-          <TouchableOpacity style={styles.optionRow}>
-            <Text style={styles.optionText}>Tag People</Text>
-            <Feather name="users" size={20} color="#999" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionRow}>
-            <Text style={styles.optionText}>Add Location</Text>
-            <Feather name="map-pin" size={20} color="#999" />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.optionRow}>
-            <Text style={styles.optionText}>Add Music</Text>
-            <Feather name="music" size={20} color="#999" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Divider */}
-        <View style={styles.divider} />
-
-        {/* Gallery Section */}
-        <View style={styles.gallerySection}>
-          <View style={styles.galleryHeader}>
-            <Text style={styles.galleryTitle}>Gallery</Text>
-
-            {/* Select Multiple toggle button */}
-            <TouchableOpacity
-              onPress={() => setMultiSelectMode((prev) => !prev)}
-            >
-              <Text style={[styles.blueText, multiSelectMode && { fontWeight: '700' }]}>
-                {multiSelectMode ? 'Done' : 'Select Multiple'}
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Media Source Options */}
-          <View style={styles.mediaSourceOptions}>
-            <TouchableOpacity
-              style={[styles.mediaSourceButton, !multiSelectMode && styles.activeMediaSource]}
-              onPress={() => handleSelectImage('gallery')}
-            >
-              <Feather name="image" size={20} color={!multiSelectMode ? '#000' : '#666'} />
-              <Text style={[styles.mediaSourceText, { color: !multiSelectMode ? '#000' : '#666' }]}>
-                Gallery
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.mediaSourceButton}
-              onPress={() => handleSelectImage('camera')}
-            >
-              <Feather name="camera" size={20} color="#666" />
-              <Text style={[styles.mediaSourceText, { color: '#666' }]}>Camera</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Image Grid */}
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={styles.imageGrid}>
-              {imagePlaceholders.map((_, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.gridImageContainer}
-                  onPress={() => {
-                    if (multiSelectMode) {
-                      // Simulate picking an image from gallery one by one
-                      handleSelectImage('gallery');
-                    } else {
-                      handleSelectImage('gallery');
-                    }
-                  }}
-                >
-                  <Image
-                    source={{
-                      uri: `https://via.placeholder.com/150/CCCCCC/888888?text=${index + 1}`,
+    {/* Content */}
+    <ScrollView contentContainerStyle={styles.contentContainer} showsVerticalScrollIndicator={false}>
+      
+      {/* Preview & Caption */}
+      <View style={styles.previewSection}>
+        <View style={styles.previewImageContainer}>
+          {selectedImages.length > 0 ? (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {selectedImages.map((img) => (
+                <View key={img.uri} style={{ marginRight: 8, position: 'relative' }}>
+                  <Image source={{ uri: img.uri }} style={{ width: 120, height: 120, borderRadius: 8 }} />
+                  <TouchableOpacity
+                    onPress={() => removeSelectedImage(img.uri)}
+                    style={{
+                      position: 'absolute',
+                      top: 4,
+                      right: 4,
+                      backgroundColor: 'rgba(0,0,0,0.6)',
+                      borderRadius: 12,
+                      padding: 2,
                     }}
-                    style={styles.gridImage}
-                    resizeMode="cover"
-                  />
-                </TouchableOpacity>
+                  >
+                    <Feather name="x" size={16} color="white" />
+                  </TouchableOpacity>
+                </View>
               ))}
-            </View>
-          </ScrollView>
+            </ScrollView>
+          ) : (
+            <Text style={{ padding: 12, color: '#666' }}>No images selected yet.</Text>
+          )}
+        </View>
+
+        {/* Caption input */}
+        <View style={styles.captionContainer}>
+          <TextInput
+            style={styles.captionInput}
+            placeholder="Write a caption..."
+            placeholderTextColor="#999"
+            multiline
+            value={caption}
+            onChangeText={setCaption}
+          />
+          <TouchableOpacity style={styles.iconButton}>
+            <Feather name="smile" size={22} color="#999" />
+          </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
-  );
-}
 
+      {/* Gallery simulation */}
+      <View style={styles.gallerySection}>
+        <View style={styles.galleryHeader}>
+          <Text style={styles.galleryTitle}>Gallery</Text>
+          <TouchableOpacity onPress={() => setMultiSelectMode((prev) => !prev)}>
+            <Text style={[styles.blueText, multiSelectMode && { fontWeight: '700' }]}>
+              {multiSelectMode ? 'Done' : 'Select Multiple'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.mediaSourceOptions}>
+          <TouchableOpacity style={styles.mediaSourceButton} onPress={() => handleSelectImage('gallery')}>
+            <Feather name="image" size={20} color="#666" />
+            <Text style={styles.mediaSourceText}>Gallery</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.mediaSourceButton} onPress={() => handleSelectImage('camera')}>
+            <Feather name="camera" size={20} color="#666" />
+            <Text style={styles.mediaSourceText}>Camera</Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.imageGrid}>
+            {imagePlaceholders.map((_, index) => (
+              <TouchableOpacity
+                key={index}
+                style={styles.gridImageContainer}
+                onPress={() => handleSelectImage('gallery')}
+              >
+                <Image
+                  source={{
+                    uri: `https://via.placeholder.com/150/CCCCCC/888888?text=${index + 1}`,
+                  }}
+                  style={styles.gridImage}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
+    </ScrollView>
+  </SafeAreaView>
+);
+}
 const styles = StyleSheet.create({
   container: {
     flex: 1,
