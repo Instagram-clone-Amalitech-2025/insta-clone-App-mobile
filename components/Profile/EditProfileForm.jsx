@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'reac
 import * as ImagePicker from 'expo-image-picker';
 
 const EditProfileForm = ({ profileData, onUpdate }) => {
-  const [name, setName] = useState(profileData.name);
+  const [full_name, setName] = useState(profileData.full_name);
   const [bio, setBio] = useState(profileData.bio);
   const [profileImage, setProfileImage] = useState(profileData.profileImage);
 
@@ -21,7 +21,7 @@ const EditProfileForm = ({ profileData, onUpdate }) => {
   };
 
   const handleUpdateProfile = () => {
-    onUpdate({ name, bio, profileImage });
+    onUpdate({ full_name, bio, profileImage });
   };
 
   return (
@@ -38,7 +38,7 @@ const EditProfileForm = ({ profileData, onUpdate }) => {
         <Text style={styles.label}>Name:</Text>
         <TextInput
           style={styles.input}
-          value={name}
+          value={full_name}
           onChangeText={setName}
         />
       </View>

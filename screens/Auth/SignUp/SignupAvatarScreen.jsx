@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TouchableOpacity, Image } from 'react-native';
-import Button from '../../../components/Common/Button'; 
+import { View, Text, StyleSheet, SafeAreaView, KeyboardAvoidingView, Platform, TouchableOpacity, Image, Alert,} from 'react-native';
+import Button from '../../../components/Common/Button';
 import { Feather } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignupAvatarScreen({ route, navigation }) {
   const { identifier, full_name } = route.params;
-  const [avatarUri, setAvatarUri] = useState(null); 
+  const [avatarUri, setAvatarUri] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const theme = useSelector((state) => state.theme.theme);
   const isDark = theme === 'dark';
@@ -18,6 +21,7 @@ export default function SignupAvatarScreen({ route, navigation }) {
       alert('Sorry, we need camera roll permissions to make this work!');
       return;
     }
+
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
@@ -30,8 +34,45 @@ export default function SignupAvatarScreen({ route, navigation }) {
     }
   };
 
-  const handleNext = () => {
-    navigation.navigate('SignupUsername', { identifier, full_name, avatarUri });
+  const handleNext = async () => {
+    setLoading(true);
+    try {
+      let uploadedImageUrl = null;
+
+      if (avatarUri) {
+        const formData = new FormData();
+        formData.append('profile_picture', {
+          uri: avatarUri,
+          name: 'avatar.jpg',
+          type: 'image/jpeg',
+        });
+
+        const token = await AsyncStorage.getItem('access_token');
+        const response = await axios.put(
+          'https://felnan.pythonanywhere.com/api/profiles/me/',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        uploadedImageUrl = response.data.profile_picture;
+      }
+
+      navigation.navigate('SignupUsername', {
+        identifier,
+        full_name,
+        avatarUri: uploadedImageUrl || null,
+      });
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      Alert.alert('Upload Failed', 'There was an error uploading your profile picture.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSkip = () => {
@@ -45,7 +86,7 @@ export default function SignupAvatarScreen({ route, navigation }) {
         style={styles.keyboardAvoid}
       >
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Feather name="arrow-left" size={24} color={isDark ? "#FFFFFF" : "black"} />
+          <Feather name="arrow-left" size={24} color={isDark ? '#FFFFFF' : 'black'} />
         </TouchableOpacity>
 
         <Text style={[styles.title, isDark && styles.darkText]}>Add Profile Picture</Text>
@@ -67,25 +108,27 @@ export default function SignupAvatarScreen({ route, navigation }) {
         {/* Buttons */}
         <Button
           title="Add a Picture"
-          onPress={handleAddPicture} 
+          onPress={handleAddPicture}
           style={[styles.button, isDark && styles.darkButton]}
           textStyle={[styles.buttonText, isDark && styles.darkButtonText]}
         />
-        {/* This button navigates to the next screen */}
-         <Button
-          title="Next"
-          onPress={handleNext} 
+
+        <Button
+          title={loading ? 'Uploading...' : 'Next'}
+          onPress={handleNext}
+          disabled={loading}
           style={[styles.button, isDark && styles.darkButton]}
           textStyle={[styles.buttonText, isDark && styles.darkButtonText]}
         />
 
         <TouchableOpacity
-            style={[styles.outlineButton, isDark && styles.darkOutlineButton]}
-            onPress={handleSkip} 
+          style={[styles.outlineButton, isDark && styles.darkOutlineButton]}
+          onPress={handleSkip}
         >
-            <Text style={[styles.outlineButtonText, isDark && styles.darkOutlineButtonText]}>Skip</Text>
+          <Text style={[styles.outlineButtonText, isDark && styles.darkOutlineButtonText]}>
+            Skip
+          </Text>
         </TouchableOpacity>
-
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

@@ -130,24 +130,33 @@ export const fetchUserProfile = createAsyncThunk(
 // Update user profile
 export const updateUserProfile = createAsyncThunk(
   'user/updateUserProfile',
-  async (updatedData: Partial<UserProfile>, thunkAPI) => {
+  async (updatedData: Partial<UserProfile> | FormData, thunkAPI) => {
     try {
       const state = thunkAPI.getState() as RootState;
       const token = state.user.token;
 
       if (!token) throw new Error('No token');
 
-      const response = await api.put('/api/profiles/me/',
+      const response = await api.put(
+        '/api/profiles/me/',
         updatedData,
-        { headers: { Authorization: `Bearer ${token}` } }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            // ✅ Let Axios set the content type if FormData
+          },
+        }
       );
-
+      console.log('✅ Profile updated successfully:', response. data);
       return response.data;
-    } catch {
+    } catch (error) {
+      console.error('❌ Update failed:', error);
       return thunkAPI.rejectWithValue('Failed to update profile');
     }
   }
 );
+
+
 
 // Logout
 export const logout = createAsyncThunk('user/logout', async () => {

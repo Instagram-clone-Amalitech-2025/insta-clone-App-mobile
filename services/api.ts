@@ -6,7 +6,7 @@ const BASE_URL = 'https://felnan.pythonanywhere.com/';
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 10000,
+  timeout: 50000,
   headers: {
     'Content-Type': 'application/json',
   },

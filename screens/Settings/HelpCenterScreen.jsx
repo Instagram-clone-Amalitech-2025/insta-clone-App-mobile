@@ -55,7 +55,7 @@ const HelpCenterScreen = () => {
 
   const handleContactSupport = () => {
     // Open email or support chat
-    Linking.openURL('mailto:support@example.com');
+    Linking.openURL('mailto:kofiattax@gmail.com');
   };
 
   const handleCategoryPress = (category) => {
