@@ -13,7 +13,7 @@ import SignupNameScreen from '../screens/Auth/SignUp/SignupNameScreen';
 import SignupAvatarScreen from '../screens/Auth/SignUp/SignupAvatarScreen';
 import SignupUsernameScreen from '../screens/Auth/SignUp/SignupUsernameScreen';
 import SignupPasswordScreen from '../screens/Auth/SignUp/SignupPasswordScreen';
-
+import CommentsScreen from '../screens/Home/CommentsScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
 import UploadScreen from '../screens/Upload/UploadScreen';
 import UploadStoryScreen from '../screens/Upload/UploadStoryScreen';
@@ -131,7 +131,9 @@ export default function AppNavigator() {
           )
           })}
           />
-
+          {/* Comment Screen */}
+          
+          <RootStack.Screen name="CommentsScreen" component={CommentsScreen} />
           {/* Notifications Screen */}
           <RootStack.Screen
             name="Notifications"
