@@ -5,7 +5,7 @@ export const fetchPosts = createAsyncThunk(
   'posts/fetchPosts',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get('https://your-api.com/api/posts/');
+      const response = await api.get('/api/posts/');
       console.log("Fetched posts:", response.data); // ✅ Add this
       return response.data;
     } catch (error) {
@@ -52,8 +52,8 @@ const postSlice = createSlice({
   },
   reducers: {
     setPosts: (state, action) => {
-      state.posts = action.payload;
-    },
+  state.items = action.payload;
+},
     addPost: (state, action) => {
       state.items.unshift(action.payload);
     },

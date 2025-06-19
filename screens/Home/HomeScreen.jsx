@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import { setPosts } from '../../redux/slices/postSlice'; 
+import { toggleLike } from '../../redux/slices/postSlice';
 import { fetchPosts } from '../../redux/slices/postSlice';
 
 export default function HomeScreen() {
@@ -31,21 +31,14 @@ export default function HomeScreen() {
     loadPosts();
   }, [dispatch]);
   
-  const handleLike = (postId) => {
-    const currentlyLiked = likedStatuses[postId];
-    setLikedStatuses(prev => ({
-      ...prev,
-      [postId]: !prev[postId],
-    }));
+  const handleLike = async (postId) => {
+  try {
+    await dispatch(toggleLike(postId));
+  } catch (err) {
+    console.error("Failed to toggle like:", err);
+  }
+};
 
-    setDynamicLikeCounts(prevCounts => {
-      const currentCount = prevCounts[postId] !== undefined ? prevCounts[postId] : mockPosts.find(p => p.id === postId)?.likes || 0;
-      return {
-        ...prevCounts,
-        [postId]: currentlyLiked ? currentCount - 1 : currentCount + 1,
-      };
-    });
-  };
 
   const handleBookmark = (postId) => {
     setBookmarkedStatuses(prev => ({
@@ -85,10 +78,17 @@ const formatTimeAgo = (dateString) => {
 };
 
 
- const renderPost = (post) => {
+const renderPost = (post) => {
   const postId = post.id;
-  const user = post.user || {};
-  const imageUri = post.images?.[0] || null;
+  const user = typeof post.user === 'object' && post.user !== null
+  ? post.user
+  : {
+      username: typeof post.user === 'string' ? post.user : 'Unknown',
+      profile_picture: 'https://via.placeholder.com/150',
+    };
+
+
+  const imageUri = post.image || null;
 
   return (
     <View key={postId} style={[styles.post, isDark && styles.darkPost]}>
@@ -121,35 +121,49 @@ const formatTimeAgo = (dateString) => {
       )}
 
       {/* Actions */}
-      <View style={styles.postActions}>
-        <View style={styles.leftActions}>
-          <TouchableOpacity style={styles.actionButton} onPress={() => handleLike(postId)}>
-            {likedStatuses[postId] ? (
-              <Ionicons name="heart" size={24} color="red" />
-            ) : (
-              <Feather name="heart" size={24} color={isDark ? "#FFF" : "#000"} />
-            )}
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton}>
-            <Feather name="message-circle" size={24} color={isDark ? "#FFF" : "#000"} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.actionButton}>
-            <Feather name="send" size={24} color={isDark ? "#FFF" : "#000"} />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity onPress={() => handleBookmark(postId)}>
-          {bookmarkedStatuses[postId] ? (
-            <Ionicons name="bookmark" size={24} color={isDark ? "#FFF" : "#000"} />
-          ) : (
-            <Feather name="bookmark" size={24} color={isDark ? "#FFF" : "#000"} />
-          )}
-        </TouchableOpacity>
-      </View>
+<View style={styles.postActions}>
+  <View style={styles.leftActions}>
+    <TouchableOpacity
+      style={styles.actionButton}
+      onPress={() => handleLike(postId)}
+    >
+      {post.is_liked ? (
+        <Ionicons name="heart" size={24} color="red" />
+      ) : (
+        <Feather name="heart" size={24} color={isDark ? "#FFF" : "#000"} />
+      )}
+    </TouchableOpacity>
+
+    <TouchableOpacity
+      style={styles.actionButton}
+      onPress={() => navigation.navigate('CommentsScreen', { postId })}
+    >
+      <Feather
+        name="message-circle"
+        size={24}
+        color={isDark ? "#FFF" : "#000"}
+      />
+    </TouchableOpacity>
+
+    <TouchableOpacity style={styles.actionButton}>
+      <Feather name="send" size={24} color={isDark ? "#FFF" : "#000"} />
+    </TouchableOpacity>
+  </View>
+
+  <TouchableOpacity onPress={() => handleBookmark(postId)}>
+    {bookmarkedStatuses[postId] ? (
+      <Ionicons name="bookmark" size={24} color={isDark ? "#FFF" : "#000"} />
+    ) : (
+      <Feather name="bookmark" size={24} color={isDark ? "#FFF" : "#000"} />
+    )}
+  </TouchableOpacity>
+</View>
+
 
       {/* Post Details */}
       <View style={styles.postDetails}>
         <Text style={[styles.likes, isDark && styles.darkText]}>
-          {dynamicLikeCounts[postId] !== undefined ? dynamicLikeCounts[postId] : post.likes || 0} likes
+          {post.likes_count || 0} likes
         </Text>
         <Text style={[styles.caption, isDark && styles.darkText]}>
           <Text style={[styles.username, isDark && styles.darkText]}>
@@ -163,7 +177,7 @@ const formatTimeAgo = (dateString) => {
           </Text>
         </TouchableOpacity>
         <Text style={[styles.timeAgo, isDark && styles.darkMutedText]}>
-          {formatTimeAgo(post.created)}
+          {formatTimeAgo(post.created_at)}
         </Text>
       </View>
     </View>
