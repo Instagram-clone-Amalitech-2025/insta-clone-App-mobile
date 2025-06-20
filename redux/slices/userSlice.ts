@@ -77,7 +77,7 @@ export const setTokenAndUser = createAsyncThunk(
       console.log('✅ User profile fetched:', profile); // ✅ Log added here
 
       return { token, user: profile };
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error in setTokenAndUser:', error); // Optional: helpful for catching issues
       return thunkAPI.rejectWithValue('Invalid token');
     }
@@ -137,24 +137,28 @@ export const updateUserProfile = createAsyncThunk(
 
       if (!token) throw new Error('No token');
 
+      const isFormData = updatedData instanceof FormData;
+
       const response = await api.put(
         '/api/profiles/me/',
         updatedData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            // ✅ Let Axios set the content type if FormData
+            ...(isFormData ? {} : { 'Content-Type': 'application/json' }), // ✅ Only add if not FormData
           },
         }
       );
-      console.log('✅ Profile updated successfully:', response. data);
+
+      console.log('✅ Profile updated successfully:', response.data);
       return response.data;
-    } catch (error) {
-      console.error('❌ Update failed:', error);
+    } catch (error: any) {
+      console.error('❌ Update failed:', error.response?.data || error.message);
       return thunkAPI.rejectWithValue('Failed to update profile');
     }
   }
 );
+
 
 
 
@@ -242,5 +246,3 @@ export const { setToken } = userSlice.actions;
 
 
 export default userSlice.reducer;
-
-

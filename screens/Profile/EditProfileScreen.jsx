@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
 import { 
   View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView, 
   SafeAreaView, KeyboardAvoidingView, Platform, Alert, Modal, Pressable, ActivityIndicator
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateUserProfile } from '../../redux/slices/userSlice'; // adjust path if needed
 
@@ -70,7 +70,9 @@ const handleSave = async () => {
     ) {
       const uri = userData.profile_picture;
       const filename = uri.split('/').pop();
-      const type = `image/${filename.split('.').pop()}`;
+      const ext = filename.split('.').pop().toLowerCase();
+      const type = ext === 'jpg' ? 'image/jpeg' : `image/${ext}`;
+
 
       formData.append('profile_picture', {
         uri,
@@ -78,6 +80,15 @@ const handleSave = async () => {
         type,
       });
     }
+
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
+
+console.log('🧪 Saving with profile_picture:', userData.profile_picture);
+if (userData.profile_picture && typeof userData.profile_picture !== 'string') {
+  console.warn('❌ profile_picture is not a string URI!');
+}
 
     await dispatch(updateUserProfile(formData)).unwrap();
     console.log('✅ Profile updated successfully');
@@ -118,10 +129,11 @@ const handleSave = async () => {
   };
 
   // Handle avatar change
-  const handleChangeAvatar = async () => {
+const handleImagePick = async () => {
+  try {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
-    if (permissionResult.granted === false) {
+
+    if (!permissionResult.granted) {
       Alert.alert("Permission Required", "You need to grant access to your photos to change profile picture");
       return;
     }
@@ -133,10 +145,37 @@ const handleSave = async () => {
       quality: 1,
     });
 
-    if (!result.canceled && result.assets && result.assets.length > 0) {
-      handleChange('avatar', result.assets[0].uri);
+    if (!result.canceled && result.assets?.length > 0) {
+      const originalImage = result.assets[0];
+      console.log('✅ Picked original image:', originalImage);
+
+      // Resize and compress image
+      const manipulatedImage = await ImageManipulator.manipulateAsync(
+        originalImage.uri,
+        [{ resize: { width: 1024 } }],
+        {
+          compress: 0.7,
+          format: ImageManipulator.SaveFormat.JPEG,
+        }
+      );
+
+      console.log('🖼️ Compressed image:', manipulatedImage);
+
+      setUserData((prev) => ({
+        ...prev,
+        profile_picture: manipulatedImage.uri,
+        avatar: manipulatedImage.uri, // ✅ Use the compressed URI
+      }));
+
+      setHasChanges(true);
     }
-  };
+  } catch (error) {
+    console.error('❌ Image pick or compression failed:', error);
+    Alert.alert('Error', 'Could not process the image.');
+  }
+};
+
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -170,7 +209,7 @@ const handleSave = async () => {
               // Show actual image if avatar is not the default placeholder
               <Image source={{ uri: userData.avatar }} style={styles.avatar} />
             )}
-            <TouchableOpacity onPress={handleChangeAvatar}>
+            <TouchableOpacity onPress={handleImagePick}>
               <Text style={styles.changePhotoText}>Change Profile Photo</Text>
             </TouchableOpacity>
           </View>
