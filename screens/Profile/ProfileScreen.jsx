@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, FlatList, Platform, StatusBar } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { useAppDispatch, useAppSelector } from '../../redux/hook'; // Typed hooks (create in your app)
+import { useAppDispatch, useAppSelector } from '../../redux/hook'; 
 import { fetchUserProfile } from '../../redux/slices/userSlice';
 
 export default function ProfileScreen({ navigation }) {

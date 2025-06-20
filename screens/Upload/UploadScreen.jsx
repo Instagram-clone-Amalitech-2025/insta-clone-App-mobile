@@ -11,6 +11,7 @@ import { createPost } from '../../redux/slices/postSlice';
 
 export default function UploadScreen({ navigation }) {
   const dispatch = useDispatch();
+  const [isPosting, setIsPosting] = useState(false);
 
   const [caption, setCaption] = useState('');
   const [multiSelectMode, setMultiSelectMode] = useState(false);
@@ -25,7 +26,6 @@ const getFixedUri = async (uri) => {
   }
   return uri;
 };
-
 
   const requestPermission = async (permissionType) => {
     const result =
@@ -79,23 +79,20 @@ const getFixedUri = async (uri) => {
     setSelectedImages((prev) => prev.filter((img) => img.uri !== uri));
   };
 
-
 const handlePost = async () => {
   if (!caption && selectedImages.length === 0) {
     Alert.alert('Missing content', 'Please select an image or write a caption.');
     return;
   }
 
+  setIsPosting(true); 
+
   const formData = new FormData();
   formData.append('caption', caption);
 
-  console.log('Selected image:', selectedImages[0]);
-
-  const image = selectedImages[0]; // Test with only one image for now
+  const image = selectedImages[0];
   const fixedUri = await getFixedUri(image.uri);
-
   console.log('Fixed image uri:', fixedUri); 
-
   const fileName = fixedUri.split('/').pop() || 'photo.jpg';
   const extension = fileName.split('.').pop().toLowerCase();
   const mimeType = {
@@ -111,37 +108,30 @@ const handlePost = async () => {
     type: mimeType,
   };
 
-  console.log('File object:', fileObject);
-
   formData.append('image', fileObject);
 
-  // Log formData contents
-   for (let [key, value] of formData.entries()) {
+  for (let [key, value] of formData.entries()) {
     console.log(`${key}:`, value);
   }
 
-try {
-  await dispatch(createPost(formData)).unwrap();
-  setCaption('');
-  setSelectedImages([]);
-} catch (error) {
-  console.log('UPLOAD ERROR:', error);
-
-  if (error?.response) {
-    console.log('Error response data:', error.response.data);
-    Alert.alert('Upload Failed', JSON.stringify(error.response.data));
-  } else if (error?.request) {
-    console.log('No response received:', error.request);
-    Alert.alert('Upload Failed', 'No response received from the server.');
-  } else {
-    console.log('Error message:', error.message);
-    Alert.alert('Upload Failed', error.message || 'Unknown error');
+  try {
+    await dispatch(createPost(formData)).unwrap();
+    setCaption('');
+    setSelectedImages([]);
+    Alert.alert('Successful', 'Your post has been successfully created.');
+    navigation.goBack();
+  } catch (error) {
+    console.log('UPLOAD ERROR:', error);
+    if (error?.response) {
+      Alert.alert('Upload Failed', JSON.stringify(error.response.data));
+    } else if (error?.request) {
+      Alert.alert('Upload Failed', 'No response received from the server.');
+    } else {
+      Alert.alert('Upload Failed', error.message || 'Unknown error');
+    }
+  } finally {
+    setIsPosting(false);
   }
-}
-
-  console.log ('Post submitted:', { caption, selectedImages });
-  Alert.alert('Post submitted', 'Your post has been successfully created.');
-  navigation.goBack();
 };
 
   return (
@@ -154,9 +144,14 @@ try {
         <Feather name="x" size={24} color="#000" />
       </TouchableOpacity>
       <Text style={styles.headerTitle}>New Post</Text>
-      <TouchableOpacity style={styles.nextButton} onPress={handlePost}>
-        <Text style={styles.nextButtonText}>Post</Text>
-      </TouchableOpacity>
+      <TouchableOpacity
+      style={styles.nextButton}
+      onPress={handlePost}
+      disabled={isPosting}
+    >
+  <Text style={styles.nextButtonText}>{isPosting ? 'Posting...' : 'Post'}</Text>
+</TouchableOpacity>
+
     </View>
 
     {/* Content */}
@@ -166,28 +161,36 @@ try {
       <View style={styles.previewSection}>
         <View style={styles.previewImageContainer}>
           {selectedImages.length > 0 ? (
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {selectedImages.map((img) => (
-                <View key={img.uri} style={{ marginRight: 8, position: 'relative' }}>
-                  <Image source={{ uri: img.uri }} style={{ width: 120, height: 120, borderRadius: 8 }} />
-                  <TouchableOpacity
-                    onPress={() => removeSelectedImage(img.uri)}
-                    style={{
-                      position: 'absolute',
-                      top: 4,
-                      right: 4,
-                      backgroundColor: 'rgba(0,0,0,0.6)',
-                      borderRadius: 12,
-                      padding: 2,
-                    }}
-                  >
-                    <Feather name="x" size={16} color="white" />
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </ScrollView>
+            multiSelectMode && selectedImages.length > 1 ? (
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.multiImageScrollView}>
+                {selectedImages.map((img) => (
+                  <View key={img.uri} style={styles.multiImageWrapper}>
+                    <Image source={{ uri: img.uri }} style={styles.multiImage} resizeMode="cover" />
+                    <TouchableOpacity
+                      onPress={() => removeSelectedImage(img.uri)}
+                      style={styles.removeImageButton}
+                    >
+                      <Feather name="x" size={16} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
+            ) : (
+              <View style={styles.singleImageWrapper}>
+                <Image source={{ uri: selectedImages[0].uri }} style={styles.previewImage} resizeMode="cover" />
+                <TouchableOpacity
+                  onPress={() => removeSelectedImage(selectedImages[0].uri)}
+                  style={styles.removeImageButton}
+                >
+                  <Feather name="x" size={16} color="white" />
+                </TouchableOpacity>
+              </View>
+            )
           ) : (
-            <Text style={{ padding: 12, color: '#666' }}>No images selected yet.</Text>
+            <View style={styles.noImagePlaceholder}>
+              <Feather name="image" size={40} color="#999" />
+              <Text style={styles.noImageText}>No images selected yet.</Text>
+            </View>
           )}
         </View>
 
@@ -253,6 +256,7 @@ try {
   </SafeAreaView>
 );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -296,10 +300,48 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
+  },
+  singleImageWrapper: {
+    width: '100%',
+    height: '100%',
+    position: 'relative',
   },
   previewImage: {
     width: '100%',
     height: '100%',
+  },
+  multiImageScrollView: {
+    flex: 1,
+    paddingHorizontal: 12,
+  },
+  multiImageWrapper: {
+    marginRight: 8,
+    position: 'relative',
+    height: '100%',
+  },
+  multiImage: {
+    width: 200,
+    height: '100%',
+    borderRadius: 8,
+  },
+  removeImageButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 12,
+    padding: 4,
+    zIndex: 1,
+  },
+  noImagePlaceholder: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noImageText: {
+    marginTop: 8,
+    color: '#999',
+    fontSize: 14,
   },
   captionContainer: {
     flexDirection: 'row',

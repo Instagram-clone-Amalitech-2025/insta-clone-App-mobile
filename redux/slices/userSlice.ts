@@ -74,11 +74,11 @@ export const setTokenAndUser = createAsyncThunk(
           })
         ).data;
 
-      console.log('✅ User profile fetched:', profile); // ✅ Log added here
+      console.log('✅ User profile fetched:', profile); 
 
       return { token, user: profile };
     } catch (error: any) {
-      console.error('❌ Error in setTokenAndUser:', error); // Optional: helpful for catching issues
+      console.error('❌ Error in setTokenAndUser:', error); 
       return thunkAPI.rejectWithValue('Invalid token');
     }
   }

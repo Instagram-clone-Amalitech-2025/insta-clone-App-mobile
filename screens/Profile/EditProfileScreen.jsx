@@ -7,7 +7,7 @@ import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateUserProfile } from '../../redux/slices/userSlice'; // adjust path if needed
+import { updateUserProfile } from '../../redux/slices/userSlice'; 
 
 
 // Define the default placeholder URI
@@ -164,7 +164,7 @@ const handleImagePick = async () => {
       setUserData((prev) => ({
         ...prev,
         profile_picture: manipulatedImage.uri,
-        avatar: manipulatedImage.uri, // ✅ Use the compressed URI
+        avatar: manipulatedImage.uri, 
       }));
 
       setHasChanges(true);
@@ -190,13 +190,12 @@ const handleImagePick = async () => {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Edit Profile</Text>
           <TouchableOpacity onPress={handleSave} disabled={loading}>
-  {loading ? (
-    <ActivityIndicator size="small" color="#3897F0" />
-  ) : (
-    <Feather name="check" size={24} color="#3897F0" />
-  )}
-</TouchableOpacity>
-
+            {loading ? (
+              <ActivityIndicator size="small" color="#3897F0" />
+            ) : (
+              <Feather name="check" size={24} color="#3897F0" />
+            )}
+          </TouchableOpacity>
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false}>
