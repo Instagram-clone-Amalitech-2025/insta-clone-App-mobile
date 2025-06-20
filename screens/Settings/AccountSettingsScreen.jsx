@@ -52,7 +52,6 @@ const AccountSettingsScreen = () => {
         { 
           text: 'Delete', 
           onPress: () => {
-            // Handle account deletion logic here
             console.log('Account deletion requested');
           },
           style: 'destructive'
@@ -90,17 +89,17 @@ const AccountSettingsScreen = () => {
       <ScrollView style={styles.content}>
         <View style={[styles.profileSection, isDark && styles.darkProfileSection]}>
           <Image
-  source={{ uri: user?.profile_picture || 'https://i.pravatar.cc/150?img=64' }}
-  style={styles.profileImage}
-/>
+        source={{ uri: user?.profile_picture || 'https://i.pravatar.cc/150?img=64' }}
+        style={styles.profileImage}
+      />
 
           <View style={styles.profileInfo}>
             <Text style={[styles.profileName, isDark && styles.darkText]}>
-  {user?.full_name || user?.username || 'Unknown User'}
-</Text>
-<Text style={[styles.profileEmail, isDark && styles.darkMutedText]}>
-  {user?.email || 'No email available'}
-</Text>
+              {user?.full_name || user?.username || 'Unknown User'}
+            </Text>
+            <Text style={[styles.profileEmail, isDark && styles.darkMutedText]}>
+              {user?.email || 'No email available'}
+            </Text>
 
             <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
                         <Text style={styles.editButtonText}>Edit Profile</Text>

@@ -12,17 +12,17 @@ export default function HomeScreen() {
   const dispatch = useDispatch();
 
   const posts = useSelector((state) => state.posts.items);
-  const appTheme = useSelector((state) => state.theme.theme); // Get theme state
+  const appTheme = useSelector((state) => state.theme.theme); 
   const isDark = appTheme === 'dark';
 
-  const [likedStatuses, setLikedStatuses] = useState({}); // postId: boolean
-  const [dynamicLikeCounts, setDynamicLikeCounts] = useState({}); // postId: number
-  const [bookmarkedStatuses, setBookmarkedStatuses] = useState({}); // postId: boolean
+  const [likedStatuses, setLikedStatuses] = useState({}); 
+  const [dynamicLikeCounts, setDynamicLikeCounts] = useState({}); 
+  const [bookmarkedStatuses, setBookmarkedStatuses] = useState({});
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const loadPosts = async () => {
   try {
-    await dispatch(fetchPosts()); // Axios fetch
+    await dispatch(fetchPosts()); 
   } catch (error) {
     console.error("Error fetching posts:", error);
   }
@@ -69,7 +69,7 @@ if (loading) {
 const formatTimeAgo = (dateString) => {
   const date = new Date(dateString);
   const now = new Date();
-  const diff = Math.floor((now - date) / 1000); // in seconds
+  const diff = Math.floor((now - date) / 1000); 
 
   if (diff < 60) return 'Just now';
   if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
