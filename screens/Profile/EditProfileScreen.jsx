@@ -70,9 +70,9 @@ const handleSave = async () => {
     ) {
       const uri = userData.profile_picture;
       const filename = uri.split('/').pop();
-      const ext = filename.split('.').pop().toLowerCase();
-      const type = ext === 'jpg' ? 'image/jpeg' : `image/${ext}`;
-
+      const match = /\.(\w+)$/.exec(filename ?? '');
+      const type = match ? `image/${match[1]}` : `image`;
+      console.log('📸 Adding profile picture:', uri, filename, type);
 
       formData.append('profile_picture', {
         uri,

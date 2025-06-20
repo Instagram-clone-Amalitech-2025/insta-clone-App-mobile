@@ -139,25 +139,48 @@ export const updateUserProfile = createAsyncThunk(
 
       const isFormData = updatedData instanceof FormData;
 
-      const response = await api.put(
-        '/api/profiles/me/',
-        updatedData,
-        {
+      if (isFormData) {
+        const res = await fetch('https://felnan.pythonanywhere.com/api/profiles/me/', {
+          method: 'PUT',
           headers: {
             Authorization: `Bearer ${token}`,
-            ...(isFormData ? {} : { 'Content-Type': 'application/json' }), // ✅ Only add if not FormData
+            // ✅ Do not set Content-Type manually for FormData
           },
-        }
-      );
+          body: updatedData,
+        });
 
-      console.log('✅ Profile updated successfully:', response.data);
-      return response.data;
+        if (!res.ok) {
+          const errorData = await res.json();
+          console.error('❌ Upload failed:', errorData);
+          throw new Error('Upload failed');
+        }
+
+        const data = await res.json();
+        console.log('✅ Upload successful:', data);
+        return data;
+      } else {
+        const response = await api.put(
+          '/api/profiles/me/',
+          updatedData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        console.log('✅ Profile updated successfully:', response.data);
+        return response.data;
+      }
+
     } catch (error: any) {
       console.error('❌ Update failed:', error.response?.data || error.message);
       return thunkAPI.rejectWithValue('Failed to update profile');
     }
   }
 );
+
 
 
 
