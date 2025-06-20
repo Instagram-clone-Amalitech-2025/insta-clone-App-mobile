@@ -15,16 +15,28 @@ export const fetchPosts = createAsyncThunk(
 );
 
 
-// Create a new post
 export const createPost = createAsyncThunk(
   'posts/createPost',
-  async (formData) => {
-    const response = await api.post('/api/posts/', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    return response.data;
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await api.post('/api/posts/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // ✅ required for FormData
+        },
+      });
+      return response.data;
+    } catch (error) {
+      if (error.response) {
+        return rejectWithValue(error.response.data);
+      } else if (error.request) {
+        return rejectWithValue({ detail: 'No response received from the server.' });
+      } else {
+        return rejectWithValue({ detail: error.message || 'Unknown error' });
+      }
+    }
   }
 );
+
 
 // Add a comment
 export const addComment = createAsyncThunk(

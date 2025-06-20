@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, Image, ScrollView,
-  TextInput, SafeAreaView, Platform, StatusBar, Alert
+  TextInput, SafeAreaView, Platform, StatusBar, Alert, 
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import * as MediaLibrary from 'expo-media-library';
 import { useDispatch } from 'react-redux';
 import { createPost } from '../../redux/slices/postSlice';
 
@@ -15,7 +16,15 @@ export default function UploadScreen({ navigation }) {
   const [multiSelectMode, setMultiSelectMode] = useState(false);
   const [selectedImages, setSelectedImages] = useState([]);
 
-  const imagePlaceholders = Array(12).fill(null); // <-- ✅ MAKE SURE THIS LINE IS PRESENT
+  const imagePlaceholders = Array(12).fill(null); 
+
+const getFixedUri = async (uri) => {
+  if (Platform.OS === 'ios' && uri.startsWith('ph://')) {
+    const asset = await MediaLibrary.getAssetInfoAsync(uri);
+    return asset.localUri;
+  }
+  return uri;
+};
 
 
   const requestPermission = async (permissionType) => {
@@ -70,33 +79,70 @@ export default function UploadScreen({ navigation }) {
     setSelectedImages((prev) => prev.filter((img) => img.uri !== uri));
   };
 
-  const handlePost = async () => {
-    if (!caption && selectedImages.length === 0) {
-      Alert.alert('Missing content', 'Please select an image or write a caption.');
-      return;
-    }
 
-    const formData = new FormData();
-    formData.append('caption', caption);
+const handlePost = async () => {
+  if (!caption && selectedImages.length === 0) {
+    Alert.alert('Missing content', 'Please select an image or write a caption.');
+    return;
+  }
 
-    if (selectedImages.length > 0) {
-      formData.append('image', {
-        uri: selectedImages[0].uri,
-        name: 'image.jpg',
-        type: 'image/jpeg',
-      });
-    }
+  const formData = new FormData();
+  formData.append('caption', caption);
 
-    try {
-      await dispatch(createPost(formData)).unwrap();
-      setCaption('');
-      setSelectedImages([]);
-      navigation.goBack();
-    } catch (error) {
-      console.error('Error uploading post:', error);
-      Alert.alert('Upload Failed', 'Something went wrong. Please try again.');
-    }
+  console.log('Selected image:', selectedImages[0]);
+
+  const image = selectedImages[0]; // Test with only one image for now
+  const fixedUri = await getFixedUri(image.uri);
+
+  console.log('Fixed image uri:', fixedUri); 
+
+  const fileName = fixedUri.split('/').pop() || 'photo.jpg';
+  const extension = fileName.split('.').pop().toLowerCase();
+  const mimeType = {
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    webp: 'image/webp',
+  }[extension] || 'image/jpeg';
+
+  const fileObject = {
+    uri: fixedUri,
+    name: fileName,
+    type: mimeType,
   };
+
+  console.log('File object:', fileObject);
+
+  formData.append('image', fileObject);
+
+  // Log formData contents
+   for (let [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
+
+try {
+  await dispatch(createPost(formData)).unwrap();
+  setCaption('');
+  setSelectedImages([]);
+} catch (error) {
+  console.log('UPLOAD ERROR:', error);
+
+  if (error?.response) {
+    console.log('Error response data:', error.response.data);
+    Alert.alert('Upload Failed', JSON.stringify(error.response.data));
+  } else if (error?.request) {
+    console.log('No response received:', error.request);
+    Alert.alert('Upload Failed', 'No response received from the server.');
+  } else {
+    console.log('Error message:', error.message);
+    Alert.alert('Upload Failed', error.message || 'Unknown error');
+  }
+}
+
+  console.log ('Post submitted:', { caption, selectedImages });
+  Alert.alert('Post submitted', 'Your post has been successfully created.');
+  navigation.goBack();
+};
 
   return (
   <SafeAreaView style={styles.container}>
